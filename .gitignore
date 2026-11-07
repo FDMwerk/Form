@@ -20,3 +20,6 @@ Resources/Web/apple.js
 distribution/icon-proposals/
 .tmp/
 distribution/*.tar.gz
+/result.json
+/*.gcode
+distribution/*.dmg

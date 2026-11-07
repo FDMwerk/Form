@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import * as T from 'three';
+import {createViewportDisplay,createViewportCameras} from '../viewport-display.js';
+import {measureMeshes} from '../mesh-metrics.js';
+const near=(a,b,tolerance=1e-8)=>assert.ok(Math.abs(a-b)<=tolerance*Math.max(1,Math.abs(b)),`${a} != ${b}`);
+const texture=new T.Texture(),plane=new T.Plane(new T.Vector3(0,0,1));
+const source=new T.MeshStandardMaterial({map:texture,color:'#aabbcc',opacity:.8,transparent:true,roughness:.17,clippingPlanes:[plane]});
+const sharedGeometry=new T.BoxGeometry(10,10,10),first=new T.Mesh(sharedGeometry,source),second=new T.Mesh(sharedGeometry,source),root=new T.Group();root.add(first,second);let meshes=[first,second],planes=[plane];
+const controller=createViewportDisplay({getMeshes:()=>meshes,getClippingPlanes:()=>planes});
+controller.setMode('xray');assert.equal(source.opacity,.25);assert.equal(source.depthWrite,false);assert.equal(source.map,texture);
+controller.setMode('wireframe');assert.equal(source.wireframe,true);assert.equal(source.opacity,.8);assert.equal(source.depthWrite,true);
+controller.setMode('solid');assert.equal(source.wireframe,false);assert.equal(source.opacity,.8);assert.equal(source.transparent,true);assert.equal(source.map,texture);assert.equal(source.clippingPlanes[0],plane);near(source.roughness,.17);
+console.log('PASS actual Three display transitions restore shared source opacity, maps and clipping');
+controller.setMode('edges');assert.equal(first.children.length,1);assert.equal(second.children.length,1);const edge=first.children[0];assert.equal(edge.geometry,second.children[0].geometry);assert.equal(edge.isMesh,undefined);assert.equal(edge.userData.formHelper,true);assert.equal(edge.material.clippingPlanes[0],plane);near(measureMeshes(root).volumeMM3,2000);assert.deepEqual(new T.Raycaster().intersectObject(edge),[]);
+let disposedGeometry=0,disposedMaterial=0,disposedTexture=0,disposedSourceGeometry=0;edge.geometry.addEventListener('dispose',()=>disposedGeometry++);edge.material.addEventListener('dispose',()=>disposedMaterial++);texture.addEventListener('dispose',()=>disposedTexture++);sharedGeometry.addEventListener('dispose',()=>disposedSourceGeometry++);
+first.visible=false;assert.equal(edge.visible,true);assert.equal(edge.parent.visible,false);
+planes=[];controller.updateClipping();assert.deepEqual(edge.material.clippingPlanes,[]);
+controller.setMode('solid');assert.equal(edge.visible,false);controller.setMode('edges');assert.equal(first.children.length,1);
+meshes=[second];controller.applyDisplayStyle();assert.equal(first.children.length,0);assert.equal(disposedMaterial,1);assert.equal(disposedGeometry,0);
+controller.detachHelpers(second);assert.equal(second.children.length,0);controller.dispose();controller.dispose();assert.equal(second.children.length,0);assert.equal(disposedGeometry,1);assert.equal(disposedTexture,0);assert.equal(disposedSourceGeometry,0);assert.equal(source.polygonOffset,false);
+console.log('PASS edges share geometry, inherit visibility, exclude metrics/picking and clean up once without source disposal');
+const mesh=new T.Mesh(new T.BoxGeometry(),new T.MeshStandardMaterial({color:'#aa1122',map:texture}));let styled;
+styled=createViewportDisplay({getMeshes:()=>[mesh],refreshAppearance:()=>{mesh.material.opacity=.65;mesh.material.wireframe=false;mesh.material.color.set('#33aa44');styled.applyDisplayStyle({sourceRestored:true})}});
+styled.setMode('xray');assert.equal(mesh.material.opacity,.25);assert.equal(mesh.material.color.getHexString(),'33aa44');styled.setMode('solid');assert.equal(mesh.material.opacity,.65);assert.equal(mesh.material.map,texture);
+styled.setMode('edges');const oldEdges=mesh.children[0].geometry;let released=0;oldEdges.addEventListener('dispose',()=>released++);mesh.geometry.attributes.position.needsUpdate=true;styled.applyDisplayStyle();assert.notEqual(mesh.children[0].geometry,oldEdges);assert.equal(released,1);styled.dispose();
+console.log('PASS host appearance hook survives palette/alpha changes; changed edge geometry invalidates cached helper');
+const target=new T.Vector3(20,-10,4),camera=new T.PerspectiveCamera(38,1.5,.1,1e5);camera.up.set(0,0,1);camera.position.copy(target).add(new T.Vector3(120,-160,100));camera.lookAt(target);camera.updateProjectionMatrix();camera.updateMatrixWorld();
+const cameras=createViewportCameras({camera,target,aspect:1.5});
+const point=target.clone().add(new T.Vector3().setFromMatrixColumn(camera.matrixWorld,1).multiplyScalar(10));const before=point.clone().project(camera);
+let active=cameras.setProjection('orthographic');const during=point.clone().project(active);near(before.x,during.x);near(before.y,during.y);assert.ok(target.equals(new T.Vector3(20,-10,4)));
+active=cameras.setProjection('perspective');const after=point.clone().project(active);near(before.x,after.x);near(before.y,after.y);near(active.position.distanceTo(target),camera.position.distanceTo(target));
+cameras.setProjection('orthographic');const oldHeight=(cameras.active.top-cameras.active.bottom)/cameras.active.zoom;cameras.resize(300,600);near((cameras.active.top-cameras.active.bottom)/cameras.active.zoom,oldHeight);near((cameras.active.right-cameras.active.left)/(cameras.active.top-cameras.active.bottom),.5);
+for(const [name,direction] of Object.entries({front:[0,-1,0],back:[0,1,0],left:[-1,0,0],right:[1,0,0],top:[0,0,1],bottom:[0,0,-1],iso:[1,-1,1]})){active=cameras.setView(name);assert.ok(active.position.clone().sub(target).normalize().distanceTo(new T.Vector3(...direction).normalize())<1e-10);assert.ok(new T.Vector3(0,0,-1).applyQuaternion(active.quaternion).distanceTo(target.clone().sub(active.position).normalize())<1e-10)}
+const bounds=new T.Box3(new T.Vector3(-30,-20,-10),new T.Vector3(50,40,30));
+for(const projection of ['perspective','orthographic']){cameras.setProjection(projection);cameras.resize(300,600);active=cameras.fit(bounds);assert.ok(target.equals(bounds.getCenter(new T.Vector3())));for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z]){const p=new T.Vector3(x,y,z).project(active);assert.ok(Math.abs(p.x)<=1&&Math.abs(p.y)<=1&&p.z>=-1&&p.z<=1)}}
+console.log('PASS camera projection preserves target-plane scale; all Z-up standard views, resize and portrait fits');

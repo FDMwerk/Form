@@ -23,3 +23,5 @@ jobs:
         run: xcodegen generate
       - name: Build universal macOS preview
         run: xcodebuild -project Form.xcodeproj -scheme Form -configuration Release -derivedDataPath build ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO build
+      - name: Build self-contained App Store candidate
+        run: xcodebuild -project Form.xcodeproj -scheme Form -configuration AppStore -derivedDataPath build ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO build

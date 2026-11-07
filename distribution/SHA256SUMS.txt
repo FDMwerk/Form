@@ -1,0 +1,3 @@
+eb58637e80c346983cc78b05ef5e63310711dc1dd24c1043b1be4ddb925a945e  Form-0.3.0-macOS-universal-preview.zip
+336e8a30a093fd92c2d2c2114e40c856b58fe5e0999f3ef4f8ba3cbda9094aac  Form-0.3.0-macOS-universal-preview.dmg
+bcb294ad73affdcd883b404bd5eb3c781d425d59c9388eccf880053fe521aeef  TESTBUILD_README_DE.txt

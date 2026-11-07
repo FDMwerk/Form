@@ -13,7 +13,20 @@ This file describes the repeatable automated checks. It does not certify an App 
 
 `scripts/interaction-regression.mjs` executes the full current `viewer.js`, its DOM handlers and a real Three.js scene. The harness substitutes WebGL, native window services and control hardware adapters. Its 12 passing scenarios cover import selection/hierarchy, measurement/transform exclusivity, stale measurement clearing, hidden/clipped picking, section preservation through appearance changes, 32 unique inspection colors, preferences validation and native bridge round-trip, fixed-baseline explosion/docking/undo/reset, nonfinite/unsupported/empty imports preserving the scene and pre-read drop rejection, input-aware keyboard shortcuts, and last-file cleanup. This is logic evidence, not rendered UI or hardware-input evidence.
 
-`scripts/i18n-test.mjs` checks exact catalog keys and interpolation placeholders, regional/script/secondary-language fallback, manual versus system-language selection, real viewer DOM text/inspector changes, filename preservation, RTL switching, palette/settings persistence and the actual screenshot composition/native-message flow with a substituted 2D canvas. GPU output and native save dialogs still require app checks.
+`scripts/i18n-test.mjs` checks exact catalog keys and interpolation placeholders, regional/script/secondary-language fallback, manual versus system-language selection, real viewer DOM text/inspector changes, filename preservation, RTL switching, scene palette versus persistent app defaults and the actual screenshot composition/native-message flow with a substituted 2D canvas. GPU output and native save dialogs still require app checks.
+
+## Expanded feature tests
+
+The full `npm test` completed with exit 0 on 2026-11-07 after the scoped-appearance, source-handoff, print and viewport-display integrations. In addition to the earlier interaction suite:
+
+- `scripts/ui-regression.mjs`: seven actual-DOM flows for file roots/badges/selection/visibility, keyboard focus restoration, three section normals/slider/reverse, delayed hover/focus tooltip dismissal/localization/RTL, and native source IDs despite identical filenames.
+- `scripts/scoped-regression.mjs`: four flows for file-over-scene-over-default precedence/reset, no preference writes from scene edits, selected/all-model fit and hidden/reference fallbacks, and context removal/last-file cleanup.
+- `scripts/print-ui-test.mjs`: four flows for known cm³ volume, installed-slicer gating, parameter-sensitive heuristic output, request/source-bound Bambu results, cancellation and late callbacks, explicit unit scale, and additive/hidden mesh handling. It substitutes native responses; it does not run Bambu Studio.
+- `scripts/display-ui-test.mjs`: three flows for material/metrics preservation across modes, clipping edges, active camera/control/transform references, seven Z-up views, projection-preserving fit and exact-once edge-helper disposal.
+- `scripts/mesh-print-test.mjs`: six actual-geometry groups for known cube volume/areas, transforms/units, additive overlap and visibility, invalid/open/nonmanifold meshes, cache invalidation and heuristic parameter behaviour.
+- `scripts/viewport-display-test.mjs`: four actual-Three.js groups for source material restoration, shared edge ownership/disposal, appearance/clipping interaction and camera scale/views/resize/fitting.
+
+Native tests cover source identity, external-app filtering, safe Blender adapter generation, bounded slicer result parsing, preset inheritance and cancellation/timeout policies. Separate sandboxed native probes reported actual Bambu Studio PLA/PETG slicing without network entitlement; final production-app save/handoff/slicer UI still needs an integrated pass for the current bundle. Neither the geometric range nor the slicer estimate establishes physical print duration.
 
 ## Original fixtures
 
@@ -28,9 +41,9 @@ This file describes the repeatable automated checks. It does not certify an App 
 
 The fixture generator uses the pinned Three.js exporters where appropriate. The glTF and 3MF containers are authored directly in the generator to retain known geometry, units, material colors and hierarchy.
 
-## Integrated checks on the development Mac
+## Earlier integrated preview checks on the development Mac
 
-On 2026-11-07 the final `npm test`, CAD fixture checks and universal Release build passed on Apple Silicon/macOS 27. The installed bundle's ad-hoc signature and both executable architectures were verified. The native app opened the original two-part GLB fixture with correct Z-up bounds (50 × 40 × 30 mm), initially collapsed file roots, its format badge and file inspector. Switching between source and inspection colors preserved an active clipping plane. The textured reference apple rendered beside the model.
+Before the later scope/display/slicer additions, on 2026-11-07 `npm test`, CAD fixture checks and a universal Release build passed on Apple Silicon/macOS 27. The installed bundle's ad-hoc signature and both executable architectures were verified. The native app opened the original two-part GLB fixture with correct Z-up bounds (50 × 40 × 30 mm), initially collapsed file roots, its format badge and file inspector. Switching between source and inspection colors preserved an active clipping plane. The textured reference apple rendered beside the model.
 
 The native PNG save dialog wrote a 1500 × 1640 image, then the saved image was decoded and visually inspected: model, fading grid and all three dimension labels were present, without application navigation/toolbars. `distribution/Form-Viewport.png` is that original-fixture export, not a customer model or an App Store screenshot.
 

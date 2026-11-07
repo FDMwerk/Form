@@ -11,7 +11,9 @@ Form gibt deinen 3D-Modellen Raum. Öffne CAD- und 3D-Dateien direkt auf deinem 
 
 • Mehrere Modelle und Baugruppen gemeinsam ansehen
 • STEP, IGES, BREP, STL, OBJ, PLY, 3MF und eingebettetes glTF/GLB öffnen
-• Dateiinformationen, Außenmaße und Zwei-Punkt-Messung anzeigen
+• Dateiinformationen, Außenmaße, meshbasiertes Volumen und Zwei-Punkt-Messung anzeigen
+• Druckzeit als gekennzeichnete geometrische Näherung einschätzen
+• Optional Originaldateien an passende installierte Apps übergeben
 • Modelle und Bauteile verschieben, drehen und an äußeren Begrenzungsflächen ausrichten
 • Explosionsansichten und verstellbare Schnittansichten
 • Texturierter Referenzapfel für einen anschaulichen Größenvergleich
@@ -36,4 +38,8 @@ Review-E-Mail: support@fdmwerk.de
 Review-Kontaktperson und Telefonnummer: im Apple-Konto mit tatsächlichen Angaben ergänzen.
 
 Review notes (English):
-Form is a free local CAD viewer with no account, in-app purchase, advertisement, analytics, or remote model processing. Use the supplied original demo STL models to inspect the viewer, file information sidebar, measurements, transformations, bounding-face docking, explosion and uncapped clipping plane. The network-client entitlement supports the WKWebView architecture; the app bundles its resources and its Content Security Policy restricts external origins. The Tripo-created reference apple is bundled; no Tripo access or generation occurs in the app. Original model files are read-only. LGPL components ship as replaceable resources; exact-source links and release source archives must be supplied before submission.
+Form is a free local CAD viewer with no account, in-app purchase, advertisement, analytics, or remote model processing. Use the supplied original demo STL models to inspect the viewer, file information sidebar, measurements, transformations, bounding-face docking, explosion and uncapped clipping plane. The network-client entitlement supports the WKWebView architecture; the app bundles its resources and its Content Security Policy restricts external origins. The Tripo-created reference apple is bundled; no Tripo access or generation occurs in the app. Original model files are read-only. This submission candidate must use the AppStore build configuration (FORM_APP_STORE). It compiles out the desktop Blender Python import adapter and Bambu CLI execution adapter; their actions are not available in the Store UI. The self-contained viewer, labelled geometric printing-time estimate and standard original-document Open With handoff remain available. Blender is excluded from that menu without its importer. No slicer, Python runtime or external engine is downloaded or installed by the Store build. Desktop Release functionality must not be advertised as a feature of this Store build. LGPL components ship as replaceable resources; exact-source links and release source archives must be supplied before submission.
+
+Signing-Stand (erneut geprüft): 7 gültige Apple-Development-Identitäten, keine Developer-ID-Application- und keine Apple-/Mac-App-Distribution-Identität verfügbar. Ein ad-hoc signiertes Testpaket ist keine notarierte öffentliche Distribution.
+
+Store-Build: Konfiguration AppStore, Compilerflag FORM_APP_STORE, Archivskript scripts/archive.sh → distribution/Form-AppStore.xcarchive. Externe Bambu-CLI-Berechnung und Blender-Python-Importer sind in diesem Flavor nicht enthalten. Standard-Dateiübergabe an andere passende Apps und geometrische Druckzeitnäherung bleiben erhalten.

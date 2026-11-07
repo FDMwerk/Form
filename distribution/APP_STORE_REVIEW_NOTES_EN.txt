@@ -1,0 +1,21 @@
+Form – free local CAD viewer
+Review candidate: AppStore configuration / FORM_APP_STORE
+
+No account, login, in-app purchase, advertisement, analytics, model upload, runtime AI generation or updater is required. The reference apple is bundled. The viewer and its supported importers are bundled and work without other CAD/printing software.
+
+Please use the original demo STL models included with the submission materials. Open a file, expand its tree, hide/show components, inspect the file-information panel and choose dimensions or two-point surface measurements. The top-left viewport menu provides shading, edges, wireframe, transparency, projection and standard views. Bottom tools include reference/grid, measuring, clipping, transforms and reversible explosion. Application preferences are in the lower left sidebar; session scene/file appearance is separate. A screenshot action saves a PNG through the system Save dialog. Original model files are read only.
+
+Measurements and volumes use display meshes, not exact CAD metrology. Overlapping mesh volumes are additive; open/inconsistently oriented meshes have no volume result. Sections are uncapped display clipping; docking aligns bounding faces without persistent mates. Scene edits are session-only and are not exported as CAD.
+
+The AppStore build does not contain the desktop Bambu CLI or Blender Python launch adapters. It retains standard NSWorkspace original-document handoff to compatible installed apps. The optional geometric printing estimate is explicitly approximate and is shown when compatible printing software is detected; the bundled viewer itself does not depend on that software.
+
+The network-client entitlement supports WKWebView process startup on the development system; the app bundles its content and its CSP restricts external origins. The app uses non-persistent WebKit stores. User-selected read/write access is for explicit PNG saves; import code reads original models without writing them. UserDefaults contains app preferences, covered by required-reason API code CA92.1.
+
+Open application source, build/rebuild instructions, policies and license notices:
+https://github.com/FDMwerk/Form
+https://github.com/FDMwerk/Form/blob/main/THIRD_PARTY_NOTICES.md
+https://github.com/FDMwerk/Form/blob/main/docs/PRIVACY.md
+
+The release corresponding-source archive includes exact importer/OCCT sources. Preserve their licenses and recipient rebuild/modification rights under the final distribution terms. Complete the actual publisher, reviewer contact telephone and account-specific fields in App Store Connect before submitting. This document is preparation; no Apple validation, approval or notarization is claimed.
+
+Support: support@fdmwerk.de

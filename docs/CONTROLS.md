@@ -28,4 +28,8 @@ Original material colors, vertex colors and embedded textures are preserved wher
 
 ## Language and screenshots
 
-Form follows the system language by default. Select a language explicitly in Settings to override it; the choice is saved locally. A camera button or ⇧⌘S saves the viewport as PNG with visible dimension/measurement labels. The palette button toggles the same component-color preference as Settings. New files start collapsed in the tree; expand a file to see its nested parts.
+Form follows the system language by default. Select a language explicitly in Settings to override it; the choice is saved locally. A camera button or ⇧⌘S saves the viewport as PNG with visible dimension/measurement labels. The palette button toggles component colors for the current scene without changing persistent app defaults. File appearance overrides retain higher priority. New files start collapsed in the tree; expand a file to see its nested parts.
+
+## Selection and view
+
+The fit button and 0 focus selected geometry; choose All models in the tree for overview fitting. Right-click a file root to unload it without deleting the original. The upper-left display menu changes render style, projection and standard view. Scene/file appearance lives in the header panel; persistent app defaults live in the lower-left settings dialog. See [USER_GUIDE.md](USER_GUIDE.md) for the full workflow, volume and printing limitations.

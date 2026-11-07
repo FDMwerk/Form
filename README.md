@@ -8,20 +8,25 @@ Form is a free, open-source CAD viewer for Mac with a quiet interface, a fading 
 
 **Preview 0.3.0.** The source is available here; this version has not been released or approved in the Mac App Store. Public signed/notarized application downloads are not available yet. You can build it with Xcode using the instructions below.
 
-[Controls](docs/CONTROLS.md) · [Privacy](docs/PRIVACY.md) · [Release readiness](docs/RELEASE_READINESS.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
+[User guide](docs/USER_GUIDE.md) · [Developer guide](docs/DEVELOPMENT.md) · [Controls](docs/CONTROLS.md) · [Privacy](docs/PRIVACY.md) · [Release readiness](docs/RELEASE_READINESS.md) · [App Store handoff](docs/APP_STORE_SUBMISSION.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
 ## Features
 
 - Open several CAD files, meshes or assemblies together; inspect their component hierarchy and file-type badges.
-- Orbit, pan, zoom, fit to view and hide/show individual parts or groups.
+- Orbit, pan, zoom and fit a selected file/part or all models; hide/show individual parts or groups.
+- Switch solid, edge, wireframe and X-ray modes, perspective/orthographic projection and seven standard views.
 - Use familiar basic mouse profiles for Bambu Studio, Autodesk Fusion 360, Blender, SOLIDWORKS and Onshape, plus optional trackpad controls.
-- Preserve original material colors, CAD face colors, vertex colors and supported embedded textures. Choose a fallback color or switch to different component colors.
-- Inspect file information, overall dimensions and two-point surface measurements in millimetres.
+- Preserve original material colors, CAD face colors, vertex colors and supported embedded textures. Use persistent app defaults plus session-only scene/file appearance overrides.
+- Inspect file information, overall dimensions, two-point surface measurements and closed-mesh volume.
+- Estimate FFF print time with editable generic material parameters. When Bambu Studio is installed, optionally calculate an original STL with its local A1 mini CLI profile; no print job is sent.
+- Hand original files to compatible installed CAD applications, Blender or slicers using Open With.
 - Translate and rotate components or groups with handles and numeric world positions.
 - Align outer bounding faces, undo transformations and create a reversible exploded view.
 - Move a planar clipping section through the model.
 - View models with studio lighting, smoother STL surfaces and ground shadows.
 - Toggle a textured apple size reference, normalized to an 80 mm maximum bounding dimension.
+- Save clean PNG viewport screenshots with visible dimension and measurement labels.
+- Use 41 interface languages, automatic macOS language selection and right-to-left layouts.
 - Work without an account, advertising, analytics, model uploads or runtime AI services. Preference settings are saved locally.
 
 ## File formats
@@ -40,7 +45,9 @@ Native proprietary CAD formats such as SolidWorks, CATIA or Parasolid are not im
 
 Measurements use display triangles rather than exact CAD topology. Validate manufacturing-critical dimensions in the original CAD system. The apple is a visual size reference, not a measurement standard.
 
-Docking aligns axis-aligned bounding faces and centres the other two axes. It creates no persistent mates, constraints or collision checks. Sections are uncapped display clipping and do not produce new exportable solids. Explosions are reversible visual offsets. Scene transforms and measurements last for the current session; scene save/export is not implemented. Original files are read-only.
+Docking aligns axis-aligned bounding faces and centres the other two axes. It creates no persistent mates, constraints or collision checks. Sections are uncapped display clipping and do not produce new exportable solids. Explosions are reversible visual offsets. Scene transforms, scoped appearance and measurements last for the current session; scene save/export is not implemented. Original files are read-only.
+
+Mesh volume adds components and does not remove overlaps or detect self-intersections. The generic print-time range is a geometric heuristic. The separate Bambu calculation uses the explicitly labelled original-STL fixed profile; it is a slicer estimate, not a measured print duration.
 
 CAD triangulation currently runs synchronously, so large imports may temporarily pause interaction. Native file opening has a 250 MB per-file guard. This is not a guarantee of memory use or a malformed-file security certification.
 
@@ -61,13 +68,24 @@ open build/Build/Products/Release/Form.app
 
 Ad-hoc signing is the local preview default. Public macOS distribution needs the publisher's valid signing/notarization setup; App Store distribution needs valid App Store signing and Apple's review. Do not bypass Gatekeeper or disable system protections to distribute the app.
 
+The default `Release` configuration is the desktop preview, including optional installed Blender/Bambu adapters. The separate `AppStore` configuration defines `FORM_APP_STORE`: it compiles out the Blender Python import and Bambu CLI execution adapters, keeps the self-contained viewer and geometric estimate, and retains standard original-document “Open With” handoff to compatible apps. Blender is excluded from that menu in the Store flavor because its import adapter is absent. Native capability flags hide the unavailable Bambu action. This prepares a more conservative review candidate; it does not establish App Store approval.
+
+```sh
+xcodegen generate
+xcodebuild -project Form.xcodeproj -scheme Form -configuration AppStore \
+  -derivedDataPath build-store CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=YES build
+```
+
+For an actual signed Store archive, configure a valid Apple team/distribution identity and use `scripts/archive.sh`; it selects `AppStore` and writes `distribution/Form-AppStore.xcarchive`. A local ad-hoc build is not a submission or a notarized public download.
+
+
 ## Languages
 
 Form follows your Mac’s language by default, with a manual language choice in Settings. The interface and native menus include 41 languages; Arabic, Hebrew and Persian use a right-to-left layout. Translation catalogs are bundled locally. Filenames and source part names are preserved.
 
 ## Tests and release sources
 
-`npm test` compiles and tests native file/queue/preferences policies on macOS and checks navigation gestures, original OBJ/PLY/glTF/GLB/3MF fixtures, known dimensions, original colors, 3MF unit normalization, STL normals and the bundled textured reference asset. It also runs the actual viewer source through 12 interaction scenarios covering mode changes, invalid imports, sections and appearance, visibility, explosion/docking/undo, preferences and last-file cleanup. Locale catalog completeness, language switching and screenshot composition are covered as well. These tests do not replace real-device UI, performance or compatibility tests. Original format fixtures are in `tests/fixtures`; see [verification details](docs/VERIFICATION.md) and the [manual app checklist](docs/QA.md).
+`npm test` runs native policy/typechecking, source-identity and local-adapter checks, navigation profiles, six original format fixtures, material/resource regressions, actual mesh/print and camera/display tests, all 41 language catalogs and full-viewer interaction suites. The UI suites cover scoped appearance, selected/all-model fit, tree context removal, tooltips, section axes, source handoffs, screenshot composition and cancellation/stale-reply handling for print estimates. These checks substitute GPU/native UI where documented and do not replace real-device testing. See [verification details](docs/VERIFICATION.md) and the [manual app checklist](docs/QA.md).
 
 ```sh
 # Obtain and verify exact CAD-library sources, then test pinned CAD fixtures:

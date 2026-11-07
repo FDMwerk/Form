@@ -8,6 +8,12 @@ private final class FormWindowDragView: NSView {
  override func mouseDown(with event: NSEvent) { window?.performDrag(with: event) }
 }
 
+private final class FormExternalMenuTarget: NSObject {
+ let app: FormExternalApplication
+ let file: URL
+ init(app: FormExternalApplication, file: URL) { self.app = app; self.file = file }
+}
+
 @main
 final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler, WKNavigationDelegate {
  private let fileReader = DispatchQueue(label: "de.fdmwerk.form.file-reader", qos: .userInitiated)
@@ -16,6 +22,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
  private var window: NSWindow!
  private var web: WKWebView!
  private var ready = false
+ private let sourceRegistry = FormSourceRegistry()
+ #if !FORM_APP_STORE
+ private let sliceWorker = DispatchQueue(label: "de.fdmwerk.form.slice-estimate", qos: .userInitiated)
+ private var sliceControl: FormBoundedProcess?
+ #endif
+ private var sliceRequestID: String?
  private var activeLanguage = "en"
  private var nativeCatalogs: [String: [String: String]] = [:]
  private func text(_ key: String) -> String { nativeCatalogs[activeLanguage]?[key] ?? nativeCatalogs["en"]?[key] ?? key }
@@ -36,8 +48,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
  private lazy var imports = FormImportQueue(
   read: { [unowned self] url, completion in self.readFile(url, completion: completion) },
   importData: { [unowned self] url, data, completion in
-   self.web.callAsyncJavaScript("await window.openModel(name, bytes)", arguments: ["name": url.lastPathComponent, "bytes": data.base64EncodedString()], in: nil, in: .page) { result in
-    completion(result.map { ($0 as? Bool) == true })
+   let sourceID = UUID().uuidString
+   self.web.callAsyncJavaScript("return await window.openModel(name, bytes, sourceID)", arguments: ["name": url.lastPathComponent, "bytes": data.base64EncodedString(), "sourceID": sourceID], in: nil, in: .page) { result in
+    let imported = result.map { ($0 as? Bool) == true }
+    if case .success(true) = imported { self.sourceRegistry.record(sourceID, url: url, imported: true) }
+    completion(imported)
    }
   },
   didImport: { [unowned self] url in
@@ -48,8 +63,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
  )
  private var legalWindow: NSWindow?
 
+ private static func bundledApplicationIcon(in bundle: Bundle = .main) -> NSImage? {
+  let candidates = [
+   bundle.url(forResource: "app-icon", withExtension: "png", subdirectory: "Web"),
+   bundle.url(forResource: "AppIcon", withExtension: "icns")
+  ]
+  for case let url? in candidates {
+   if let image = NSImage(contentsOf: url), image.isValid { return image }
+  }
+  return nil
+ }
+
  static func main() {
   let app = NSApplication.shared
+  // Set our bundled artwork before activating the Dock presence.
+  if let icon = bundledApplicationIcon() { app.applicationIconImage = icon }
   let delegate = AppDelegate()
   app.delegate = delegate
   app.setActivationPolicy(.regular)
@@ -63,7 +91,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   config.websiteDataStore = .nonPersistent()
   web = WKWebView(frame: .zero, configuration: config)
   web.navigationDelegate = self
-  window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 1280, height: 820), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
+  let visibleSize = NSScreen.main?.visibleFrame.size ?? NSSize(width: 1320, height: 860)
+  let initialSize = NSSize(width: max(1040, min(1280, visibleSize.width - 40)), height: max(600, min(800, visibleSize.height - 40)))
+  window = NSWindow(contentRect: NSRect(origin: .zero, size: initialSize), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
   window.title = "Form"
   window.titleVisibility = .hidden
   window.titlebarAppearsTransparent = true
@@ -124,11 +154,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
 
  @objc private func about() {
   let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "Preview"
-  NSApplication.shared.orderFrontStandardAboutPanel(options: [
+  var options: [NSApplication.AboutPanelOptionKey: Any] = [
    .applicationName: "Form",
    .applicationVersion: version,
    .credits: NSAttributedString(string: "\(text("aboutDescription"))\nsupport@fdmwerk.de\nThree.js · Lucide · Open CASCADE / occt-import-js\n\(text("sourceLabel")): github.com/FDMwerk/Form")
-  ])
+  ]
+  if let icon = Self.bundledApplicationIcon() { options[.applicationIcon] = icon }
+  NSApplication.shared.orderFrontStandardAboutPanel(options: options)
  }
 
  @objc private func showSettings() {
@@ -151,6 +183,174 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   w.center()
   w.makeKeyAndOrderFront(nil)
   legalWindow = w
+ }
+
+ private func externalApps(for file: URL) -> [FormExternalApplication] {
+  let workspace = NSWorkspace.shared
+  let registered = workspace.urlsForApplications(toOpen: file)
+  let known = FormExternalAppPolicy.knownIDs.compactMap { workspace.urlForApplication(withBundleIdentifier: $0) }
+  let candidates = (registered + known).compactMap { url -> FormExternalApplication? in
+   guard let bundle = Bundle(url: url), let id = bundle.bundleIdentifier else { return nil }
+   let name = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+    ?? bundle.object(forInfoDictionaryKey: "CFBundleName") as? String ?? url.deletingPathExtension().lastPathComponent
+   return FormExternalApplication(url: url, bundleID: id, name: name, registeredForFile: registered.contains(url))
+  }
+  return FormExternalAppPolicy.filtered(candidates, fileExtension: file.pathExtension, ownBundleID: Bundle.main.bundleIdentifier)
+ }
+
+ private func cancelSliceEstimate() {
+  sliceRequestID = nil
+  #if !FORM_APP_STORE
+  sliceControl?.cancel()
+  sliceControl = nil
+  #endif
+ }
+
+ private func beginSliceEstimate(_ message: [String: Any]) {
+  #if FORM_APP_STORE
+  sendSliceEstimate(FormSliceRequestPolicy.error(message, code: "unsupported"))
+  #else
+  cancelSliceEstimate()
+  guard let request = FormSliceRequestPolicy.parse(message) else {
+   sendSliceEstimate(FormSliceRequestPolicy.error(message, code: "unsupported")); return
+  }
+  let requestID = request.requestID, material = request.material, scale = request.scale
+  sliceRequestID = requestID
+  web.callAsyncJavaScript("return window.selectedSourceID()", arguments: [:], in: nil, in: .page) { result in
+   guard self.sliceRequestID == requestID else { return }
+   guard case .success(let value) = result,
+     let source = FormSliceRequestPolicy.source(request, selected: value, registry: self.sourceRegistry) else {
+    self.sendSliceEstimate(FormSliceRequestPolicy.error(message, code: "unavailable")); return
+   }
+   let sourceID = request.sourceID
+   let common: [String: Any] = ["requestID": requestID, "sourceID": sourceID,
+    "printer": "Bambu Lab A1 mini", "nozzle": 0.4, "layerHeight": 0.2, "infill": 15, "material": material]
+   guard source.pathExtension.lowercased() == "stl" else {
+    self.sendSliceEstimate(common.merging(["state": "error", "errorCode": "unsupported"]) { _, latest in latest }); return
+   }
+   guard let app = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.bambulab.bambu-studio") else {
+    self.sendSliceEstimate(common.merging(["state": "error", "errorCode": "unavailable"]) { _, latest in latest }); return
+   }
+   let control = FormBoundedProcess()
+   self.sliceControl = control
+   self.sendSliceEstimate(common.merging(["state": "working"]) { _, latest in latest })
+   let scoped = source.startAccessingSecurityScopedResource()
+   self.sliceWorker.async {
+    let result = Result { try FormBambuSlicePolicy.estimate(application: app, source: source, material: material, scale: scale, control: control) }
+    if scoped { source.stopAccessingSecurityScopedResource() }
+    DispatchQueue.main.async {
+     guard self.sliceRequestID == requestID else { return }
+     self.sliceControl = nil
+     var response = common
+     switch result {
+     case .success(let estimate): response["state"] = "complete"; response["seconds"] = estimate.seconds; response["grams"] = estimate.grams
+     case .failure(let error):
+      let failure = error as? FormBambuSlicePolicy.Failure
+      response["state"] = failure == .cancelled ? "cancelled" : "error"
+      switch failure {
+      case .unsupported: response["errorCode"] = "unsupported"
+      case .unavailable: response["errorCode"] = "unavailable"
+      case .preset: response["errorCode"] = "preset"
+      case .timeout: response["errorCode"] = "timeout"
+      case .cancelled: response["errorCode"] = "cancelled"
+      default: response["errorCode"] = "failed"
+      }
+     }
+     self.sendSliceEstimate(response)
+    }
+   }
+  }
+  #endif
+ }
+
+ private func sendSliceEstimate(_ value: [String: Any]) {
+  web.callAsyncJavaScript("window.applySliceEstimate(value)", arguments: ["value": value], in: nil, in: .page, completionHandler: nil)
+ }
+
+ private func installedPrintSoftware() -> [[String: String]] {
+  let apps = FormExternalAppPolicy.slicerIDs.compactMap { id -> FormExternalApplication? in
+   guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: id), let bundle = Bundle(url: url),
+     let actualID = bundle.bundleIdentifier else { return nil }
+   let name = bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String
+    ?? bundle.object(forInfoDictionaryKey: "CFBundleName") as? String ?? url.deletingPathExtension().lastPathComponent
+   return FormExternalApplication(url: url, bundleID: actualID, name: name, registeredForFile: true)
+  }
+  return FormExternalAppPolicy.filtered(apps, fileExtension: "stl", ownBundleID: Bundle.main.bundleIdentifier)
+   .map { ["id": $0.bundleID, "name": $0.name] }
+ }
+
+ private func presentExternalError(_ key: String) {
+  guard window.attachedSheet == nil else { return }
+  let alert = NSAlert()
+  alert.messageText = text("openWith")
+  alert.informativeText = text(key)
+  alert.addButton(withTitle: text("ok"))
+  alert.beginSheetModal(for: window, completionHandler: nil)
+ }
+
+ private func openWithMenu(slicersOnly: Bool = false) {
+  guard ready, window.attachedSheet == nil else { return }
+  web.callAsyncJavaScript("return window.selectedSourceID()", arguments: [:], in: nil, in: .page) { result in
+   guard case .success(let value) = result, let file = self.sourceRegistry.sourceURL(for: value) else {
+    self.presentExternalError("openWithNoSource"); return
+   }
+   let scoped = file.startAccessingSecurityScopedResource()
+   defer { if scoped { file.stopAccessingSecurityScopedResource() } }
+   guard (try? file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else {
+    self.presentExternalError("openWithUnavailable"); return
+   }
+   let apps = self.externalApps(for: file).filter { !slicersOnly || FormExternalAppPolicy.isSlicer($0.bundleID) }
+   guard !apps.isEmpty else { self.presentExternalError("openWithNoApps"); return }
+   let menu = NSMenu(title: self.text("openWith"))
+   for app in apps {
+    let item = menu.addItem(withTitle: app.name, action: #selector(self.openExternalApplication(_:)), keyEquivalent: "")
+    item.target = self
+    item.representedObject = FormExternalMenuTarget(app: app, file: file)
+    let icon = NSWorkspace.shared.icon(forFile: app.url.path)
+    icon.size = NSSize(width: 18, height: 18)
+    item.image = icon
+   }
+   let point = NSPoint(x: max(0, self.web.bounds.width - 190), y: self.web.isFlipped ? 60 : self.web.bounds.height - 60)
+   menu.popUp(positioning: nil, at: point, in: self.web)
+  }
+ }
+
+ @objc private func openExternalApplication(_ sender: NSMenuItem) {
+  guard let target = sender.representedObject as? FormExternalMenuTarget else { return }
+  let file = target.file
+  let scoped = file.startAccessingSecurityScopedResource()
+  guard (try? file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile) == true else {
+   if scoped { file.stopAccessingSecurityScopedResource() }
+   presentExternalError("openWithUnavailable"); return
+  }
+  let configuration = NSWorkspace.OpenConfiguration()
+  configuration.activates = true
+  var documents = [file]
+  if target.app.bundleID.lowercased() == FormExternalAppPolicy.blenderID {
+   #if FORM_APP_STORE
+   if scoped { file.stopAccessingSecurityScopedResource() }
+   presentExternalError("openWithError")
+   return
+   #else
+   do {
+    let directory = try FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true).appendingPathComponent("Form/ExternalImport", isDirectory: true)
+    try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+    let script = directory.appendingPathComponent("blender-import.py")
+    try FormExternalAppPolicy.blenderScript.write(to: script, atomically: true, encoding: .utf8)
+    guard let arguments = FormExternalAppPolicy.blenderArguments(script: script, file: file) else { throw NSError(domain: "Form.External", code: 1) }
+    configuration.arguments = arguments
+    configuration.createsNewApplicationInstance = true
+    documents = []
+   } catch {
+    if scoped { file.stopAccessingSecurityScopedResource() }
+    presentExternalError("openWithBlenderError"); return
+   }
+   #endif
+  }
+  NSWorkspace.shared.open(documents, withApplicationAt: target.app.url, configuration: configuration) { _, error in
+   if scoped { file.stopAccessingSecurityScopedResource() }
+   if error != nil { DispatchQueue.main.async { self.presentExternalError("openWithError") } }
+  }
  }
 
  @objc private func captureScreenshot() {
@@ -230,6 +430,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
  func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
   guard FormBridgePolicy.acceptsMessage(source: message.frameInfo.request.url, root: webRoot,
         isMainFrame: message.frameInfo.isMainFrame, isViewerWebView: message.webView === web) else { return }
+  if let data = message.body as? [String: Any], data["type"] as? String == "sliceEstimate" {
+   beginSliceEstimate(data)
+   return
+  }
   if let data = message.body as? [String: Any], data["type"] as? String == "saveScreenshot" {
    saveScreenshot(data["png"])
    return
@@ -245,13 +449,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   case "ready":
    guard !ready else { return }
    ready = true
-   let completeStartup = { self.imports.setReady() }
+   let completeStartup = {
+    self.web.callAsyncJavaScript("window.applyNativeCapabilities(capabilities)", arguments: ["capabilities": FormBuildCapabilities.dictionary], in: nil, in: .page) { _ in
+     self.web.callAsyncJavaScript("window.applyPrintSoftware(software)", arguments: ["software": self.installedPrintSoftware()], in: nil, in: .page) { _ in self.imports.setReady() }
+    }
+   }
    web.callAsyncJavaScript("window.applySystemLanguages(languages)", arguments: ["languages": Locale.preferredLanguages], in: nil, in: .page) { _ in
     if let saved = UserDefaults.standard.dictionary(forKey: self.preferencesKey), let clean = FormPreferencePolicy.sanitize(saved) {
      self.web.callAsyncJavaScript("window.applyViewportSettings(value)", arguments: ["value": clean], in: nil, in: .page) { _ in completeStartup() }
     } else { completeStartup() }
    }
   case "open": openPanel()
+  case "openWith": openWithMenu()
+  case "openInSlicer": openWithMenu(slicersOnly: true)
+  case "cancelSliceEstimate": cancelSliceEstimate()
   case "legal": showLegal()
   default: break
   }
@@ -267,6 +478,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   }
   decisionHandler(.cancel)
  }
+
+ func applicationWillTerminate(_ notification: Notification) { cancelSliceEstimate() }
 
  func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
 }

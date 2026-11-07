@@ -3,6 +3,10 @@ options:
   bundleIdPrefix: de.fdmwerk
   deploymentTarget:
     macOS: '14.0'
+configs:
+  Debug: debug
+  Release: release
+  AppStore: release
 targets:
   Form:
     type: application
@@ -27,3 +31,8 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: Resources/Info.plist
         ENABLE_HARDENED_RUNTIME: YES
+        FORM_DISTRIBUTION_FLAVOR: Desktop
+      configs:
+        AppStore:
+          SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) FORM_APP_STORE"
+          FORM_DISTRIBUTION_FLAVOR: AppStore

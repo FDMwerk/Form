@@ -4,6 +4,13 @@ Automated logic checks are in `scripts/interaction-regression.mjs`. They execute
 
 | Flow | Expected result |
 |---|---|
+| App defaults → scene appearance → selected-file appearance → reset | Higher scopes take priority, resetting inherits; session edits do not rewrite app defaults; selection updates fields; file scope disables with All models selected. |
+| Selected fit → All models fit → hidden selection | Fit/0 focuses the selected visible part, overview includes reference, hidden selection falls back; importing another file fits an overview. |
+| File context menu → remove → remove last | Only the scene root unloads; original source file remains; menus close on Escape/outside input; selection and inspector recover. |
+| Solid → edges → wireframe → X-ray with section/palette active | Source colors/maps and clipping survive; return to solid restores transparency/depth/wire flags; removal does not leave edge helpers. |
+| Orthographic/perspective → seven views → fit/measure/screenshot | Apparent scale and Z-up orientation remain sensible; the active camera is shared by controls, transforms, labels and picking. |
+| Native file → Open With / slicer → duplicate filenames | The selected native source is handed off; matching names do not confuse identities; unknown/unavailable sources report a useful error. |
+| Print parameters → heuristic estimate → Bambu calculation → cancel/change selection | Heuristic and fixed-profile actual CLI estimates are labelled separately; changing material/model cancels stale work; no print job is sent; failure keeps heuristic available. |
 | System language → explicit language → restart | Menus, settings, inspector, hints and errors follow the chosen language; unsupported system languages fall back to English; Arabic/Hebrew/Persian layout is mirrored; filenames stay unchanged. |
 | Screenshot with dimensions and measurements | Saved PNG contains the 3D viewport and visible labels, at sharp display resolution; no sidebar/toolbar; cancel does not report success. Test native menu and camera button. |
 | Empty app → open STL → inspect | Unavailable geometry tools disabled initially; file selected after import, STL badge on root, roots initially collapsed; expand reveals indented parts and survives rebuilds; file info and dimensions match the known fixture. |

@@ -20,6 +20,16 @@ Sprache, Steuerungsprofil, Geschwindigkeiten, Zoomrichtung, Trackpad-Modus, Stan
 
 macOS kann die Namen und Speicherorte erfolgreich geöffneter Dateien in der systemeigenen Liste zuletzt verwendeter Dokumente speichern. Ihre Verwaltung richtet sich nach macOS. Betriebssystem- oder App-Store-Diagnosen unterliegen Ihren Apple-Einstellungen und den Informationen von Apple. Form verwendet eine nicht persistente WebKit-Datensitzung und betreibt keinen eigenen Netzwerkdienst.
 
+## Öffnen in einer anderen App
+
+„Öffnen mit“ ermittelt erst beim Anklicken lokal registrierte bzw. bekannte installierte Apps für das ausgewählte Dateiformat. Form verwendet deren lokal verfügbare Namen und Programmsymbole. Die Liste wird nicht an FDMwerk gesendet. Bei Ihrer Auswahl übergibt Form die ursprüngliche Datei an diese App; Messungen, Schnitte und Anordnungen aus der Form-Sitzung werden dabei nicht übertragen. Externe Apps können eigene Onlinedienste verwenden. Dafür gelten deren Einstellungen und Datenschutzinformationen.
+
+Für Blender schreibt Form ein festes lokales Importskript in seinen Anwendungsdatenordner und startet eine neue Blender-Instanz. Der ursprüngliche Dateipfad wird als separates Startargument übergeben. Dateiinhalte werden dabei nicht in das Skript eingebettet. Diese Funktion steht für Dateien zur Verfügung, deren Speicherort Form über den nativen Öffnen-Dialog oder Finder erhalten hat; für reine Web-Drag-and-drop-Importe ohne ursprünglichen Dateipfad ist sie deaktiviert.
+
+## Lokale Druckzeitberechnung
+
+Die Anzeige einer geometrischen Druckzeitschätzung verarbeitet nur die lokal geladene Darstellungsgeometrie und Ihre Eingaben. Wenn Bambu Studio installiert ist und Sie dessen separate Berechnung ausdrücklich starten, wird die ausgewählte ursprüngliche STL-Datei in einen temporären lokalen Arbeitsordner kopiert. Form verwendet feste mit Bambu gelieferte Drucker-/Materialprofile, keine privaten Slicer-Voreinstellungen, und einen getrennten temporären Einstellungsordner. Ergebnisdateien und Arbeitskopie werden nach dem Job entfernt. Ein Abbruch oder Zeitlimit beendet den Berechnungsprozess. Form sendet dabei keine Druckaufträge. Es gelten zusätzlich die Bedingungen der gewählten externen Software; deren Nutzung und mögliche eigene Dienste sind von der Modellansicht in Form zu unterscheiden.
+
 ## Externe Links und Support
 
 Externe Dokumentations-, Lizenz- oder Support-Seiten werden erst nach einem Klick im Standardbrowser geöffnet. Für die Nutzung von GitHub, Apple oder anderen externen Seiten gelten deren jeweilige Datenschutzinformationen.
