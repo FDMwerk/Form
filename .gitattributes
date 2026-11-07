@@ -1,0 +1,7 @@
+* text=auto
+*.glb binary
+*.3mf binary
+*.png binary
+*.icns binary
+*.tar.gz binary
+Resources/Web/licenses/* -whitespace

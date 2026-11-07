@@ -1,0 +1,7 @@
+PASS STL dimensions + finite crease normals
+PASS stp valid meshes and indices: 1
+Total number of loaded entities 36.
+
+PASS igs valid meshes and indices: 1
+PASS brep valid meshes and indices: 18
+PASS textured banana GLB: 227632 triangles

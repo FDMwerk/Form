@@ -1,0 +1,39 @@
+ENTWURF — vor Einreichung alle offenen Pflichtfelder ergänzen.
+
+Name: Form – CAD Viewer
+Untertitel: 3D-Modelle in Ruhe ansehen
+Preis: Kostenlos, keine In-App-Käufe
+Kategorie: Grafik & Design
+Plattform: macOS 14 oder neuer, Intel und Apple Silicon
+
+Beschreibung:
+Form gibt deinen 3D-Modellen Raum. Öffne CAD- und 3D-Dateien direkt auf deinem Mac, drehe sie frei und blende einzelne Bauteile ein oder aus. Eine reduzierte Oberfläche, ein fein auslaufendes Grid und eine übersichtliche Bauteilliste helfen dir, dich auf die Form zu konzentrieren.
+
+• Mehrere Modelle und Baugruppen gemeinsam ansehen
+• STEP, IGES, BREP, STL, OBJ, PLY, 3MF und eingebettetes glTF/GLB öffnen
+• Dateiinformationen, Außenmaße und Zwei-Punkt-Messung anzeigen
+• Modelle und Bauteile verschieben, drehen und an äußeren Begrenzungsflächen ausrichten
+• Explosionsansichten und verstellbare Schnittansichten
+• Texturierter Referenzapfel für einen anschaulichen Größenvergleich
+• Lokal und ohne Benutzerkonto, Werbung oder Modell-Uploads
+• Originalfarben und eingebettete Texturen, wählbare Standard- und Bauteilfarben
+• Vertraute Mausprofile für Bambu Studio, Fusion 360, Blender, SOLIDWORKS und Onshape
+• Kostenlos mit offenem Anwendungscode
+
+Messungen erfolgen auf der Darstellungsgeometrie. Einheitenlos gespeicherte Dateien benötigen eine passende Einheitenwahl. Schnittansichten erzeugen keine neuen Volumenkörper. Transformationen gelten für die laufende Sitzung; Originaldateien bleiben unverändert. Form ist ein Viewer mit Anordnungswerkzeugen, keine parametrische CAD-Konstruktion.
+
+Keywords: CAD,STL,STEP,IGES,3MF,3D,Viewer,Modell,Baugruppe,Messen,Schnitt
+
+Support-URL: https://github.com/FDMwerk/Form/issues
+Support-E-Mail: support@fdmwerk.de
+Datenschutz-URL: https://github.com/FDMwerk/Form/blob/main/docs/PRIVACY.md
+Status: Erreichbarkeit dieser Seite nach dem Quellcode-Upload vor Einreichung prüfen.
+Marketing-URL: https://github.com/FDMwerk/Form
+Copyright: 2026 FDMwerk
+Anbieter: FDMwerk / Christoph Kielhorn laut öffentlichem Impressum; Angaben im Apple-Konto abgleichen.
+Gewünschter Entwicklername: FDMwerk. Apple erlaubt einen abweichenden registrierten Handelsnamen nur bei passendem Organisationskonto; bei Individual-Konten erscheint der rechtliche Personenname. Der Kontotyp ist noch nicht bestätigt.
+Review-E-Mail: support@fdmwerk.de
+Review-Kontaktperson und Telefonnummer: im Apple-Konto mit tatsächlichen Angaben ergänzen.
+
+Review notes (English):
+Form is a free local CAD viewer with no account, in-app purchase, advertisement, analytics, or remote model processing. Use the supplied original demo STL models to inspect the viewer, file information sidebar, measurements, transformations, bounding-face docking, explosion and uncapped clipping plane. The network-client entitlement supports the WKWebView architecture; the app bundles its resources and its Content Security Policy restricts external origins. The Tripo-created reference apple is bundled; no Tripo access or generation occurs in the app. Original model files are read-only. LGPL components ship as replaceable resources; exact-source links and release source archives must be supplied before submission.

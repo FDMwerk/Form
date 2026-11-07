@@ -1,0 +1,2 @@
+import * as T from 'three';import {STLExporter} from 'three/addons/exporters/STLExporter.js';import fs from 'node:fs';
+const exporter=new STLExporter();const objects=[['Montageblock',new T.BoxGeometry(80,55,24)],['Distanzring',new T.TorusGeometry(20,5,24,96)]];for(const [name,g]of objects){const mesh=new T.Mesh(g);mesh.updateMatrixWorld(true);fs.writeFileSync(`samples/${name}.stl`,exporter.parse(mesh));}

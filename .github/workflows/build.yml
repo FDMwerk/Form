@@ -1,0 +1,25 @@
+name: Build and verify Form
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install build tools
+        run: brew install xcodegen
+      - name: Install pinned dependencies
+        run: npm ci
+      - name: Verify native policies, viewer interactions and model resources
+        run: npm test
+      - name: Build offline resources and icon
+        run: npm run build && npm run icon
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build universal macOS preview
+        run: xcodebuild -project Form.xcodeproj -scheme Form -configuration Release -derivedDataPath build ARCHS='arm64 x86_64' ONLY_ACTIVE_ARCH=NO build

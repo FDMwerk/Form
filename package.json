@@ -1,0 +1,53 @@
+{
+  "name": "form-cad-viewer",
+  "version": "0.3.0",
+  "description": "Free local CAD, STL and STEP viewer for macOS",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "icon": "node scripts/icon.mjs",
+    "samples": "node scripts/samples.mjs",
+    "test": "npm run test:native && node scripts/navigation-test.mjs && node scripts/formats-test.mjs && node scripts/materials-test.mjs && node scripts/locales.mjs && node scripts/i18n-test.mjs && node scripts/interaction-regression.mjs && node scripts/verify.mjs",
+    "test:cad": "node scripts/cad-fixtures.mjs && node scripts/verify.mjs .tmp/cad-fixtures",
+    "fixtures": "node scripts/format-fixtures.mjs",
+    "vendor:sources": "node scripts/vendor-sources.mjs",
+    "package:source": "node scripts/source-package.mjs",
+    "test:native": "sh scripts/test-native.sh"
+  },
+  "keywords": [
+    "macos",
+    "cad-viewer",
+    "stl-viewer",
+    "step-viewer",
+    "3d-viewer",
+    "opencascade"
+  ],
+  "author": "FDMwerk",
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "esbuild": "0.28.2",
+    "lucide": "1.70.0",
+    "occt-import-js": "0.0.23",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@gltf-transform/core": "4.5.1",
+    "@gltf-transform/extensions": "4.5.1",
+    "@gltf-transform/functions": "4.5.1",
+    "linkedom": "0.18.15",
+    "meshoptimizer": "1.3.0",
+    "sharp": "0.35.5"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/FDMwerk/Form.git"
+  },
+  "homepage": "https://github.com/FDMwerk/Form",
+  "bugs": {
+    "url": "https://github.com/FDMwerk/Form/issues"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}
