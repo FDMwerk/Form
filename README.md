@@ -45,7 +45,7 @@ Native proprietary CAD formats such as SolidWorks, CATIA or Parasolid are not im
 
 Measurements use display triangles rather than exact CAD topology. Validate manufacturing-critical dimensions in the original CAD system. The apple is a visual size reference, not a measurement standard.
 
-Docking aligns axis-aligned bounding faces and centres the other two axes. It creates no persistent mates, constraints or collision checks. Sections are uncapped display clipping and do not produce new exportable solids. Explosions are reversible visual offsets. Scene transforms, scoped appearance and measurements last for the current session; scene save/export is not implemented. Original files are read-only.
+Docking aligns axis-aligned bounding faces and centres the other two axes. It creates no persistent mates, constraints or collision checks. Sections display filled cut faces for verified closed meshes while preserving holes; open or ambiguous meshes retain contours only. These display helpers do not produce exportable CAD geometry. Explosions are reversible visual offsets. Scene transforms, scoped appearance and measurements last for the current session; scene save/export is not implemented. Original files are read-only.
 
 Mesh volume adds components and does not remove overlaps or detect self-intersections. The generic print-time range is a geometric heuristic. The separate Bambu calculation uses the explicitly labelled original-STL fixed profile; it is a slicer estimate, not a measured print duration.
 

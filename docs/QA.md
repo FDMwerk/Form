@@ -18,7 +18,7 @@ Automated logic checks are in `scripts/interaction-regression.mjs`. They execute
 | Inspector + collapse tree + select group | Tree collapse retains objects; group selection updates inspector and attached transform; root and component selection are distinguishable. |
 | Measure → orbit/pan gesture → measure | Modified navigation gestures produce no measurement points; only deliberate unmodified surface clicks do. Escape cancels a pending point. |
 | Measure → move/rotate/dock/change unit/hide/cut/explode | Old measurements disappear when geometry or pickable surfaces change; there are no floating stale markers. Transform and measuring input modes do not overlap. |
-| Section → component palette → textures off/on | Cut remains active through all material changes; only the retained visible half is measurable. Section is a visual uncapped plane. |
+| Section → component palette → textures off/on | Cut remains active through all material changes; only the retained visible half is measurable. Verified closed meshes show filled cut faces with holes preserved; open/ambiguous meshes show contours only. No CAD geometry is exported. |
 | Source colors → palette → default color → originals | 12+ parts have distinct inspection colors; returning to source mode restores original colors/textures; default only affects uncolored parts. |
 | Explosion 50 → 100 → 50 → 0 | Repeat positions are stable; zero returns exactly to assembly. Docking or transforming starts from assembled positions, undo restores the previous assembly placement. |
 | Translate/rotate → undo; coordinate edit → undo | Selected parent/group moves its children; one undo reverses the action; typing in coordinates does not trigger viewport keyboard shortcuts. |
@@ -30,3 +30,5 @@ Automated logic checks are in `scripts/interaction-regression.mjs`. They execute
 | Apple reference + fit + section + remove last file | Apple has textured appearance and a documented fixed size; fit includes reference; reference does not interfere with model measurements; last-file removal hides reference. |
 
 Also check a large real assembly, malformed geometry, low-memory behaviour, minimum supported macOS 14 and an Intel Mac before claiming those as validated. No automated suite measures physical CAD accuracy or verifies every format variant.
+
+Section-cap regression check: use a closed cube, a closed ring with a hole and an open surface. Verify the cube cut is filled, the ring hole remains open and the open surface receives contours only. Change section axis/flip/position, hide parts, transform/explode, switch palette/textures/display mode and clear the section; cap/contour helpers must update or disappear without stale geometry and must not be selectable as model surfaces. This is a manual check to perform on the rebuilt candidate, not a record that it already passed.

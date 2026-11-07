@@ -40,7 +40,7 @@ Translation/rotation tools attach a gizmo to the selected object or group. The i
 
 **Exploded view** temporarily spreads multiple parts/files around their original assembly positions. Returning its slider to zero restores those positions. Moving/docking starts from assembled positions rather than baking an exploded layout into the operation.
 
-**Section** offers three plane buttons, a position slider and a reverse button. It clips the display and measurement picking. Orange contours highlight the actual triangle/plane intersection on visible parts and follow transforms, explosion and plane changes. These contours are display helpers and cannot be picked or measured. Cut faces are open; no capped solid, cut mesh or geometry export is produced. Colors and display modes preserve the active clipping plane.
+**Section** offers three plane buttons, a position slider and a reverse button. It clips the display and measurement picking. Orange contours highlight the actual triangle/plane intersection on visible parts and follow transforms, explosion and plane changes. These contours are display helpers and cannot be picked or measured. For verified closed meshes, cut faces are filled and holes remain open. Open or ambiguous meshes show contours only. Caps and contours are display helpers, not new CAD solids or exported geometry. Colors and display modes preserve the active clipping plane.
 
 ## Volume and 3D printing
 
