@@ -24,7 +24,7 @@ Use configuration **AppStore**, not desktop **Release**. `FORM_APP_STORE` remove
 | New AppStore archive | Archive log ends with `ARCHIVE SUCCEEDED`; archived app is `0.3.0 (6)`, x86_64 and arm64, with `TeamIdentifier=D5VE86DJ5H`. | Preserve exact archive/source provenance. |
 | Strict actual-bundle verification | `codesign --verify --deep --strict --all-architectures` succeeds. | Recheck the actual exported installer and app after export. |
 | Signed archive entitlements | Sandbox enabled; `get-task-allow` absent/false. | Confirm the submitted candidate is this production flavor. |
-| Local export | Log ends with `EXPORT SUCCEEDED`; expired developer-account-session warnings also occurred. | Inspect package signature and reauthenticate before authorized Apple validation/upload if required. |
+| Local export/package | Log ends with `EXPORT SUCCEEDED`; exported Form.pkg signature independently verified through the 3rd Party Mac Developer Installer/WWDR/Apple Root chain for D5VE86DJ5H. Expired account-session warnings also occurred. | Reauthenticate before authorized Apple validation/upload if required; local package verification is not Apple server acceptance. |
 
 Earlier ad-hoc local products failed because of metadata and carried debug task access. They are historical findings, not the status of the new signed archive. Local signing/export is not Apple server validation, App Store upload, review approval, notarization or a public release. No new direct binary publication is authorized here.
 
@@ -46,13 +46,17 @@ Feature requests open the user's email client or a public GitHub issue composer;
 
 Donation is unavailable in the Store build. The external physical-goods link is distinct from payment for digital viewer features. Relevant [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) include Mac sandbox/self-contained bundles (2.4.5), executable-code boundaries (2.5.2), physical goods/services (3.1.3(e)) and privacy (5.1). This architecture reduces specific review risks; Apple makes the actual decision.
 
-Application source is MIT; dependencies and model assets retain their own notices. Preserve exact importer/OCCT corresponding sources, rebuild instructions, replaceability and recipient rights. Review the chosen App Store EULA/content-protection arrangement for the actual LGPL distribution rather than assuming MIT licensing of Form resolves dependency obligations. Retain the reference-apple provenance and asset notice. See [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) and the [durable corresponding-source checklist](CORRESPONDING_SOURCE.md). The former preview source URL returns HTTP 404. Exact dependency archives are now allowlisted under `vendor-source/` for independent public repository hosting; commit/push and anonymously verify the new paths/hashes before treating access as completed.
+Application source is MIT; dependencies and model assets retain their own notices. Preserve exact importer/OCCT corresponding sources, rebuild instructions, replaceability and recipient rights. Review the chosen App Store EULA/content-protection arrangement for the actual LGPL distribution rather than assuming MIT licensing of Form resolves dependency obligations. Retain the reference-apple provenance and asset notice. See [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) and the [durable corresponding-source checklist](CORRESPONDING_SOURCE.md). The former preview source URL returns HTTP 404. Exact dependency archives are now allowlisted under `vendor-source/` for independent public repository hosting; commit `f16823fa15c7a84e09c0824e1b738033afde0a3a` is now public, and anonymous immutable-URL downloads matched both archive hashes/lengths and the manifest.
 
 ## Final review gates
 
-1. Final exported-installer checks and authorized Xcode Organizer/App Store Connect validation; signed universal archive and local export have succeeded, not server validation.
+1. Authorized Xcode Organizer/App Store Connect validation; signed universal archive, local export and installer-signature verification have succeeded, not Apple server validation.
 2. Preserve the now-explicit Desktop-only qualification for Blender/Bambu in the final Store legal/reviewer material.
 3. Final Store screenshots and manual keyboard/VoiceOver, RTL, contrast and minimum-size/MacBook checks. Tests and universal architecture do not prove physical Intel or macOS 14 compatibility.
 4. Current dependency/license check and completed privacy/export/age-rating/trader metadata.
 5. Source-only GitHub publication check, with no application/preview binaries or signing material attached.
 6. Authorized Apple submission and Apple's actual review. No upload or approval is implied by these preparation documents.
+
+## Latest metadata checkpoint
+
+The active session saved age rating 4+ and no-data-collected privacy answers. Final privacy publication awaits explicit legal confirmation. DSA/trader email verification awaits the support@fdmwerk.de verification-code handoff. Two actual Store-flavor screenshots are saved in the record (2 of 10), without the Desktop-only Donate button. Signed build 6 is installed locally. None of these checkpoints means a Store binary upload, review submission or Apple approval has occurred.

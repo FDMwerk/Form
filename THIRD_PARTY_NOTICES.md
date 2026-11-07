@@ -16,11 +16,11 @@ The CAD loader is deliberately shipped separately as `occt.js` and `wasm.js`. Th
 
 ## Publisher-hosted exact dependency sources
 
-- [occt-import-js c2148e5 source archive](https://raw.githubusercontent.com/FDMwerk/Form/main/vendor-source/occt-import-js-c2148e5.tar.gz)
-- [OCCT d2abb6d source archive](https://raw.githubusercontent.com/FDMwerk/Form/main/vendor-source/OCCT-d2abb6d.tar.gz)
-- [Archive manifest and SHA-256 digests](https://raw.githubusercontent.com/FDMwerk/Form/main/vendor-source/manifest.json)
+- [occt-import-js c2148e5 source archive](https://raw.githubusercontent.com/FDMwerk/Form/f16823fa15c7a84e09c0824e1b738033afde0a3a/vendor-source/occt-import-js-c2148e5.tar.gz)
+- [OCCT d2abb6d source archive](https://raw.githubusercontent.com/FDMwerk/Form/f16823fa15c7a84e09c0824e1b738033afde0a3a/vendor-source/OCCT-d2abb6d.tar.gz)
+- [Archive manifest and SHA-256 digests](https://raw.githubusercontent.com/FDMwerk/Form/f16823fa15c7a84e09c0824e1b738033afde0a3a/vendor-source/manifest.json)
 
-These paths become public with the source commit/push and must be anonymously verified before distribution. Use that published commit instead of `main` for immutable version references. Keep earlier revision-named source files available when updating dependencies. The importer upstream tarball also includes the matching generated dependency WASM, not a Form app or installer; its runtime hash matches the pinned NPM build. No Form binary belongs in this source directory. See [retention and rebuild verification](docs/CORRESPONDING_SOURCE.md).
+These immutable paths at commit `f16823fa15c7a84e09c0824e1b738033afde0a3a` were publicly downloaded without authentication on 2026-11-07. Both archives matched the manifest’s byte counts and SHA-256 hashes; the public manifest matched the checked-in file. Keep earlier revision-named source files available when updating dependencies. The importer upstream tarball also includes the matching generated dependency WASM, not a Form app or installer; its runtime hash matches the pinned NPM build. No Form binary belongs in this source directory. See [retention and rebuild verification](docs/CORRESPONDING_SOURCE.md).
 
 ## Reference apple
 
