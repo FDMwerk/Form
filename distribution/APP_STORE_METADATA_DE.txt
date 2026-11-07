@@ -32,10 +32,12 @@ Datenschutz-URL: https://github.com/FDMwerk/Form/blob/main/docs/PRIVACY.md
 Status: Erreichbarkeit dieser Seite nach dem Quellcode-Upload vor Einreichung prüfen.
 Marketing-URL: https://github.com/FDMwerk/Form
 Copyright: 2026 FDMwerk
-Anbieter: FDMwerk / Christoph Kielhorn laut öffentlichem Impressum; Angaben im Apple-Konto abgleichen.
+Anbieter: Christoph Kielhorn, Einzelunternehmer unter FDMwerk (vom Anbieter bestätigt); Angaben im Apple-Konto abgleichen.
 Gewünschter Entwicklername: FDMwerk. Apple erlaubt einen abweichenden registrierten Handelsnamen nur bei passendem Organisationskonto; bei Individual-Konten erscheint der rechtliche Personenname. Der Kontotyp ist noch nicht bestätigt.
 Review-E-Mail: support@fdmwerk.de
-Review-Kontaktperson und Telefonnummer: im Apple-Konto mit tatsächlichen Angaben ergänzen.
+Review-Kontaktperson: Christoph Kielhorn.
+Review-Telefonnummer: vom Anbieter mitgeteilt, lokal für App Store Connect hinterlegt; nicht im öffentlichen Repository veröffentlichen.
+Apple-Developer-Mitgliedschaft: laut Anbieter aktiv; Einzelpersonen-/Organisationskonto und zugehöriges Team noch prüfen.
 
 Review notes (English):
 Form is a free local CAD viewer with no account, in-app purchase, advertisement, analytics, or remote model processing. Use the supplied original demo STL models to inspect the viewer, file information sidebar, measurements, transformations, bounding-face docking, explosion and uncapped clipping plane. The network-client entitlement supports the WKWebView architecture; the app bundles its resources and its Content Security Policy restricts external origins. The Tripo-created reference apple is bundled; no Tripo access or generation occurs in the app. Original model files are read-only. This submission candidate must use the AppStore build configuration (FORM_APP_STORE). It compiles out the desktop Blender Python import adapter and Bambu CLI execution adapter; their actions are not available in the Store UI. The self-contained viewer, labelled geometric printing-time estimate and standard original-document Open With handoff remain available. Blender is excluded from that menu without its importer. No slicer, Python runtime or external engine is downloaded or installed by the Store build. Desktop Release functionality must not be advertised as a feature of this Store build. LGPL components ship as replaceable resources; exact-source links and release source archives must be supplied before submission.

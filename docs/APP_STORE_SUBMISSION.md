@@ -13,11 +13,12 @@ Both configurations have been built as universal arm64/x86_64 previews. An ad-ho
 ## Publisher and App Store Connect
 
 - Requested brand: **FDMwerk**; support: **support@fdmwerk.de**.
-- Verify the actual legal provider, Apple account type, agreements and EU trader declaration. A GitHub organization does not establish an Apple organization account. Apple's permitted developer name depends on enrollment/account eligibility.
+- Confirmed legal provider: **Christoph Kielhorn, sole proprietor trading as FDMwerk**. The publisher has confirmed an active Apple Developer membership; account type and team have not yet been verified.
+- Verify the Apple account records, agreements and EU trader declaration. A GitHub organization does not establish an Apple organization account. Apple's permitted developer name depends on enrollment/account eligibility.
 - Reserve/verify bundle ID **de.fdmwerk.form**, app name and SKU in the actual account. Current source version is **0.3.0**, build **4**; increase the build number for each uploaded replacement.
 - Set price to free and choose the intended territories. Draft category: Graphics & Design.
 - Complete the current age-rating, export-compliance and privacy questionnaires from actual behaviour. The source declares no non-exempt encryption; recheck the signed build and questionnaire before answering.
-- Supply a real reviewer contact person and telephone in App Store Connect. They are not invented or copied into the public repository.
+- Reviewer contact: Christoph Kielhorn. The supplied review telephone is retained locally for App Store Connect and excluded from the public repository/source archives.
 
 ## Listing and reviewer materials
 
