@@ -1,48 +1,58 @@
 # App Store submission handoff
 
-Status: **prepared review candidate, not submitted or approved**. Form is free; no accounts, advertising or in-app purchases are implemented.
+Status: **preparation only; no upload, submission or approval performed by this audit**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
+
+## Verified publisher and distribution policy
+
+The Apple Developer portal was inspected in the current working session: **Individual membership, Christoph Kielhorn, Team D5VE86DJ5H**, with renewal date **2027-08-05**. FDMwerk is the product/publisher brand; support is **support@fdmwerk.de**. The Individual account's legal seller is Christoph Kielhorn. Do not promise FDMwerk as an organization seller or silently create/convert an Apple organization account. Apple's [enrollment](https://developer.apple.com/help/account/membership/program-enrollment/) and [developer-name rules](https://developer.apple.com/help/app-store-connect/create-an-app-record/set-your-developer-name) apply.
+
+**GitHub is source-only. Neither App Store binaries nor desktop preview binaries may be uploaded to the repository, GitHub Releases, Git LFS, Actions artifacts or other GitHub download channels.** This includes installable application ZIP/DMG/PKG files, `.app` bundles and `.xcarchive` archives. Corresponding-source archives, build scripts, notices and original source assets remain part of the source distribution. Keep signing identities, keys, profiles and private reviewer contact data out of source packages.
+
+The previously public preview has been returned to a non-public draft by the session owner. This is not authorization to publish another release. Confirm removal of old public binary links/assets before describing downloads as withdrawn. App Store delivery belongs in Apple's distribution workflow; local test artifacts remain local unless a separate permitted channel is explicitly authorized.
 
 ## The correct build
 
-Use the `AppStore` configuration, not the desktop `Release` preview. `FORM_APP_STORE` excludes external Bambu CLI execution and the Blender Python importer from the native binary. The bundled viewer, original-file handoff, geometric print estimate, screenshots and all other self-contained inspection features remain. The native capability handshake also hides the unavailable external calculation action.
+Use configuration **AppStore**, not desktop **Release**. `FORM_APP_STORE` removes the external Bambu CLI runner, Blender Python import adapter and native PayPal donation URL/action. Native capabilities default to false in the viewer and keep those unavailable actions hidden. Standard original-file handoff, self-contained model inspection, labelled geometric print estimates and screenshot export remain. No external engine, Python interpreter or executable code is downloaded. A read-only scan of the existing AppStore executable found none of the Blender factory-reset script marker, Bambu CLI launch/settings markers, PayPal host or desktop donation recipient. Recheck the final archive rather than relying on this local-product scan.
 
-Both configurations have been built as universal arm64/x86_64 previews. An ad-hoc signature is a local integrity signature and is not an Apple distribution identity. On the development Mac the check found valid Apple Development identities, but no suitable Developer ID Application or Apple/Mac App Distribution identity. Do not substitute a development certificate for production distribution.
+`project.yml` currently defaults to local ad-hoc signing. `scripts/archive.sh` explicitly selects AppStore, requests Apple Distribution signing and requires `FORM_DEVELOPMENT_TEAM`; the verified value is `D5VE86DJ5H`. Do not run it as a substitute for establishing the correct distribution credentials. The authorized session owner subsequently created the required signing/installer assets and completed local archive/export. No private signing material is placed in source. No Apple upload, server validation, submission or approval is established by those local results.
 
-`FORM_DEVELOPMENT_TEAM` and a valid account/distribution setup are required by `scripts/archive.sh`. That script selects `AppStore` and produces `distribution/Form-AppStore.xcarchive`. Before submission, validate the signed archive through Xcode Organizer/App Store Connect and resolve its actual findings.
+## Current signed-candidate evidence — 2026-11-07
 
-## Publisher and App Store Connect
+| Evidence | Current result | Remaining step |
+| --- | --- | --- |
+| Verified account/team | Individual / Christoph Kielhorn / `D5VE86DJ5H` | Keep legal seller and trader details accurate. |
+| New AppStore archive | Archive log ends with `ARCHIVE SUCCEEDED`; archived app is `0.3.0 (6)`, x86_64 and arm64, with `TeamIdentifier=D5VE86DJ5H`. | Preserve exact archive/source provenance. |
+| Strict actual-bundle verification | `codesign --verify --deep --strict --all-architectures` succeeds. | Recheck the actual exported installer and app after export. |
+| Signed archive entitlements | Sandbox enabled; `get-task-allow` absent/false. | Confirm the submitted candidate is this production flavor. |
+| Local export | Log ends with `EXPORT SUCCEEDED`; expired developer-account-session warnings also occurred. | Inspect package signature and reauthenticate before authorized Apple validation/upload if required. |
 
-- Requested brand: **FDMwerk**; support: **support@fdmwerk.de**.
-- Confirmed legal provider: **Christoph Kielhorn, sole proprietor trading as FDMwerk**. The publisher has confirmed an active Apple Developer membership; account type and team have not yet been verified.
-- Verify the Apple account records, agreements and EU trader declaration. A GitHub organization does not establish an Apple organization account. Apple's permitted developer name depends on enrollment/account eligibility.
-- Reserve/verify bundle ID **de.fdmwerk.form**, app name and SKU in the actual account. Current source version is **0.3.0**, build **4**; increase the build number for each uploaded replacement.
-- Set price to free and choose the intended territories. Draft category: Graphics & Design.
-- Complete the current age-rating, export-compliance and privacy questionnaires from actual behaviour. The source declares no non-exempt encryption; recheck the signed build and questionnaire before answering.
-- Reviewer contact: Christoph Kielhorn. The supplied review telephone is retained locally for App Store Connect and excluded from the public repository/source archives.
+Earlier ad-hoc local products failed because of metadata and carried debug task access. They are historical findings, not the status of the new signed archive. Local signing/export is not Apple server validation, App Store upload, review approval, notarization or a public release. No new direct binary publication is authorized here.
 
-## Listing and reviewer materials
+The marketing page **https://fdmwerk.de/form/** is live and its four actual screenshots/SEO were verified by the session owner. The Store destination remains explicitly labelled in preparation.
 
-- [German metadata](../distribution/APP_STORE_METADATA_DE.txt).
-- [English review notes](../distribution/APP_STORE_REVIEW_NOTES_EN.txt).
-- [Privacy policy](PRIVACY.md) and [public support](https://github.com/FDMwerk/Form/issues).
-- Approved 1024px icon: [Form-Icon-1024.png](../distribution/Form-Icon-1024.png).
-- Use screenshots of the final **AppStore** build and original demo geometry. The initial app size is 1280 × 800 points when the screen permits; 2560 × 1600 PNG captures meet one of Apple's Mac screenshot sizes. Capture the actual interface, not customer models or invented features. Final captures require an unlocked Mac and are a distinct remaining task when unavailable.
-- Include clear examples of opening a model, hierarchy/visibility, measurements, sections, appearance and the optional geometric print estimate. Do not show the desktop-only Bambu calculation in Store marketing.
+## Submission fields still to complete
 
-## Licenses and privacy
+- The session owner verified the created Mac app record **6831972349**, named **Form – CAD Viewer**, for bundle ID **de.fdmwerk.form**. Its intended public link is https://apps.apple.com/app/id6831972349; a created record does not mean the listing is live or approved. Confirm the remaining SKU/app-information fields in that actual record.
+- Confirm current agreements, banking/tax requirements if applicable, EU trader status and required trader/contact information. Do not copy private review telephone/address data into the public repository.
+- Set free pricing, intended territories and category; the prepared category is Graphics & Design.
+- Complete the current age-rating, export-compliance and privacy questionnaires for the actual Store binary. Source declares no non-exempt encryption; final answers still require review of the uploaded build and included dependencies.
+- Review [German metadata](../distribution/APP_STORE_METADATA_DE.txt) and [English reviewer notes](../distribution/APP_STORE_REVIEW_NOTES_EN.txt), live support/privacy/marketing URLs and final screenshots. Capture the **AppStore** interface with owned demo models; do not show desktop-only Bambu CLI or donation controls.
 
-The original application source is MIT. Three.js, Lucide, fflate, occt-import-js, OCCT and model assets retain the licenses documented in [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md). The source-package script includes the verified exact CAD-library source archives and their manifests. Retain source/rebuild rights and all notices for the actual distributed versions.
+## Privacy, services and source licenses
 
-Apple's standard EULA contains an open-source-license exception; an LGPL component is not automatically prohibited solely by the existence of that EULA. Nevertheless review the actual distribution/EULA/DRM arrangement, corresponding-source availability and recipient modification/rebuild rights before release. This technical preparation does not certify the legal interpretation of a future submission.
+Models are parsed locally, original files are not rewritten, and no telemetry, account backend or runtime AI service is implemented. The native bridge accepts only the bundled main document; WebKit storage is non-persistent. The privacy manifest declares app-local UserDefaults reason CA92.1, no tracking and no collected data types. User-selected write access is for explicit PNG saves. The network-client entitlement is retained for WKWebView operation; it is not evidence of model upload.
 
-The app includes a privacy manifest and app-local UserDefaults reason CA92.1. It uses non-persistent WebKit stores and bundled assets. No model upload, analytics or runtime AI service is implemented. Standard handoff occurs only when requested by the user; the receiving application's own behaviour is separate.
+Feature requests open the user's email client or a public GitHub issue composer; the app does not submit a message or attach a model automatically. The optional physical-print-service action opens the public FDMwerk website without uploading the selected model. Review the actual website, receiving services and voluntary support handling when answering Apple's [app privacy questions](https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy/). A local-only parser alone does not settle every downstream support/privacy disclosure.
 
-## Verification still needed before production
+Donation is unavailable in the Store build. The external physical-goods link is distinct from payment for digital viewer features. Relevant [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) include Mac sandbox/self-contained bundles (2.4.5), executable-code boundaries (2.5.2), physical goods/services (3.1.3(e)) and privacy (5.1). This architecture reduces specific review risks; Apple makes the actual decision.
 
-- Suitable Apple distribution identity, provisioning and actual signed-archive validation.
-- Final publisher/account/trader data and live policy/support/marketing URLs.
-- Final Store screenshots and manual VoiceOver/keyboard/physical-device checks.
-- Actual Intel, minimum macOS 14 and MacBook compatibility/performance testing; a universal build is not evidence those systems were tested.
-- Final dependency/license review and Apple's own review. No claim of App Store compliance certification or approval should be used in marketing before that outcome exists.
+Application source is MIT; dependencies and model assets retain their own notices. Preserve exact importer/OCCT corresponding sources, rebuild instructions, replaceability and recipient rights. Review the chosen App Store EULA/content-protection arrangement for the actual LGPL distribution rather than assuming MIT licensing of Form resolves dependency obligations. Retain the reference-apple provenance and asset notice. See [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) and the [durable corresponding-source checklist](CORRESPONDING_SOURCE.md). The former preview source URL returns HTTP 404. Exact dependency archives are now allowlisted under `vendor-source/` for independent public repository hosting; commit/push and anonymously verify the new paths/hashes before treating access as completed.
 
-See [release readiness](RELEASE_READINESS.md), [verification](VERIFICATION.md), [manual QA](QA.md), [user guide](USER_GUIDE.md) and [developer guide](DEVELOPMENT.md).
+## Final review gates
+
+1. Final exported-installer checks and authorized Xcode Organizer/App Store Connect validation; signed universal archive and local export have succeeded, not server validation.
+2. Preserve the now-explicit Desktop-only qualification for Blender/Bambu in the final Store legal/reviewer material.
+3. Final Store screenshots and manual keyboard/VoiceOver, RTL, contrast and minimum-size/MacBook checks. Tests and universal architecture do not prove physical Intel or macOS 14 compatibility.
+4. Current dependency/license check and completed privacy/export/age-rating/trader metadata.
+5. Source-only GitHub publication check, with no application/preview binaries or signing material attached.
+6. Authorized Apple submission and Apple's actual review. No upload or approval is implied by these preparation documents.

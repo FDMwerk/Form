@@ -182,7 +182,16 @@
     "viewLeft": "Vinstri",
     "viewRight": "Hægri",
     "viewIsometric": "Jafnásasýn",
-    "viewOrientation": "Staðlaðar sýnir"
+    "viewOrientation": "Staðlaðar sýnir",
+    "bgSettings": "Bakgrunnur sýnar",
+    "bgLight": "Ljós bakgrunnur",
+    "bgDark": "Dökkur bakgrunnur",
+    "bgWarm": "Hlýr bakgrunnur",
+    "bgColor": "Bakgrunnslitur",
+    "bgGrid": "Sýna hnitanet",
+    "donate": "Styrkja",
+    "donateHint": "Styrktu Form af fúsum og frjálsum vilja með PayPal",
+    "featureRequest": "Óska eftir eiginleika"
   },
   "native": {
     "about": "Um Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Engin uppsett samhæf forrit fundust.",
     "openWithError": "Ekki tókst að opna skrána í völdu forriti.",
     "openWithUnavailable": "Upprunalega skráin er ekki lengur tiltæk.",
-    "openWithBlenderError": "Ekki tókst að undirbúa innflutningsskriftuna fyrir Blender."
+    "openWithBlenderError": "Ekki tókst að undirbúa innflutningsskriftuna fyrir Blender.",
+    "printAtFDMwerk": "Láttu FDMwerk prenta þessa skrá",
+    "featureRequest": "Óska eftir eiginleika",
+    "feedbackEmail": "Með tölvupósti",
+    "feedbackGitHub": "Á GitHub"
   }
 }

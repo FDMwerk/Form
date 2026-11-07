@@ -182,7 +182,16 @@
     "viewLeft": "Sol",
     "viewRight": "Sağ",
     "viewIsometric": "İzometrik",
-    "viewOrientation": "Standart görünümler"
+    "viewOrientation": "Standart görünümler",
+    "bgSettings": "Görünüm arka planı",
+    "bgLight": "Açık arka plan",
+    "bgDark": "Koyu arka plan",
+    "bgWarm": "Sıcak tonlu arka plan",
+    "bgColor": "Arka plan rengi",
+    "bgGrid": "Izgarayı göster",
+    "donate": "Bağış yap",
+    "donateHint": "Form’u PayPal üzerinden gönüllü olarak destekleyin",
+    "featureRequest": "Özellik talep et"
   },
   "native": {
     "about": "Form Hakkında",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Uyumlu yüklü uygulama bulunamadı.",
     "openWithError": "Dosya seçilen uygulamada açılamadı.",
     "openWithUnavailable": "Özgün dosya artık kullanılamıyor.",
-    "openWithBlenderError": "Blender içe aktarma betiği hazırlanamadı."
+    "openWithBlenderError": "Blender içe aktarma betiği hazırlanamadı.",
+    "printAtFDMwerk": "Bu dosyanın baskısını FDMwerk’e yaptırın",
+    "featureRequest": "Özellik talep et",
+    "feedbackEmail": "E-postayla",
+    "feedbackGitHub": "GitHub’da"
   }
 }

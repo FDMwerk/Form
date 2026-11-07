@@ -182,7 +182,16 @@
     "viewLeft": "Слева",
     "viewRight": "Справа",
     "viewIsometric": "Изометрический",
-    "viewOrientation": "Стандартные виды"
+    "viewOrientation": "Стандартные виды",
+    "bgSettings": "Фон области просмотра",
+    "bgLight": "Светлый фон",
+    "bgDark": "Тёмный фон",
+    "bgWarm": "Фон в тёплых тонах",
+    "bgColor": "Цвет фона",
+    "bgGrid": "Показать сетку",
+    "donate": "Поддержать",
+    "donateHint": "Добровольно поддержите Form через PayPal",
+    "featureRequest": "Предложить функцию"
   },
   "native": {
     "about": "О программе Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Совместимые установленные приложения не найдены.",
     "openWithError": "Не удалось открыть файл в выбранном приложении.",
     "openWithUnavailable": "Исходный файл больше недоступен.",
-    "openWithBlenderError": "Не удалось подготовить скрипт импорта для Blender."
+    "openWithBlenderError": "Не удалось подготовить скрипт импорта для Blender.",
+    "printAtFDMwerk": "Заказать печать этого файла в FDMwerk",
+    "featureRequest": "Предложить функцию",
+    "feedbackEmail": "По электронной почте",
+    "feedbackGitHub": "На GitHub"
   }
 }

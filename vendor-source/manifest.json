@@ -1,0 +1,19 @@
+{
+  "occtImporterVersion": "0.0.23",
+  "occtImporterCommit": "c2148e54b456b571238d35cac037d304053d64b2",
+  "occtSubmoduleCommit": "d2abb6d844231cb8f29be6894440874a4700e4a5",
+  "archives": [
+    {
+      "file": "occt-import-js-c2148e5.tar.gz",
+      "url": "https://codeload.github.com/kovacsv/occt-import-js/tar.gz/c2148e54b456b571238d35cac037d304053d64b2",
+      "sha256": "2bd3799b2ac56cbf3f0df6300a51c8890e137bd001462702b356f621e33ff192",
+      "bytes": 4399573
+    },
+    {
+      "file": "OCCT-d2abb6d.tar.gz",
+      "url": "https://codeload.github.com/Open-Cascade-SAS/OCCT/tar.gz/d2abb6d844231cb8f29be6894440874a4700e4a5",
+      "sha256": "2715d89a1bc44dfd34dab88f729c445ea93f6b57d6539b0c89614a80ae144a6c",
+      "bytes": 48218968
+    }
+  ]
+}

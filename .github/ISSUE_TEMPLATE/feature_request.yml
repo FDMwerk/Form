@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest a feature or improvement for Form.
+title: "[Feature] "
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What would you like to do?
+      description: Describe the task or problem. German and English are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Suggested behavior
+      description: How should Form help? Please do not attach confidential models or personal data.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Form version (optional)

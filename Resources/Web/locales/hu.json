@@ -182,7 +182,16 @@
     "viewLeft": "Bal",
     "viewRight": "Jobb",
     "viewIsometric": "Izometrikus",
-    "viewOrientation": "Szabványos nézetek"
+    "viewOrientation": "Szabványos nézetek",
+    "bgSettings": "Nézet háttere",
+    "bgLight": "Világos háttér",
+    "bgDark": "Sötét háttér",
+    "bgWarm": "Meleg árnyalatú háttér",
+    "bgColor": "Háttérszín",
+    "bgGrid": "Rács megjelenítése",
+    "donate": "Támogatás",
+    "donateHint": "Támogassa a Formot önkéntesen PayPalon keresztül",
+    "featureRequest": "Funkció kérése"
   },
   "native": {
     "about": "A Form névjegye",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Nem található kompatibilis telepített alkalmazás.",
     "openWithError": "A fájl nem nyitható meg a kiválasztott alkalmazásban.",
     "openWithUnavailable": "Az eredeti fájl már nem érhető el.",
-    "openWithBlenderError": "A Blender importálási parancsfájlja nem készíthető elő."
+    "openWithBlenderError": "A Blender importálási parancsfájlja nem készíthető elő.",
+    "printAtFDMwerk": "Nyomtassa ki ezt a fájlt az FDMwerkkel",
+    "featureRequest": "Funkció kérése",
+    "feedbackEmail": "E-mailben",
+    "feedbackGitHub": "A GitHubon"
   }
 }

@@ -182,7 +182,16 @@
     "viewLeft": "Ліворуч",
     "viewRight": "Праворуч",
     "viewIsometric": "Ізометричний",
-    "viewOrientation": "Стандартні вигляди"
+    "viewOrientation": "Стандартні вигляди",
+    "bgSettings": "Тло області перегляду",
+    "bgLight": "Світле тло",
+    "bgDark": "Темне тло",
+    "bgWarm": "Тло в теплих тонах",
+    "bgColor": "Колір тла",
+    "bgGrid": "Показати сітку",
+    "donate": "Підтримати",
+    "donateHint": "Добровільно підтримайте Form через PayPal",
+    "featureRequest": "Запропонувати функцію"
   },
   "native": {
     "about": "Про Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Сумісних установлених програм не знайдено.",
     "openWithError": "Не вдалося відкрити файл у вибраній програмі.",
     "openWithUnavailable": "Початковий файл більше недоступний.",
-    "openWithBlenderError": "Не вдалося підготувати сценарій імпорту для Blender."
+    "openWithBlenderError": "Не вдалося підготувати сценарій імпорту для Blender.",
+    "printAtFDMwerk": "Замовити друк цього файлу у FDMwerk",
+    "featureRequest": "Запропонувати функцію",
+    "feedbackEmail": "Електронною поштою",
+    "feedbackGitHub": "На GitHub"
   }
 }

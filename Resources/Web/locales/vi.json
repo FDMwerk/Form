@@ -182,7 +182,16 @@
     "viewLeft": "Trái",
     "viewRight": "Phải",
     "viewIsometric": "Đẳng cự",
-    "viewOrientation": "Góc nhìn tiêu chuẩn"
+    "viewOrientation": "Góc nhìn tiêu chuẩn",
+    "bgSettings": "Nền khung nhìn",
+    "bgLight": "Nền sáng",
+    "bgDark": "Nền tối",
+    "bgWarm": "Nền tông ấm",
+    "bgColor": "Màu nền",
+    "bgGrid": "Hiện lưới",
+    "donate": "Ủng hộ",
+    "donateHint": "Tự nguyện ủng hộ Form qua PayPal",
+    "featureRequest": "Yêu cầu tính năng"
   },
   "native": {
     "about": "Giới thiệu Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Không tìm thấy ứng dụng tương thích đã cài đặt.",
     "openWithError": "Không thể mở tệp trong ứng dụng đã chọn.",
     "openWithUnavailable": "Tệp gốc không còn khả dụng.",
-    "openWithBlenderError": "Không thể chuẩn bị tập lệnh nhập Blender."
+    "openWithBlenderError": "Không thể chuẩn bị tập lệnh nhập Blender.",
+    "printAtFDMwerk": "Đặt FDMwerk in tệp này",
+    "featureRequest": "Yêu cầu tính năng",
+    "feedbackEmail": "Qua email",
+    "feedbackGitHub": "Trên GitHub"
   }
 }

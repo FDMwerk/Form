@@ -182,7 +182,16 @@
     "viewLeft": "Links",
     "viewRight": "Rechts",
     "viewIsometric": "Isometrisch",
-    "viewOrientation": "Standaardaanzichten"
+    "viewOrientation": "Standaardaanzichten",
+    "bgSettings": "Achtergrond van de weergave",
+    "bgLight": "Lichte achtergrond",
+    "bgDark": "Donkere achtergrond",
+    "bgWarm": "Warme achtergrond",
+    "bgColor": "Achtergrondkleur",
+    "bgGrid": "Raster tonen",
+    "donate": "Doneren",
+    "donateHint": "Steun Form vrijwillig via PayPal",
+    "featureRequest": "Functie aanvragen"
   },
   "native": {
     "about": "Over Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Geen geïnstalleerde compatibele apps gevonden.",
     "openWithError": "Het bestand kon niet in de geselecteerde app worden geopend.",
     "openWithUnavailable": "Het oorspronkelijke bestand is niet meer beschikbaar.",
-    "openWithBlenderError": "Het Blender-importscript kon niet worden voorbereid."
+    "openWithBlenderError": "Het Blender-importscript kon niet worden voorbereid.",
+    "printAtFDMwerk": "Laat dit bestand afdrukken door FDMwerk",
+    "featureRequest": "Functie aanvragen",
+    "feedbackEmail": "Per e-mail",
+    "feedbackGitHub": "Op GitHub"
   }
 }

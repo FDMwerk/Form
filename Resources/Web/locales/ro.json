@@ -182,7 +182,16 @@
     "viewLeft": "Stânga",
     "viewRight": "Dreapta",
     "viewIsometric": "Izometric",
-    "viewOrientation": "Vederi standard"
+    "viewOrientation": "Vederi standard",
+    "bgSettings": "Fundalul vizualizării",
+    "bgLight": "Fundal deschis",
+    "bgDark": "Fundal închis",
+    "bgWarm": "Fundal în tonuri calde",
+    "bgColor": "Culoarea fundalului",
+    "bgGrid": "Afișează grila",
+    "donate": "Donează",
+    "donateHint": "Susține Form în mod voluntar prin PayPal",
+    "featureRequest": "Solicită o funcție"
   },
   "native": {
     "about": "Despre Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Nu au fost găsite aplicații compatibile instalate.",
     "openWithError": "Fișierul nu a putut fi deschis în aplicația selectată.",
     "openWithUnavailable": "Fișierul original nu mai este disponibil.",
-    "openWithBlenderError": "Scriptul de import pentru Blender nu a putut fi pregătit."
+    "openWithBlenderError": "Scriptul de import pentru Blender nu a putut fi pregătit.",
+    "printAtFDMwerk": "Comandă imprimarea acestui fișier la FDMwerk",
+    "featureRequest": "Solicită o funcție",
+    "feedbackEmail": "Prin e-mail",
+    "feedbackGitHub": "Pe GitHub"
   }
 }

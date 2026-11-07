@@ -182,7 +182,16 @@
     "viewLeft": "Lewo",
     "viewRight": "Prawo",
     "viewIsometric": "Izometryczny",
-    "viewOrientation": "Widoki standardowe"
+    "viewOrientation": "Widoki standardowe",
+    "bgSettings": "Tło widoku",
+    "bgLight": "Jasne tło",
+    "bgDark": "Ciemne tło",
+    "bgWarm": "Ciepłe tło",
+    "bgColor": "Kolor tła",
+    "bgGrid": "Pokaż siatkę",
+    "donate": "Wesprzyj",
+    "donateHint": "Wesprzyj Form dobrowolnie przez PayPal",
+    "featureRequest": "Zaproponuj funkcję"
   },
   "native": {
     "about": "O Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Nie znaleziono zgodnych zainstalowanych aplikacji.",
     "openWithError": "Nie można otworzyć pliku w wybranej aplikacji.",
     "openWithUnavailable": "Oryginalny plik nie jest już dostępny.",
-    "openWithBlenderError": "Nie można przygotować skryptu importu do Blendera."
+    "openWithBlenderError": "Nie można przygotować skryptu importu do Blendera.",
+    "printAtFDMwerk": "Zleć FDMwerk wydruk tego pliku",
+    "featureRequest": "Zaproponuj funkcję",
+    "feedbackEmail": "E-mailem",
+    "feedbackGitHub": "Na GitHubie"
   }
 }

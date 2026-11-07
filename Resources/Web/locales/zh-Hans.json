@@ -182,7 +182,16 @@
     "viewLeft": "左视",
     "viewRight": "右视",
     "viewIsometric": "等轴测",
-    "viewOrientation": "标准视图"
+    "viewOrientation": "标准视图",
+    "bgSettings": "视口背景",
+    "bgLight": "浅色背景",
+    "bgDark": "深色背景",
+    "bgWarm": "暖色背景",
+    "bgColor": "背景颜色",
+    "bgGrid": "显示网格",
+    "donate": "捐赠",
+    "donateHint": "通过 PayPal 自愿支持 Form",
+    "featureRequest": "请求新功能"
   },
   "native": {
     "about": "关于 Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "未找到已安装的兼容应用。",
     "openWithError": "无法使用所选应用打开文件。",
     "openWithUnavailable": "原始文件已不可用。",
-    "openWithBlenderError": "无法准备 Blender 导入脚本。"
+    "openWithBlenderError": "无法准备 Blender 导入脚本。",
+    "printAtFDMwerk": "委托 FDMwerk 打印此文件",
+    "featureRequest": "请求新功能",
+    "feedbackEmail": "通过电子邮件",
+    "feedbackGitHub": "在 GitHub 上"
   }
 }

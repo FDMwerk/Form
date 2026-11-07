@@ -86,11 +86,13 @@ enum FormPreferencePolicy {
    let candidate = (value[key] as? NSNumber)?.doubleValue ?? 1
    clean[key] = candidate.isFinite ? min(3, max(0.2, candidate)) : 1
   }
-  for key in ["reverseZoom", "trackpad", "componentColors", "showTextures"] {
-   clean[key] = (value[key] as? Bool) ?? (key == "showTextures")
+  for key in ["reverseZoom", "trackpad", "componentColors", "showTextures", "showGrid"] {
+   clean[key] = (value[key] as? Bool) ?? (key == "showTextures" || key == "showGrid")
   }
-  if let color = value["defaultColor"] as? String,
-     color.range(of: "^#[0-9a-fA-F]{6}$", options: .regularExpression) != nil { clean["defaultColor"] = color }
+  for key in ["defaultColor", "backgroundColor"] {
+   if let color = value[key] as? String,
+      color.range(of: "^#[0-9a-fA-F]{6}$", options: .regularExpression) != nil { clean[key] = color }
+  }
   return clean
  }
 }
@@ -174,11 +176,13 @@ enum FormBuildCapabilities {
  #if FORM_APP_STORE
  static let externalSliceEstimate = false
  static let blenderImport = false
+ static let donations = false
  #else
  static let externalSliceEstimate = true
  static let blenderImport = true
+ static let donations = true
  #endif
- static var dictionary: [String: Bool] { ["externalSliceEstimate": externalSliceEstimate, "blenderImport": blenderImport] }
+ static var dictionary: [String: Bool] { ["externalSliceEstimate": externalSliceEstimate, "blenderImport": blenderImport, "donations": donations] }
 }
 
 struct FormExternalApplication {
@@ -430,4 +434,26 @@ enum FormBambuSlicePolicy {
   return try result(Data(contentsOf: output.appendingPathComponent("result.json")))
  }
  #endif
+}
+
+#if !FORM_APP_STORE
+enum FormSupportPolicy {
+ static var donationURL: URL {
+  var url = URLComponents(string: "https://www.paypal.com/cgi-bin/webscr")!
+  url.queryItems = [URLQueryItem(name: "cmd", value: "_donations"),
+   URLQueryItem(name: "business", value: "christoph@moinwerk.com"),
+   URLQueryItem(name: "currency_code", value: "EUR"),
+   URLQueryItem(name: "item_name", value: "Support Form CAD Viewer")]
+  return url.url!
+ }
+}
+#endif
+
+enum FormFeedbackPolicy {
+ static var emailURL: URL {
+  var url = URLComponents(string: "mailto:support@fdmwerk.de")!
+  url.queryItems = [URLQueryItem(name: "subject", value: "Form – Feature request")]
+  return url.url!
+ }
+ static let githubURL = URL(string: "https://github.com/FDMwerk/Form/issues/new?template=feature_request.yml")!
 }

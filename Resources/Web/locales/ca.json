@@ -182,7 +182,16 @@
     "viewLeft": "Esquerra",
     "viewRight": "Dreta",
     "viewIsometric": "Isomètrica",
-    "viewOrientation": "Vistes estàndard"
+    "viewOrientation": "Vistes estàndard",
+    "bgSettings": "Fons de la vista",
+    "bgLight": "Fons clar",
+    "bgDark": "Fons fosc",
+    "bgWarm": "Fons càlid",
+    "bgColor": "Color de fons",
+    "bgGrid": "Mostra la quadrícula",
+    "donate": "Fes un donatiu",
+    "donateHint": "Dona suport a Form voluntàriament mitjançant PayPal",
+    "featureRequest": "Sol·licita una funció"
   },
   "native": {
     "about": "Quant al Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "No s’ha trobat cap aplicació compatible instal·lada.",
     "openWithError": "No s’ha pogut obrir el fitxer a l’aplicació seleccionada.",
     "openWithUnavailable": "El fitxer original ja no està disponible.",
-    "openWithBlenderError": "No s’ha pogut preparar l’script d’importació del Blender."
+    "openWithBlenderError": "No s’ha pogut preparar l’script d’importació del Blender.",
+    "printAtFDMwerk": "Encarrega a FDMwerk la impressió d’aquest fitxer",
+    "featureRequest": "Sol·licita una funció",
+    "feedbackEmail": "Per correu electrònic",
+    "feedbackGitHub": "Al GitHub"
   }
 }

@@ -182,7 +182,16 @@
     "viewLeft": "يسار",
     "viewRight": "يمين",
     "viewIsometric": "متساوي القياس",
-    "viewOrientation": "العروض القياسية"
+    "viewOrientation": "العروض القياسية",
+    "bgSettings": "خلفية منطقة العرض",
+    "bgLight": "خلفية فاتحة",
+    "bgDark": "خلفية داكنة",
+    "bgWarm": "خلفية بألوان دافئة",
+    "bgColor": "لون الخلفية",
+    "bgGrid": "إظهار الشبكة",
+    "donate": "تبرع",
+    "donateHint": "ادعم Form طوعًا عبر PayPal",
+    "featureRequest": "طلب ميزة"
   },
   "native": {
     "about": "حول Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "لم يتم العثور على تطبيقات مثبتة متوافقة.",
     "openWithError": "تعذّر فتح الملف في التطبيق المحدد.",
     "openWithUnavailable": "الملف الأصلي لم يعد متاحًا.",
-    "openWithBlenderError": "تعذّر إعداد برنامج استيراد Blender."
+    "openWithBlenderError": "تعذّر إعداد برنامج استيراد Blender.",
+    "printAtFDMwerk": "اطلب من FDMwerk طباعة هذا الملف",
+    "featureRequest": "طلب ميزة",
+    "feedbackEmail": "عبر البريد الإلكتروني",
+    "feedbackGitHub": "على GitHub"
   }
 }

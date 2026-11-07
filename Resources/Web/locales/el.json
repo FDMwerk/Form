@@ -182,7 +182,16 @@
     "viewLeft": "Αριστερά",
     "viewRight": "Δεξιά",
     "viewIsometric": "Ισομετρική",
-    "viewOrientation": "Τυπικές προβολές"
+    "viewOrientation": "Τυπικές προβολές",
+    "bgSettings": "Φόντο προβολής",
+    "bgLight": "Ανοιχτό φόντο",
+    "bgDark": "Σκούρο φόντο",
+    "bgWarm": "Φόντο σε θερμούς τόνους",
+    "bgColor": "Χρώμα φόντου",
+    "bgGrid": "Εμφάνιση πλέγματος",
+    "donate": "Δωρεά",
+    "donateHint": "Υποστηρίξτε προαιρετικά το Form μέσω PayPal",
+    "featureRequest": "Αίτημα νέας λειτουργίας"
   },
   "native": {
     "about": "Σχετικά με το Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Δεν βρέθηκαν συμβατές εγκατεστημένες εφαρμογές.",
     "openWithError": "Δεν ήταν δυνατό το άνοιγμα του αρχείου στην επιλεγμένη εφαρμογή.",
     "openWithUnavailable": "Το αρχικό αρχείο δεν είναι πλέον διαθέσιμο.",
-    "openWithBlenderError": "Δεν ήταν δυνατή η προετοιμασία του σεναρίου εισαγωγής για το Blender."
+    "openWithBlenderError": "Δεν ήταν δυνατή η προετοιμασία του σεναρίου εισαγωγής για το Blender.",
+    "printAtFDMwerk": "Αναθέστε την εκτύπωση αυτού του αρχείου στην FDMwerk",
+    "featureRequest": "Αίτημα νέας λειτουργίας",
+    "feedbackEmail": "Μέσω email",
+    "feedbackGitHub": "Στο GitHub"
   }
 }

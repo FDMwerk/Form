@@ -1,4 +1,6 @@
-ENTWURF — vor Einreichung alle offenen Pflichtfelder ergänzen.
+ENTWURF — vor Einreichung alle offenen Pflichtfelder ergänzen. Keine Einreichung oder Apple-Freigabe erfolgt.
+
+VERTRIEBSPOLITIK: GitHub ausschließlich für Quellcode, Quellenpakete und Build-/Lizenzunterlagen. Keine App-Store-Binaries und keine Preview-App-/ZIP-/DMG-/PKG-/Archivpakete auf GitHub hochladen (auch nicht als Releases, LFS oder Actions-Artefakte). Lokale Tests sind keine Veröffentlichungserlaubnis. Der frühere öffentliche Preview wurde vom Sitzungsverantwortlichen auf einen nichtöffentlichen Entwurf zurückgestellt; alte Downloadverweise noch prüfen.
 
 Name: Form – CAD Viewer
 Untertitel: 3D-Modelle in Ruhe ansehen
@@ -30,18 +32,32 @@ Support-URL: https://github.com/FDMwerk/Form/issues
 Support-E-Mail: support@fdmwerk.de
 Datenschutz-URL: https://github.com/FDMwerk/Form/blob/main/docs/PRIVACY.md
 Status: Erreichbarkeit dieser Seite nach dem Quellcode-Upload vor Einreichung prüfen.
-Marketing-URL: https://github.com/FDMwerk/Form
+Marketing-URL: https://fdmwerk.de/form/
 Copyright: 2026 FDMwerk
 Anbieter: Christoph Kielhorn, Einzelunternehmer unter FDMwerk (vom Anbieter bestätigt); Angaben im Apple-Konto abgleichen.
-Gewünschter Entwicklername: FDMwerk. Apple erlaubt einen abweichenden registrierten Handelsnamen nur bei passendem Organisationskonto; bei Individual-Konten erscheint der rechtliche Personenname. Der Kontotyp ist noch nicht bestätigt.
+Marke: FDMwerk. Im überprüften Individual-Konto ist Christoph Kielhorn der rechtliche Verkäufer/Entwicklername. FDMwerk nicht als bereits eingerichteten Apple-Organisationsanbieter darstellen.
 Review-E-Mail: support@fdmwerk.de
 Review-Kontaktperson: Christoph Kielhorn.
 Review-Telefonnummer: vom Anbieter mitgeteilt, lokal für App Store Connect hinterlegt; nicht im öffentlichen Repository veröffentlichen.
-Apple-Developer-Mitgliedschaft: laut Anbieter aktiv; Einzelpersonen-/Organisationskonto und zugehöriges Team noch prüfen.
+Apple-Developer-Mitgliedschaft: im Portal überprüft, Individual / Christoph Kielhorn / Team D5VE86DJ5H; Verlängerungsdatum 05.08.2027. Mac-App-Record 6831972349 (Form – CAD Viewer, de.fdmwerk.form) wurde angelegt und verifiziert; Vereinbarungen, verbleibende Pflichtfelder, EU-Händlerdaten und Uploadberechtigung separat vervollständigen.
+Aktuelle lokale Bundle-Version: 0.3.0, Build 6; bei erforderlichen Ersatz-Uploads Buildnummer erhöhen.
 
 Review notes (English):
-Form is a free local CAD viewer with no account, in-app purchase, advertisement, analytics, or remote model processing. Use the supplied original demo STL models to inspect the viewer, file information sidebar, measurements, transformations, bounding-face docking, explosion and uncapped clipping plane. The network-client entitlement supports the WKWebView architecture; the app bundles its resources and its Content Security Policy restricts external origins. The Tripo-created reference apple is bundled; no Tripo access or generation occurs in the app. Original model files are read-only. This submission candidate must use the AppStore build configuration (FORM_APP_STORE). It compiles out the desktop Blender Python import adapter and Bambu CLI execution adapter; their actions are not available in the Store UI. The self-contained viewer, labelled geometric printing-time estimate and standard original-document Open With handoff remain available. Blender is excluded from that menu without its importer. No slicer, Python runtime or external engine is downloaded or installed by the Store build. Desktop Release functionality must not be advertised as a feature of this Store build. LGPL components ship as replaceable resources; exact-source links and release source archives must be supplied before submission.
+Form is a free local CAD viewer with no account, in-app purchase, advertisement, analytics, or remote model processing. Use the supplied original demo STL models to inspect the viewer, file information sidebar, measurements, transformations, bounding-face docking, explosion and uncapped clipping plane. The network-client entitlement supports the WKWebView architecture; the app bundles its resources and its Content Security Policy restricts external origins. The Tripo-created reference apple is bundled; no Tripo access or generation occurs in the app. Original model files are read-only. This submission candidate must use the AppStore build configuration (FORM_APP_STORE). It compiles out the desktop Blender Python import adapter and Bambu CLI execution adapter; their actions are not available in the Store UI. The self-contained viewer, labelled geometric printing-time estimate and standard original-document Open With handoff remain available. Blender is excluded from that menu without its importer. No slicer, Python runtime or external engine is downloaded or installed by the Store build. The native donation action is also compiled out and unavailable in this Store flavor. The optional FDMwerk link opens a website for physical printing; it does not upload the selected model. Feature requests open the user’s email client or a public GitHub issue composer, with no automatic submission or model attachment. Desktop Release functionality must not be advertised as a feature of this Store build. LGPL components ship as replaceable resources; exact-source links and release source archives must be supplied before submission.
 
-Signing-Stand (erneut geprüft): 7 gültige Apple-Development-Identitäten, keine Developer-ID-Application- und keine Apple-/Mac-App-Distribution-Identität verfügbar. Ein ad-hoc signiertes Testpaket ist keine notarierte öffentliche Distribution.
+Signing-Stand (aktualisiert): Der autorisierte Bearbeiter hat einen signierten universellen AppStore-Archivbuild 0.3.0 (6) für Team D5VE86DJ5H erstellt. Unabhängig geprüft: x86_64+arm64, Sandbox aktiv, kein get-task-allow, strikte vollständige Signaturprüfung erfolgreich. Archivlog: ARCHIVE SUCCEEDED. Lokaler Exportlog: EXPORT SUCCEEDED, zusätzlich Warnungen über eine abgelaufene Apple-Kontositzung. Installerpaket final prüfen und vor einer später autorisierten Apple-Validierung/Upload gegebenenfalls erneut anmelden. Dies belegt keine Apple-Servervalidierung, Einreichung, Notarisierung oder Freigabe. Ältere ad-hoc-/Metadatenfehler beziehen sich nicht auf dieses neue signierte Archiv.
 
 Store-Build: Konfiguration AppStore, Compilerflag FORM_APP_STORE, Archivskript scripts/archive.sh → distribution/Form-AppStore.xcarchive. Externe Bambu-CLI-Berechnung und Blender-Python-Importer sind in diesem Flavor nicht enthalten. Standard-Dateiübergabe an andere passende Apps und geometrische Druckzeitnäherung bleiben erhalten.
+
+OFFENE EINREICHUNGSFELDER
+• App-Record 6831972349 ist bestätigt; verbleibende SKU-/Appinformationen prüfen.
+• Kostenlose Preisstufe, Länder, aktuelle Altersfreigabe, Export- und Datenschutzfragen ausfüllen.
+• Anbieter-/Händlerangaben und erforderliche Vereinbarungen im Apple-Konto prüfen.
+• Finale AppStore-Screenshots und funktionierende Datenschutz-/Support-/Marketing-URLs prüfen.
+• Die jetzt vorhandene Desktop-only-Qualifikation für Blender/Bambu im finalen Rechtstext bewahren; keine solche Funktion in Store-Screenshots zeigen.
+• Freiwilligen Support und externe Webseitendienste in der Datenschutzprüfung mitbetrachten; lokale Modellverarbeitung allein beantwortet nicht jede App-Privacy-Frage.
+• Abschließende Signatur-/Provisioning-/Organizer-Validierung, Lizenzprüfung und autorisierte Apple-Einreichung bleiben offen.
+
+Apple-Referenzen: https://developer.apple.com/app-store/review/guidelines/ ; https://developer.apple.com/help/account/membership/program-enrollment/ ; https://developer.apple.com/help/app-store-connect/manage-app-information/manage-app-privacy/
+
+Marketingseite https://fdmwerk.de/form/ ist veröffentlicht; vier echte Produktaufnahmen und SEO wurden vom Hauptbearbeiter geprüft. Der App-Store-Link ist ausdrücklich als in Vorbereitung gekennzeichnet. GitHub enthält ausschließlich erlaubtes Quellmaterial; die neu allowlisteten Abhängigkeitsarchive müssen nach dem Source-Push anonym verifiziert werden.

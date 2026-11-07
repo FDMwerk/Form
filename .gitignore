@@ -9,7 +9,11 @@ Local.xcconfig
 *.p12
 *.mobileprovision
 *.provisionprofile
-vendor-source/
+/vendor-source/*
+!/vendor-source/occt-import-js-c2148e5.tar.gz
+!/vendor-source/OCCT-d2abb6d.tar.gz
+!/vendor-source/manifest.json
+!/vendor-source/README.md
 distribution/*.zip
 distribution/*.xcarchive/
 distribution/*.pkg
@@ -24,3 +28,5 @@ distribution/*.tar.gz
 /*.gcode
 distribution/*.dmg
 /distribution/LOCAL_REVIEW_CONTACT.json
+
+/distribution/LOCAL_WITHDRAWN_RELEASE.json

@@ -182,7 +182,16 @@
     "viewLeft": "Vasemmalta",
     "viewRight": "Oikealta",
     "viewIsometric": "Isometrinen",
-    "viewOrientation": "Vakionäkymät"
+    "viewOrientation": "Vakionäkymät",
+    "bgSettings": "Näkymän tausta",
+    "bgLight": "Vaalea tausta",
+    "bgDark": "Tumma tausta",
+    "bgWarm": "Lämminsävyinen tausta",
+    "bgColor": "Taustaväri",
+    "bgGrid": "Näytä ruudukko",
+    "donate": "Lahjoita",
+    "donateHint": "Tue Formia vapaaehtoisesti PayPalin kautta",
+    "featureRequest": "Pyydä ominaisuutta"
   },
   "native": {
     "about": "Tietoja Formista",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Asennettuja yhteensopivia sovelluksia ei löytynyt.",
     "openWithError": "Tiedostoa ei voitu avata valitussa sovelluksessa.",
     "openWithUnavailable": "Alkuperäinen tiedosto ei ole enää saatavilla.",
-    "openWithBlenderError": "Blenderin tuontiskriptiä ei voitu valmistella."
+    "openWithBlenderError": "Blenderin tuontiskriptiä ei voitu valmistella.",
+    "printAtFDMwerk": "Tilaa tämän tiedoston tulostus FDMwerkiltä",
+    "featureRequest": "Pyydä ominaisuutta",
+    "feedbackEmail": "Sähköpostitse",
+    "feedbackGitHub": "GitHubissa"
   }
 }

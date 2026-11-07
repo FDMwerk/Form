@@ -6,7 +6,7 @@
     "build": "node scripts/build.mjs",
     "icon": "node scripts/icon.mjs",
     "samples": "node scripts/samples.mjs",
-    "test": "npm run test:native && node scripts/navigation-test.mjs && node scripts/formats-test.mjs && node scripts/materials-test.mjs && node scripts/mesh-print-test.mjs && node scripts/viewport-display-test.mjs && node scripts/locales.mjs && node scripts/i18n-test.mjs && node scripts/ui-regression.mjs && node scripts/scoped-regression.mjs && node scripts/print-ui-test.mjs && node scripts/display-ui-test.mjs && node scripts/interaction-regression.mjs && node scripts/verify.mjs",
+    "test": "npm run test:native && node scripts/navigation-test.mjs && node scripts/formats-test.mjs && node scripts/materials-test.mjs && node scripts/mesh-print-test.mjs && node scripts/viewport-display-test.mjs && node scripts/section-highlight-test.mjs && node scripts/background-ui-test.mjs && node scripts/sidebar-ui-test.mjs && node scripts/locales.mjs && node scripts/i18n-test.mjs && node scripts/ui-regression.mjs && node scripts/scoped-regression.mjs && node scripts/print-ui-test.mjs && node scripts/display-ui-test.mjs && node scripts/interaction-regression.mjs && node scripts/verify.mjs",
     "test:cad": "node scripts/cad-fixtures.mjs && node scripts/verify.mjs .tmp/cad-fixtures",
     "fixtures": "node scripts/format-fixtures.mjs",
     "vendor:sources": "node scripts/vendor-sources.mjs",

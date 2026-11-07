@@ -1,6 +1,8 @@
+> Verteilung: Auf GitHub werden keine Preview- oder App-Store-Installationspakete angeboten. Die folgenden Hinweise beziehen sich ausschließlich auf lokal bereitgestellte Testpakete bzw. selbst erstellte Builds. Der vorbereitete Mac-App-Store-Eintrag ist https://apps.apple.com/app/id6831972349; bis zur Freigabe besteht darüber noch keine zugesagte Downloadmöglichkeit.
+
 # Form auf einem MacBook testen
 
-Form wird als kostenlose Vorschau bereitgestellt. Diese Vorschau ist kein produktiv freigegebener oder im App Store veröffentlichter Build. Die DMG-Datei ist nicht signiert; das Paket ist nicht von Apple notarisiert. Eine vorhandene lokale Codesignatur ersetzt diese Prüfung nicht. macOS kann den Start deshalb blockieren.
+Diese Anleitung beschreibt ausschließlich lokale Testbuilds bzw. selbst erstellte Builds. Sie sind kein produktiv freigegebener oder im App Store veröffentlichter Build. Die DMG-Datei ist nicht signiert; das Paket ist nicht von Apple notarisiert. Eine vorhandene lokale Codesignatur ersetzt diese Prüfung nicht. macOS kann den Start deshalb blockieren.
 
 ## Voraussetzungen
 
@@ -11,7 +13,7 @@ Form wird als kostenlose Vorschau bereitgestellt. Diese Vorschau ist kein produk
 
 ## Installieren
 
-1. Lade die ausdrücklich als **Preview** bezeichnete DMG- oder ZIP-Datei aus der vorgesehenen Projektveröffentlichung herunter. Prüfe Dateiname und Version; verwende eine vertrauenswürdige Quelle.
+1. Verwende ausschließlich ein lokal für diesen Test bereitgestelltes Paket oder einen selbst erstellten Build. Auf GitHub gibt es keinen autorisierten Download eines Form-Installationspakets. Prüfe den lokalen Dateinamen, die Version und die Herkunft; diese Anleitung veröffentlicht oder verteilt kein Paket.
 2. Bei einer DMG: Öffne das Abbild und ziehe **Form.app** auf den darin enthaltenen **Applications**-Verweis. Bei einer ZIP: Entpacke sie und kopiere **Form.app** aus dem entpackten Ordner nach **Programme**. Eine ältere Form-Version vorher beenden.
 3. Starte Form aus **Programme**, nicht aus dem eingebundenen Abbild. Das Abbild kannst du nach dem Kopieren auswerfen.
 4. Falls macOS den Start blockiert: Verwende nur den von macOS angebotenen Weg für diese einzelne App, etwa **Rechtsklick → Öffnen** oder **Systemeinstellungen → Datenschutz & Sicherheit → Dennoch öffnen**, sofern dieser angeboten wird. Bestätige nur, wenn Quelle und Datei vertrauenswürdig sind.
@@ -21,7 +23,7 @@ Die Vorschau enthält keine Anweisung zum Entfernen von Quarantänekennzeichnung
 
 ## Prüfsummen
 
-`SHA256SUMS.txt` nennt ausschließlich die beiden Vorschau-Archive und die zugehörige deutsche Testanleitung. Eine passende SHA-256-Prüfsumme zeigt, dass die heruntergeladene Datei dem veröffentlichten Paket entspricht; sie ersetzt weder eine vertrauenswürdige Quelle noch eine Apple-Notarisierung. Das separat bereitgestellte Quellpaket gehört nicht zu diesem Prüfsummenmanifest.
+`SHA256SUMS.txt` nennt ausschließlich die beiden Vorschau-Archive und die zugehörige deutsche Testanleitung. Eine passende SHA-256-Prüfsumme zeigt, dass die heruntergeladene Datei dem ausdrücklich lokal bereitgestellten Paket entspricht; sie ersetzt weder eine vertrauenswürdige Quelle noch eine Apple-Notarisierung. Ein reines Quellpaket gehört nicht zu diesem lokalen Installations-Prüfsummenmanifest.
 
 ## Sinnvoller Kurztest
 

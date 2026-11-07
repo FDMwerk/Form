@@ -182,7 +182,16 @@
     "viewLeft": "שמאל",
     "viewRight": "ימין",
     "viewIsometric": "איזומטרי",
-    "viewOrientation": "תצוגות סטנדרטיות"
+    "viewOrientation": "תצוגות סטנדרטיות",
+    "bgSettings": "רקע אזור התצוגה",
+    "bgLight": "רקע בהיר",
+    "bgDark": "רקע כהה",
+    "bgWarm": "רקע בגוונים חמים",
+    "bgColor": "צבע הרקע",
+    "bgGrid": "הצגת רשת",
+    "donate": "תרומה",
+    "donateHint": "תמיכה ב־Form מרצון באמצעות PayPal",
+    "featureRequest": "בקשת תכונה"
   },
   "native": {
     "about": "אודות Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "לא נמצאו יישומים מותקנים תואמים.",
     "openWithError": "לא ניתן לפתוח את הקובץ ביישום שנבחר.",
     "openWithUnavailable": "הקובץ המקורי אינו זמין עוד.",
-    "openWithBlenderError": "לא ניתן להכין את סקריפט הייבוא של Blender."
+    "openWithBlenderError": "לא ניתן להכין את סקריפט הייבוא של Blender.",
+    "printAtFDMwerk": "הזמנת הדפסת הקובץ הזה ב־FDMwerk",
+    "featureRequest": "בקשת תכונה",
+    "feedbackEmail": "בדוא״ל",
+    "feedbackGitHub": "ב-GitHub"
   }
 }

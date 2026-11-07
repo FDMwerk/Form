@@ -182,7 +182,16 @@
     "viewLeft": "Venstre",
     "viewRight": "Højre",
     "viewIsometric": "Isometrisk",
-    "viewOrientation": "Standardvisninger"
+    "viewOrientation": "Standardvisninger",
+    "bgSettings": "Visningens baggrund",
+    "bgLight": "Lys baggrund",
+    "bgDark": "Mørk baggrund",
+    "bgWarm": "Varm baggrund",
+    "bgColor": "Baggrundsfarve",
+    "bgGrid": "Vis gitter",
+    "donate": "Donér",
+    "donateHint": "Støt Form frivilligt via PayPal",
+    "featureRequest": "Foreslå en funktion"
   },
   "native": {
     "about": "Om Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Ingen installerede kompatible apps blev fundet.",
     "openWithError": "Filen kunne ikke åbnes i den valgte app.",
     "openWithUnavailable": "Den oprindelige fil er ikke længere tilgængelig.",
-    "openWithBlenderError": "Blender-importscriptet kunne ikke klargøres."
+    "openWithBlenderError": "Blender-importscriptet kunne ikke klargøres.",
+    "printAtFDMwerk": "Få denne fil printet hos FDMwerk",
+    "featureRequest": "Foreslå en funktion",
+    "feedbackEmail": "Via e-mail",
+    "feedbackGitHub": "På GitHub"
   }
 }

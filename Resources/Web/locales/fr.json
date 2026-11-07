@@ -182,7 +182,16 @@
     "viewLeft": "Gauche",
     "viewRight": "Droite",
     "viewIsometric": "Isométrique",
-    "viewOrientation": "Vues standard"
+    "viewOrientation": "Vues standard",
+    "bgSettings": "Arrière-plan de la vue",
+    "bgLight": "Fond clair",
+    "bgDark": "Fond sombre",
+    "bgWarm": "Fond chaud",
+    "bgColor": "Couleur de fond",
+    "bgGrid": "Afficher la grille",
+    "donate": "Faire un don",
+    "donateHint": "Soutenir Form volontairement via PayPal",
+    "featureRequest": "Demander une fonctionnalité"
   },
   "native": {
     "about": "À propos de Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Aucune application compatible installée n’a été trouvée.",
     "openWithError": "Le fichier n’a pas pu être ouvert dans l’application sélectionnée.",
     "openWithUnavailable": "Le fichier d’origine n’est plus disponible.",
-    "openWithBlenderError": "Le script d’importation Blender n’a pas pu être préparé."
+    "openWithBlenderError": "Le script d’importation Blender n’a pas pu être préparé.",
+    "printAtFDMwerk": "Faire imprimer ce fichier par FDMwerk",
+    "featureRequest": "Demander une fonctionnalité",
+    "feedbackEmail": "Par e-mail",
+    "feedbackGitHub": "Sur GitHub"
   }
 }

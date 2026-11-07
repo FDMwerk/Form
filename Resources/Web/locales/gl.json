@@ -182,7 +182,16 @@
     "viewLeft": "Esquerda",
     "viewRight": "Dereita",
     "viewIsometric": "Isométrica",
-    "viewOrientation": "Vistas estándar"
+    "viewOrientation": "Vistas estándar",
+    "bgSettings": "Fondo da vista",
+    "bgLight": "Fondo claro",
+    "bgDark": "Fondo escuro",
+    "bgWarm": "Fondo cálido",
+    "bgColor": "Cor de fondo",
+    "bgGrid": "Amosar grade",
+    "donate": "Doar",
+    "donateHint": "Apoia Form voluntariamente a través de PayPal",
+    "featureRequest": "Solicitar unha función"
   },
   "native": {
     "about": "Sobre Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Non se atoparon aplicacións compatibles instaladas.",
     "openWithError": "Non se puido abrir o ficheiro na aplicación seleccionada.",
     "openWithUnavailable": "O ficheiro orixinal xa non está dispoñible.",
-    "openWithBlenderError": "Non se puido preparar o script de importación para Blender."
+    "openWithBlenderError": "Non se puido preparar o script de importación para Blender.",
+    "printAtFDMwerk": "Encarga a FDMwerk a impresión deste ficheiro",
+    "featureRequest": "Solicitar unha función",
+    "feedbackEmail": "Por correo electrónico",
+    "feedbackGitHub": "En GitHub"
   }
 }

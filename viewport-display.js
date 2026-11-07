@@ -82,10 +82,11 @@ export function createViewportCameras({camera=new PerspectiveCamera(38,1,.01,1e8
     active.up.copy(source.up);active.near=source.near;active.far=source.far;active.lookAt(target);active.updateProjectionMatrix();active.updateMatrixWorld(true);projection=next;return active;
   }
   function setView(view){
-    if(!directions[view])throw RangeError('Unknown standard view');
+    const vector=Array.isArray(view)&&view.length===3&&view.every(n=>[-1,0,1].includes(n))&&view.some(n=>n!==0)?view:directions[view];
+    if(!vector)throw RangeError('Unknown standard view');
     const distance=Math.max(active.position.distanceTo(target),1);
-    active.position.copy(target).addScaledVector(new Vector3(...directions[view]).normalize(),distance);
-    active.up.set(0,0,1);if(view==='top')active.up.set(0,1,0);if(view==='bottom')active.up.set(0,-1,0);
+    active.position.copy(target).addScaledVector(new Vector3(...vector).normalize(),distance);
+    active.up.set(0,0,1);if(vector[2]===1&&vector[0]===0&&vector[1]===0)active.up.set(0,1,0);if(vector[2]===-1&&vector[0]===0&&vector[1]===0)active.up.set(0,-1,0);
     active.lookAt(target);active.updateMatrixWorld(true);return active;
   }
   function resize(width,height){if(!Number.isFinite(width)||!Number.isFinite(height)||width<=0||height<=0)return active;ratio=width/height;perspective.aspect=ratio;perspective.updateProjectionMatrix();const half=(orthographic.top-orthographic.bottom)/2;orthographic.left=-half*ratio;orthographic.right=half*ratio;orthographic.updateProjectionMatrix();return active}

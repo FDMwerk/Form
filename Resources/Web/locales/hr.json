@@ -182,7 +182,16 @@
     "viewLeft": "Slijeva",
     "viewRight": "Zdesna",
     "viewIsometric": "Izometrijski",
-    "viewOrientation": "Standardni pogledi"
+    "viewOrientation": "Standardni pogledi",
+    "bgSettings": "Pozadina prikaza",
+    "bgLight": "Svijetla pozadina",
+    "bgDark": "Tamna pozadina",
+    "bgWarm": "Pozadina toplih tonova",
+    "bgColor": "Boja pozadine",
+    "bgGrid": "Prikaži mrežu",
+    "donate": "Doniraj",
+    "donateHint": "Dobrovoljno podržite Form putem PayPala",
+    "featureRequest": "Zatraži značajku"
   },
   "native": {
     "about": "O aplikaciji Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Nisu pronađene kompatibilne instalirane aplikacije.",
     "openWithError": "Datoteku nije moguće otvoriti u odabranoj aplikaciji.",
     "openWithUnavailable": "Izvorna datoteka više nije dostupna.",
-    "openWithBlenderError": "Skriptu za uvoz u Blender nije moguće pripremiti."
+    "openWithBlenderError": "Skriptu za uvoz u Blender nije moguće pripremiti.",
+    "printAtFDMwerk": "Naručite ispis ove datoteke kod FDMwerka",
+    "featureRequest": "Zatraži značajku",
+    "feedbackEmail": "E-poštom",
+    "feedbackGitHub": "Na GitHubu"
   }
 }

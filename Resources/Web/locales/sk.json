@@ -182,7 +182,16 @@
     "viewLeft": "Zľava",
     "viewRight": "Sprava",
     "viewIsometric": "Izometrický",
-    "viewOrientation": "Štandardné pohľady"
+    "viewOrientation": "Štandardné pohľady",
+    "bgSettings": "Pozadie pohľadu",
+    "bgLight": "Svetlé pozadie",
+    "bgDark": "Tmavé pozadie",
+    "bgWarm": "Teplé pozadie",
+    "bgColor": "Farba pozadia",
+    "bgGrid": "Zobraziť mriežku",
+    "donate": "Prispieť",
+    "donateHint": "Dobrovoľne podporte Form cez PayPal",
+    "featureRequest": "Požiadať o funkciu"
   },
   "native": {
     "about": "O aplikácii Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Nenašli sa kompatibilné nainštalované aplikácie.",
     "openWithError": "Súbor sa nedá otvoriť vo vybranej aplikácii.",
     "openWithUnavailable": "Pôvodný súbor už nie je dostupný.",
-    "openWithBlenderError": "Importný skript pre Blender sa nepodarilo pripraviť."
+    "openWithBlenderError": "Importný skript pre Blender sa nepodarilo pripraviť.",
+    "printAtFDMwerk": "Dať tento súbor vytlačiť vo FDMwerk",
+    "featureRequest": "Požiadať o funkciu",
+    "feedbackEmail": "E-mailom",
+    "feedbackGitHub": "Na GitHube"
   }
 }

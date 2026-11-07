@@ -182,7 +182,16 @@
     "viewLeft": "왼쪽",
     "viewRight": "오른쪽",
     "viewIsometric": "등각 투영",
-    "viewOrientation": "표준 뷰"
+    "viewOrientation": "표준 뷰",
+    "bgSettings": "뷰포트 배경",
+    "bgLight": "밝은 배경",
+    "bgDark": "어두운 배경",
+    "bgWarm": "따뜻한 색조의 배경",
+    "bgColor": "배경색",
+    "bgGrid": "격자 표시",
+    "donate": "후원하기",
+    "donateHint": "PayPal로 Form을 자발적으로 후원하세요",
+    "featureRequest": "기능 요청"
   },
   "native": {
     "about": "Form 정보",
@@ -214,6 +223,10 @@
     "openWithNoApps": "호환되는 설치된 앱을 찾을 수 없습니다.",
     "openWithError": "선택한 앱에서 파일을 열 수 없습니다.",
     "openWithUnavailable": "원본 파일을 더 이상 사용할 수 없습니다.",
-    "openWithBlenderError": "Blender 가져오기 스크립트를 준비할 수 없습니다."
+    "openWithBlenderError": "Blender 가져오기 스크립트를 준비할 수 없습니다.",
+    "printAtFDMwerk": "이 파일의 출력을 FDMwerk에 의뢰",
+    "featureRequest": "기능 요청",
+    "feedbackEmail": "이메일로",
+    "feedbackGitHub": "GitHub에서"
   }
 }

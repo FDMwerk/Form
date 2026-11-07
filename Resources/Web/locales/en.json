@@ -182,7 +182,16 @@
     "viewLeft": "Left",
     "viewRight": "Right",
     "viewIsometric": "Isometric",
-    "viewOrientation": "Standard views"
+    "viewOrientation": "Standard views",
+    "bgSettings": "Viewport background",
+    "bgLight": "Light background",
+    "bgDark": "Dark background",
+    "bgWarm": "Warm background",
+    "bgColor": "Background color",
+    "bgGrid": "Show grid",
+    "donate": "Donate",
+    "donateHint": "Support Form voluntarily via PayPal",
+    "featureRequest": "Request a feature"
   },
   "native": {
     "about": "About Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "No compatible installed apps found.",
     "openWithError": "The file could not be opened in the selected app.",
     "openWithUnavailable": "The original file is no longer available.",
-    "openWithBlenderError": "The Blender import script could not be prepared."
+    "openWithBlenderError": "The Blender import script could not be prepared.",
+    "printAtFDMwerk": "Have this file printed by FDMwerk",
+    "featureRequest": "Request a feature",
+    "feedbackEmail": "By email",
+    "feedbackGitHub": "On GitHub"
   }
 }

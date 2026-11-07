@@ -94,6 +94,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   let visibleSize = NSScreen.main?.visibleFrame.size ?? NSSize(width: 1320, height: 860)
   let initialSize = NSSize(width: max(1040, min(1280, visibleSize.width - 40)), height: max(600, min(800, visibleSize.height - 40)))
   window = NSWindow(contentRect: NSRect(origin: .zero, size: initialSize), styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView], backing: .buffered, defer: false)
+  window.isReleasedWhenClosed = false
   window.title = "Form"
   window.titleVisibility = .hidden
   window.titlebarAppearsTransparent = true
@@ -300,19 +301,44 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
     self.presentExternalError("openWithUnavailable"); return
    }
    let apps = self.externalApps(for: file).filter { !slicersOnly || FormExternalAppPolicy.isSlicer($0.bundleID) }
-   guard !apps.isEmpty else { self.presentExternalError("openWithNoApps"); return }
    let menu = NSMenu(title: self.text("openWith"))
+   let printService = menu.addItem(withTitle: self.text("printAtFDMwerk"), action: #selector(self.openFDMwerkPrintService), keyEquivalent: "")
+   printService.target = self
+   if let icon = Self.bundledApplicationIcon()?.copy() as? NSImage {
+    icon.size = NSSize(width: 22, height: 22)
+    printService.image = icon
+   }
+   if !apps.isEmpty { menu.addItem(.separator()) }
    for app in apps {
     let item = menu.addItem(withTitle: app.name, action: #selector(self.openExternalApplication(_:)), keyEquivalent: "")
     item.target = self
     item.representedObject = FormExternalMenuTarget(app: app, file: file)
-    let icon = NSWorkspace.shared.icon(forFile: app.url.path)
-    icon.size = NSSize(width: 18, height: 18)
+    let icon = (NSWorkspace.shared.icon(forFile: app.url.path).copy() as? NSImage) ?? NSWorkspace.shared.icon(forFile: app.url.path)
+    icon.isTemplate = false
+    icon.size = NSSize(width: 22, height: 22)
     item.image = icon
    }
    let point = NSPoint(x: max(0, self.web.bounds.width - 190), y: self.web.isFlipped ? 60 : self.web.bounds.height - 60)
    menu.popUp(positioning: nil, at: point, in: self.web)
   }
+ }
+
+ private func showFeedbackMenu() {
+  let menu = NSMenu(title: text("featureRequest"))
+  let email = menu.addItem(withTitle: text("feedbackEmail"), action: #selector(openFeedbackEmail), keyEquivalent: "")
+  email.target = self
+  email.image = NSImage(systemSymbolName: "envelope", accessibilityDescription: nil)
+  let github = menu.addItem(withTitle: text("feedbackGitHub"), action: #selector(openFeedbackGitHub), keyEquivalent: "")
+  github.target = self
+  github.image = NSImage(systemSymbolName: "bubble.left.and.bubble.right", accessibilityDescription: nil)
+  menu.popUp(positioning: nil, at: NSPoint(x: 24, y: web.isFlipped ? web.bounds.height - 180 : 180), in: web)
+ }
+ @objc private func openFeedbackEmail() { NSWorkspace.shared.open(FormFeedbackPolicy.emailURL) }
+ @objc private func openFeedbackGitHub() { NSWorkspace.shared.open(FormFeedbackPolicy.githubURL) }
+
+ @objc private func openFDMwerkPrintService() {
+  // This opens the public service page only; model files are never uploaded.
+  if let url = URL(string: "https://fdmwerk.de") { NSWorkspace.shared.open(url) }
  }
 
  @objc private func openExternalApplication(_ sender: NSMenuItem) {
@@ -388,8 +414,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   guard window.attachedSheet == nil else { return }
   let panel = NSOpenPanel()
   panel.title = text("open")
-  panel.allowedContentTypes = FormImportPolicy.supportedExtensions.compactMap { UTType(filenameExtension: $0) }
-  panel.allowsOtherFileTypes = false
+  // Let the native chooser offer every file, independent of third-party UTI
+  // registrations. The importer validates format, regular-file status and size
+  // after the user confirms and security-scoped access becomes available.
+  panel.allowedContentTypes = [.item]
+  panel.allowsOtherFileTypes = true
+  panel.canChooseFiles = true
   panel.allowsMultipleSelection = true
   panel.canChooseDirectories = false
   panel.beginSheetModal(for: window) { response in
@@ -463,7 +493,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
   case "openWith": openWithMenu()
   case "openInSlicer": openWithMenu(slicersOnly: true)
   case "cancelSliceEstimate": cancelSliceEstimate()
+  case "feedback": showFeedbackMenu()
   case "legal": showLegal()
+  case "donate":
+   #if !FORM_APP_STORE
+   NSWorkspace.shared.open(FormSupportPolicy.donationURL)
+   #endif
   default: break
   }
  }
@@ -477,6 +512,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
    NSWorkspace.shared.open(url)
   }
   decisionHandler(.cancel)
+ }
+
+ func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+  if !flag {
+   window?.makeKeyAndOrderFront(nil)
+   sender.activate(ignoringOtherApps: true)
+  }
+  return true
  }
 
  func applicationWillTerminate(_ notification: Notification) { cancelSliceEstimate() }

@@ -182,7 +182,16 @@
     "viewLeft": "Kiri",
     "viewRight": "Kanan",
     "viewIsometric": "Isometrik",
-    "viewOrientation": "Paparan standard"
+    "viewOrientation": "Paparan standard",
+    "bgSettings": "Latar belakang paparan",
+    "bgLight": "Latar belakang cerah",
+    "bgDark": "Latar belakang gelap",
+    "bgWarm": "Latar belakang bernada hangat",
+    "bgColor": "Warna latar belakang",
+    "bgGrid": "Tunjukkan grid",
+    "donate": "Derma",
+    "donateHint": "Sokong Form secara sukarela melalui PayPal",
+    "featureRequest": "Minta ciri"
   },
   "native": {
     "about": "Perihal Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Tiada aplikasi terpasang yang serasi ditemui.",
     "openWithError": "Fail tidak dapat dibuka dalam aplikasi yang dipilih.",
     "openWithUnavailable": "Fail asal tidak lagi tersedia.",
-    "openWithBlenderError": "Skrip import Blender tidak dapat disediakan."
+    "openWithBlenderError": "Skrip import Blender tidak dapat disediakan.",
+    "printAtFDMwerk": "Tempah cetakan fail ini daripada FDMwerk",
+    "featureRequest": "Minta ciri",
+    "feedbackEmail": "Melalui e-mel",
+    "feedbackGitHub": "Di GitHub"
   }
 }

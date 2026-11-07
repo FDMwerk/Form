@@ -16,7 +16,7 @@ The default Bambu-style mouse mapping uses left drag to orbit, right/middle drag
 
 The fit button and **0** focus the selected visible file/group/part. With **All models** selected, they fit the whole scene and enabled reference apple. A hidden selection falls back to the visible scene. New imports automatically use an overview fit so appended files remain discoverable.
 
-The small display menu at the upper left changes solid, solid-with-edges, wireframe and X-ray rendering. It also switches perspective/orthographic projection and front/back/left/right/top/bottom/isometric views. Fit retains the chosen projection and viewing direction. The fine grid and reference apple have separate bottom buttons. The apple's largest outer dimension is 80 mm; it is a visual scale reference, not a calibration object.
+The initial view is orthographic with edges. The small display menu at the upper left changes solid, solid-with-edges, wireframe and X-ray rendering. It also switches perspective/orthographic projection. The view cube at the upper right follows camera orientation; click a face for front/back/left/right/top/bottom, an edge for a 45-degree view, a corner for a spatial view, or Home for isometric. The faces show their signed X/Y/Z axes. Fit retains the chosen projection and viewing direction. The adjacent background icon offers light, dark and warm backgrounds, a custom color and a grid toggle. Background color and grid visibility are stored locally for future launches; app-default reset restores the light background and visible grid. The fine grid and reference apple also have separate bottom buttons. The apple's largest outer dimension is 80 mm; it is a visual scale reference, not a calibration object.
 
 ## Colors and settings
 
@@ -40,17 +40,17 @@ Translation/rotation tools attach a gizmo to the selected object or group. The i
 
 **Exploded view** temporarily spreads multiple parts/files around their original assembly positions. Returning its slider to zero restores those positions. Moving/docking starts from assembled positions rather than baking an exploded layout into the operation.
 
-**Section** offers three plane buttons, a position slider and a reverse button. It clips the display and measurement picking. Cut faces are open; no capped solid, cut mesh or geometry export is produced. Colors and display modes preserve the active clipping plane.
+**Section** offers three plane buttons, a position slider and a reverse button. It clips the display and measurement picking. Orange contours highlight the actual triangle/plane intersection on visible parts and follow transforms, explosion and plane changes. These contours are display helpers and cannot be picked or measured. Cut faces are open; no capped solid, cut mesh or geometry export is produced. Colors and display modes preserve the active clipping plane.
 
 ## Volume and 3D printing
 
 Volume is calculated from the current visible display mesh and shown in cm³. A closed, consistently wound mesh is required. Multiple mesh volumes are added; overlaps are counted more than once. Self-intersections are not detected. Treat this as inspection data rather than certified CAD volume.
 
-If a supported slicer is installed, the inspector exposes **3D printing**. The geometric estimate accepts generic PLA/PETG/ABS/ASA/TPU/PA/PC profiles plus layer height, infill, walls, nozzle, speed and flow. Profiles are editable starting assumptions. The displayed range is a heuristic, not a calibrated sliced toolpath or guaranteed bound. It does not simulate supports, heat-up, acceleration, exact infill paths or every printer feature.
+If a supported slicer is installed, a printer icon beside Open with opens the dedicated **3D printing** sidebar. The geometric estimate accepts generic PLA/PETG/ABS/ASA/TPU/PA/PC profiles plus layer height, infill, walls, nozzle, speed and flow. Profiles are editable starting assumptions. The displayed range is a heuristic, not a calibrated sliced toolpath or guaranteed bound. It does not simulate supports, heat-up, acceleration, exact infill paths or every printer feature.
 
-With Bambu Studio installed, a separately labelled calculation can run its local CLI for an original STL opened through the native file picker/Finder. It uses the stated **A1 mini, 0.4-mm nozzle, 0.2-mm layers, 15% infill** profile and PLA/PETG. This calculation uses the original STL and its chosen unit scale; viewport rotation and the geometric-estimate fields above it are not applied. It produces a slicer's estimated time/material, not a measured print duration. Selection/material/unit changes cancel stale calculations. It sends no print job and requires no cloud service.
+In the desktop build only, with Bambu Studio installed, a separately labelled calculation can run its local CLI for an original STL opened through the native file picker/Finder. It uses the stated **A1 mini, 0.4-mm nozzle, 0.2-mm layers, 15% infill** profile and PLA/PETG. This calculation uses the original STL and its chosen unit scale; viewport rotation and the geometric-estimate fields above it are not applied. It produces a slicer's estimated time/material, not a measured print duration. Selection/material/unit changes cancel stale calculations. It sends no print job and requires no cloud service.
 
-**Open in slicer** or the header's **Open with…** hands the original file to a compatible installed application. The original file must still be available. Browser-style drag imports without a native source identity cannot use this handoff; reopen them with the file picker. Blender mesh handoff uses a generated local import adapter where supported. Native CAD formats are not converted to Blender meshes by that adapter.
+The first entry in **Open with…** opens fdmwerk.de to request a printed part; it does not upload or transmit the model. Installed applications follow with their original app icons. **Open in slicer** or the header's **Open with…** hands the original file to a compatible installed application. The original file must still be available. Browser-style drag imports without a native source identity cannot use this handoff; reopen them with the file picker. In the desktop build, Blender mesh handoff uses a generated local import adapter where supported. The AppStore build excludes that adapter and Blender entries that require it. Native CAD formats are not converted to Blender meshes by that adapter.
 
 ## Screenshots and shortcuts
 
@@ -66,3 +66,9 @@ The camera button or ⇧⌘S saves a PNG of the viewport with visible measuremen
 | ⇧⌘S | Save viewport screenshot |
 
 Viewport shortcuts ignore editable controls. Scene transforms, scoped appearance and inspection state are session-only. Test representative files and your mouse/trackpad before depending on a preview workflow; see [verification evidence](VERIFICATION.md) for automated checks and remaining platform/UI validation.
+
+## Support Form
+
+The desktop/GitHub edition includes an optional Donate button that opens PayPal in the browser for christoph@moinwerk.com. No payment is processed inside Form and no features require a contribution. The App Store build excludes this external payment action. Privacy & Licenses and Settings use matching sidebar rows with accessible icons.
+
+**Request a feature** in the sidebar offers an email draft to support@fdmwerk.de or the GitHub feature-request form. Form does not send the request, attach models, or collect diagnostics automatically.

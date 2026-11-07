@@ -29,7 +29,15 @@ private final class QueueHarness {
 @main
 struct NativePolicyTests {
  static func main() throws {
-  try check(FormBuildCapabilities.externalSliceEstimate && FormBuildCapabilities.blenderImport, "Desktop integrations unexpectedly disabled")
+  try check(FormBuildCapabilities.externalSliceEstimate && FormBuildCapabilities.blenderImport && FormBuildCapabilities.donations, "Desktop integrations unexpectedly disabled")
+  let feedbackMail = URLComponents(url: FormFeedbackPolicy.emailURL, resolvingAgainstBaseURL: false)!
+  try check(feedbackMail.scheme == "mailto" && feedbackMail.path == "support@fdmwerk.de", "Feedback mail must open the publisher draft destination")
+  try check(feedbackMail.queryItems?.contains(where: { $0.name == "subject" && $0.value?.isEmpty == false }) == true, "Feedback draft is missing its subject")
+  try check(feedbackMail.queryItems?.allSatisfy({ $0.name == "subject" }) == true, "Feedback URL unexpectedly prefilled model/user content")
+  let feedbackIssue = URLComponents(url: FormFeedbackPolicy.githubURL, resolvingAgainstBaseURL: false)!
+  try check(feedbackIssue.scheme == "https" && feedbackIssue.host == "github.com" && feedbackIssue.path == "/FDMwerk/Form/issues/new", "Feedback issue must use the public publisher repository")
+  try check(feedbackIssue.queryItems?.allSatisfy({ $0.name == "template" }) == true, "Feedback issue URL contains unexpected private context")
+  print("PASS feedback destinations: mail draft/public issue form only, no model or private context in URLs")
   let files = FileManager.default
   let directory = files.temporaryDirectory.appendingPathComponent("form-native-tests-" + UUID().uuidString, isDirectory: true)
   try files.createDirectory(at: directory, withIntermediateDirectories: true)
@@ -54,6 +62,25 @@ struct NativePolicyTests {
   let missing = directory.appendingPathComponent("missing.step")
   do { _ = try FormImportPolicy.read(missing); throw CheckFailure.failed("Missing file accepted") } catch is CocoaError { }
   print("PASS native file reads: supported uppercase type, exact size, oversized, unsupported, non-file URL, directory, empty, missing")
+
+  // The All Files picker deliberately does not filter. The real importer is
+  // the authoritative boundary after selection/security-scoped access, and it
+  // accepts every supported suffix independently of LaunchServices UTI priority.
+  for ext in FormImportPolicy.supportedExtensions {
+   let candidate = directory.appendingPathComponent("supported." + ext.uppercased())
+   try bytes.write(to: candidate)
+   let accepted = try FormImportPolicy.read(candidate)
+   try check(accepted == bytes, "Importer rejected supported extension \(ext)")
+  }
+  try check(FormImportPolicy.supportedExtensions.count == 12, "Review import format coverage when formats change")
+  let noExtension = directory.appendingPathComponent("no-extension")
+  try bytes.write(to: noExtension)
+  try expectImportFailure(1) { _ = try FormImportPolicy.read(noExtension) }
+  let package = directory.appendingPathComponent("Unsupported.app", isDirectory: true)
+  try files.createDirectory(at: package, withIntermediateDirectories: true)
+  try expectImportFailure(1) { _ = try FormImportPolicy.read(package) }
+  try expectImportFailure(2) { _ = try FormImportPolicy.read(folder) }
+  print("PASS All Files importer boundary: all 12 uppercase formats accepted; unsupported/extensionless/package/directory selections rejected before reading")
 
   let pixels: [UInt8] = [255, 0, 0, 255]
   let provider = CGDataProvider(data: Data(pixels) as CFData)!
@@ -171,18 +198,22 @@ struct NativePolicyTests {
   try check(FormExternalAppPolicy.isSlicer("com.bambulab.bambu-studio") && FormExternalAppPolicy.isSlicer("com.orcaslicer.OrcaSlicer") && !FormExternalAppPolicy.isSlicer(FormExternalAppPolicy.blenderID), "Installed slicer classification failed")
   print("PASS slicer adapter policies: inheritance/include overrides, cycle rejection, material allowlist, result bounds/units, process timeout/cancellation/pre-cancel, slicer identities")
 
+  let donateURL = URLComponents(url: FormSupportPolicy.donationURL, resolvingAgainstBaseURL: false)!
+  try check(donateURL.scheme == "https" && donateURL.host == "www.paypal.com" && donateURL.queryItems?.contains(URLQueryItem(name:"business", value:"christoph@moinwerk.com")) == true, "PayPal support recipient or HTTPS endpoint changed")
   try check(FormPreferencePolicy.sanitize([:]) == nil, "Missing preset accepted")
   try check(FormPreferencePolicy.sanitize(["preset": "unknown"]) == nil, "Unknown preset accepted")
   let clean = FormPreferencePolicy.sanitize([
    "preset": "fusion", "orbitSpeed": Double.nan, "zoomSpeed": 99,
    "reverseZoom": "true", "trackpad": true, "defaultColor": "#a0B4c9",
-   "componentColors": true, "showTextures": false, "externalURL": "https://example.com"
+   "componentColors": true, "showTextures": false, "backgroundColor": "#24272d", "showGrid": false, "externalURL": "https://example.com"
   ])!
   try check((clean["orbitSpeed"] as? NSNumber)?.doubleValue == 1, "Nonfinite preference survived")
   try check((clean["zoomSpeed"] as? NSNumber)?.doubleValue == 3, "Speed not bounded")
   try check(clean["reverseZoom"] as? Bool == false, "String became bool")
   try check(clean["trackpad"] as? Bool == true && clean["componentColors"] as? Bool == true && clean["showTextures"] as? Bool == false, "Display/nav flags lost")
   try check(clean["defaultColor"] as? String == "#a0B4c9", "Valid color lost")
+  try check(clean["backgroundColor"] as? String == "#24272d" && clean["showGrid"] as? Bool == false, "Background preferences lost")
+  try check(FormPreferencePolicy.sanitize(["preset":"bambu", "backgroundColor":"bad"])?["backgroundColor"] == nil, "Invalid background color survived")
   try check(clean["externalURL"] == nil, "Unknown preference retained")
   let invalidColor = FormPreferencePolicy.sanitize(["preset": "bambu", "defaultColor": "red; alert(1)", "orbitSpeed": -20])!
   try check(invalidColor["defaultColor"] == nil && (invalidColor["orbitSpeed"] as? NSNumber)?.doubleValue == 0.2, "Invalid color or low speed survived")
@@ -193,7 +224,7 @@ struct NativePolicyTests {
   defaults.set(clean, forKey: "FormViewportPreferences")
   let restored = FormPreferencePolicy.sanitize(defaults.dictionary(forKey: "FormViewportPreferences") ?? [:])
   defaults.removePersistentDomain(forName: suiteName)
-  try check(restored?["preset"] as? String == "fusion" && restored?["defaultColor"] as? String == "#a0B4c9" && restored?["showTextures"] as? Bool == false, "Actual UserDefaults round trip lost persisted display/navigation values")
+  try check(restored?["preset"] as? String == "fusion" && restored?["defaultColor"] as? String == "#a0B4c9" && restored?["showTextures"] as? Bool == false && restored?["backgroundColor"] as? String == "#24272d" && restored?["showGrid"] as? Bool == false, "Actual UserDefaults round trip lost persisted display/navigation values")
   print("PASS preferences: allowlist, finite/clamped speeds, strict color, flags, unknown fields, property-list and isolated UserDefaults round trips")
 
   try check(clean["language"] as? String == "system", "Existing preferences did not default to system language")

@@ -182,7 +182,16 @@
     "viewLeft": "Ezkerretik",
     "viewRight": "Eskuinetik",
     "viewIsometric": "Isometrikoa",
-    "viewOrientation": "Ikuspegi estandarrak"
+    "viewOrientation": "Ikuspegi estandarrak",
+    "bgSettings": "Ikuspegiaren atzeko planoa",
+    "bgLight": "Atzeko plano argia",
+    "bgDark": "Atzeko plano iluna",
+    "bgWarm": "Atzeko plano epela",
+    "bgColor": "Atzeko planoaren kolorea",
+    "bgGrid": "Erakutsi sareta",
+    "donate": "Egin dohaintza",
+    "donateHint": "Lagundu Formi borondatez PayPal bidez",
+    "featureRequest": "Eskatu eginbide bat"
   },
   "native": {
     "about": "Form-i buruz",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Ez da instalatutako aplikazio bateragarririk aurkitu.",
     "openWithError": "Ezin izan da fitxategia hautatutako aplikazioan ireki.",
     "openWithUnavailable": "Jatorrizko fitxategia ez dago eskuragarri.",
-    "openWithBlenderError": "Ezin izan da Blender-erako inportazio-scripta prestatu."
+    "openWithBlenderError": "Ezin izan da Blender-erako inportazio-scripta prestatu.",
+    "printAtFDMwerk": "Eskatu FDMwerki fitxategi hau inprimatzeko",
+    "featureRequest": "Eskatu eginbide bat",
+    "feedbackEmail": "Posta elektronikoz",
+    "feedbackGitHub": "GitHub-en"
   }
 }

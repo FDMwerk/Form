@@ -182,7 +182,16 @@
     "viewLeft": "Kiri",
     "viewRight": "Kanan",
     "viewIsometric": "Isometris",
-    "viewOrientation": "Tampilan standar"
+    "viewOrientation": "Tampilan standar",
+    "bgSettings": "Latar belakang tampilan",
+    "bgLight": "Latar belakang terang",
+    "bgDark": "Latar belakang gelap",
+    "bgWarm": "Latar belakang bernuansa hangat",
+    "bgColor": "Warna latar belakang",
+    "bgGrid": "Tampilkan kisi",
+    "donate": "Donasi",
+    "donateHint": "Dukung Form secara sukarela melalui PayPal",
+    "featureRequest": "Ajukan fitur"
   },
   "native": {
     "about": "Tentang Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Tidak ditemukan aplikasi terpasang yang kompatibel.",
     "openWithError": "Berkas gagal dibuka di aplikasi yang dipilih.",
     "openWithUnavailable": "Berkas asli tidak lagi tersedia.",
-    "openWithBlenderError": "Skrip impor Blender gagal disiapkan."
+    "openWithBlenderError": "Skrip impor Blender gagal disiapkan.",
+    "printAtFDMwerk": "Pesan pencetakan file ini di FDMwerk",
+    "featureRequest": "Ajukan fitur",
+    "feedbackEmail": "Melalui email",
+    "feedbackGitHub": "Di GitHub"
   }
 }

@@ -182,7 +182,16 @@
     "viewLeft": "چپ",
     "viewRight": "راست",
     "viewIsometric": "ایزومتریک",
-    "viewOrientation": "نماهای استاندارد"
+    "viewOrientation": "نماهای استاندارد",
+    "bgSettings": "پس‌زمینهٔ نمای دید",
+    "bgLight": "پس‌زمینهٔ روشن",
+    "bgDark": "پس‌زمینهٔ تیره",
+    "bgWarm": "پس‌زمینه با رنگ‌های گرم",
+    "bgColor": "رنگ پس‌زمینه",
+    "bgGrid": "نمایش شبکه",
+    "donate": "کمک مالی",
+    "donateHint": "از Form به‌صورت داوطلبانه از طریق PayPal حمایت کنید",
+    "featureRequest": "درخواست قابلیت"
   },
   "native": {
     "about": "دربارهٔ Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "برنامهٔ نصب‌شدهٔ سازگار پیدا نشد.",
     "openWithError": "فایل در برنامهٔ انتخاب‌شده باز نشد.",
     "openWithUnavailable": "فایل اصلی دیگر در دسترس نیست.",
-    "openWithBlenderError": "اسکریپت ورود Blender آماده نشد."
+    "openWithBlenderError": "اسکریپت ورود Blender آماده نشد.",
+    "printAtFDMwerk": "چاپ این فایل را به FDMwerk بسپارید",
+    "featureRequest": "درخواست قابلیت",
+    "feedbackEmail": "از طریق ایمیل",
+    "feedbackGitHub": "در GitHub"
   }
 }

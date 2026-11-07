@@ -182,7 +182,16 @@
     "viewLeft": "ด้านซ้าย",
     "viewRight": "ด้านขวา",
     "viewIsometric": "ไอโซเมตริก",
-    "viewOrientation": "มุมมองมาตรฐาน"
+    "viewOrientation": "มุมมองมาตรฐาน",
+    "bgSettings": "พื้นหลังของมุมมอง",
+    "bgLight": "พื้นหลังสว่าง",
+    "bgDark": "พื้นหลังมืด",
+    "bgWarm": "พื้นหลังโทนอุ่น",
+    "bgColor": "สีพื้นหลัง",
+    "bgGrid": "แสดงเส้นตาราง",
+    "donate": "บริจาค",
+    "donateHint": "สนับสนุน Form โดยสมัครใจผ่าน PayPal",
+    "featureRequest": "ขอคุณสมบัติใหม่"
   },
   "native": {
     "about": "เกี่ยวกับ Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "ไม่พบแอปที่ติดตั้งซึ่งเข้ากันได้",
     "openWithError": "ไม่สามารถเปิดไฟล์ด้วยแอปที่เลือกได้",
     "openWithUnavailable": "ไฟล์ต้นฉบับไม่พร้อมใช้งานแล้ว",
-    "openWithBlenderError": "ไม่สามารถเตรียมสคริปต์นำเข้าของ Blender ได้"
+    "openWithBlenderError": "ไม่สามารถเตรียมสคริปต์นำเข้าของ Blender ได้",
+    "printAtFDMwerk": "สั่งพิมพ์ไฟล์นี้กับ FDMwerk",
+    "featureRequest": "ขอคุณสมบัติใหม่",
+    "feedbackEmail": "ทางอีเมล",
+    "feedbackGitHub": "บน GitHub"
   }
 }

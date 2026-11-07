@@ -182,7 +182,16 @@
     "viewLeft": "Vänster",
     "viewRight": "Höger",
     "viewIsometric": "Isometrisk",
-    "viewOrientation": "Standardvyer"
+    "viewOrientation": "Standardvyer",
+    "bgSettings": "Vyns bakgrund",
+    "bgLight": "Ljus bakgrund",
+    "bgDark": "Mörk bakgrund",
+    "bgWarm": "Varm bakgrund",
+    "bgColor": "Bakgrundsfärg",
+    "bgGrid": "Visa rutnät",
+    "donate": "Donera",
+    "donateHint": "Stöd Form frivilligt via PayPal",
+    "featureRequest": "Önska en funktion"
   },
   "native": {
     "about": "Om Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Inga installerade kompatibla appar hittades.",
     "openWithError": "Filen kunde inte öppnas i den valda appen.",
     "openWithUnavailable": "Originalfilen är inte längre tillgänglig.",
-    "openWithBlenderError": "Blenders importskript kunde inte förberedas."
+    "openWithBlenderError": "Blenders importskript kunde inte förberedas.",
+    "printAtFDMwerk": "Låt FDMwerk skriva ut den här filen",
+    "featureRequest": "Önska en funktion",
+    "feedbackEmail": "Via e-post",
+    "feedbackGitHub": "På GitHub"
   }
 }

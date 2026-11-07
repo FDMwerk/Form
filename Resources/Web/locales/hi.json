@@ -182,7 +182,16 @@
     "viewLeft": "बायाँ",
     "viewRight": "दायाँ",
     "viewIsometric": "आइसोमेट्रिक",
-    "viewOrientation": "मानक दृश्य"
+    "viewOrientation": "मानक दृश्य",
+    "bgSettings": "दृश्य क्षेत्र की पृष्ठभूमि",
+    "bgLight": "हल्की पृष्ठभूमि",
+    "bgDark": "गहरी पृष्ठभूमि",
+    "bgWarm": "गर्म रंगों वाली पृष्ठभूमि",
+    "bgColor": "पृष्ठभूमि का रंग",
+    "bgGrid": "ग्रिड दिखाएँ",
+    "donate": "दान करें",
+    "donateHint": "PayPal के ज़रिए अपनी इच्छा से Form को सहयोग दें",
+    "featureRequest": "सुविधा का अनुरोध करें"
   },
   "native": {
     "about": "Form के बारे में",
@@ -214,6 +223,10 @@
     "openWithNoApps": "कोई संगत इंस्टॉल किए गए ऐप नहीं मिले।",
     "openWithError": "चुने हुए ऐप में फ़ाइल खोली नहीं जा सकी।",
     "openWithUnavailable": "मूल फ़ाइल अब उपलब्ध नहीं है।",
-    "openWithBlenderError": "Blender आयात स्क्रिप्ट तैयार नहीं हो सकी।"
+    "openWithBlenderError": "Blender आयात स्क्रिप्ट तैयार नहीं हो सकी।",
+    "printAtFDMwerk": "इस फ़ाइल को FDMwerk से प्रिंट करवाएँ",
+    "featureRequest": "सुविधा का अनुरोध करें",
+    "feedbackEmail": "ईमेल से",
+    "feedbackGitHub": "GitHub पर"
   }
 }

@@ -182,7 +182,16 @@
     "viewLeft": "左視",
     "viewRight": "右視",
     "viewIsometric": "等角",
-    "viewOrientation": "標準視圖"
+    "viewOrientation": "標準視圖",
+    "bgSettings": "視埠背景",
+    "bgLight": "淺色背景",
+    "bgDark": "深色背景",
+    "bgWarm": "暖色背景",
+    "bgColor": "背景顏色",
+    "bgGrid": "顯示格線",
+    "donate": "捐款",
+    "donateHint": "透過 PayPal 自願支持 Form",
+    "featureRequest": "提出功能建議"
   },
   "native": {
     "about": "關於 Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "找不到已安裝的相容應用程式。",
     "openWithError": "無法使用所選應用程式打開檔案。",
     "openWithUnavailable": "原始檔案已無法使用。",
-    "openWithBlenderError": "無法準備 Blender 匯入指令稿。"
+    "openWithBlenderError": "無法準備 Blender 匯入指令稿。",
+    "printAtFDMwerk": "委託 FDMwerk 列印此檔案",
+    "featureRequest": "提出功能建議",
+    "feedbackEmail": "透過電子郵件",
+    "feedbackGitHub": "在 GitHub 上"
   }
 }

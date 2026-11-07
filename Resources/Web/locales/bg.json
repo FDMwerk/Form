@@ -182,7 +182,16 @@
     "viewLeft": "Отляво",
     "viewRight": "Отдясно",
     "viewIsometric": "Изометричен",
-    "viewOrientation": "Стандартни изгледи"
+    "viewOrientation": "Стандартни изгледи",
+    "bgSettings": "Фон на изгледа",
+    "bgLight": "Светъл фон",
+    "bgDark": "Тъмен фон",
+    "bgWarm": "Фон в топли тонове",
+    "bgColor": "Цвят на фона",
+    "bgGrid": "Показване на мрежата",
+    "donate": "Дарение",
+    "donateHint": "Подкрепете Form доброволно чрез PayPal",
+    "featureRequest": "Предложете функция"
   },
   "native": {
     "about": "За Form",
@@ -214,6 +223,10 @@
     "openWithNoApps": "Няма намерени съвместими инсталирани приложения.",
     "openWithError": "Файлът не може да се отвори с избраното приложение.",
     "openWithUnavailable": "Оригиналният файл вече не е достъпен.",
-    "openWithBlenderError": "Скриптът за импорт в Blender не може да се подготви."
+    "openWithBlenderError": "Скриптът за импорт в Blender не може да се подготви.",
+    "printAtFDMwerk": "Поръчайте отпечатването на този файл във FDMwerk",
+    "featureRequest": "Предложете функция",
+    "feedbackEmail": "По имейл",
+    "feedbackGitHub": "В GitHub"
   }
 }

@@ -182,7 +182,16 @@
     "viewLeft": "左側面",
     "viewRight": "右側面",
     "viewIsometric": "等角投影",
-    "viewOrientation": "標準ビュー"
+    "viewOrientation": "標準ビュー",
+    "bgSettings": "ビューポートの背景",
+    "bgLight": "明るい背景",
+    "bgDark": "暗い背景",
+    "bgWarm": "暖色の背景",
+    "bgColor": "背景色",
+    "bgGrid": "グリッドを表示",
+    "donate": "寄付する",
+    "donateHint": "PayPalでFormを任意に支援",
+    "featureRequest": "機能をリクエスト"
   },
   "native": {
     "about": "Formについて",
@@ -214,6 +223,10 @@
     "openWithNoApps": "対応するインストール済みアプリが見つかりません。",
     "openWithError": "選択したアプリでファイルを開けませんでした。",
     "openWithUnavailable": "元のファイルは利用できなくなりました。",
-    "openWithBlenderError": "Blenderのインポートスクリプトを準備できませんでした。"
+    "openWithBlenderError": "Blenderのインポートスクリプトを準備できませんでした。",
+    "printAtFDMwerk": "このファイルの印刷をFDMwerkに依頼",
+    "featureRequest": "機能をリクエスト",
+    "feedbackEmail": "メールで",
+    "feedbackGitHub": "GitHubで"
   }
 }

@@ -6,7 +6,7 @@
 
 Form is a free, open-source CAD viewer for Mac with a quiet interface, a fading grid and a collapsible assembly tree. It opens STEP, IGES, BREP, STL, OBJ, PLY, 3MF and self-contained glTF/GLB files without uploading your models.
 
-**Preview 0.3.0.** [Download the universal macOS test packages](https://github.com/FDMwerk/Form/releases/tag/v0.3.0-preview) · [MacBook installation notes](docs/INSTALL_MACBOOK_DE.md). The app has a local ad-hoc integrity signature; the DMG is unsigned and the packages are not notarized. This version has not been submitted or approved in the Mac App Store. You can also build it with Xcode using the instructions below.
+**Mac App Store preparation.** Form is being prepared for the Mac App Store. This repository publishes source code and documentation only; App Store builds and preview installation packages are not distributed on GitHub. Local development builds remain possible with Xcode. No App Store approval is claimed.
 
 [User guide](docs/USER_GUIDE.md) · [Developer guide](docs/DEVELOPMENT.md) · [Controls](docs/CONTROLS.md) · [Privacy](docs/PRIVACY.md) · [Release readiness](docs/RELEASE_READINESS.md) · [App Store handoff](docs/APP_STORE_SUBMISSION.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 
@@ -76,7 +76,7 @@ xcodebuild -project Form.xcodeproj -scheme Form -configuration AppStore \
   -derivedDataPath build-store CODE_SIGN_IDENTITY=- CODE_SIGNING_ALLOWED=YES build
 ```
 
-For an actual signed Store archive, configure a valid Apple team/distribution identity and use `scripts/archive.sh`; it selects `AppStore` and writes `distribution/Form-AppStore.xcarchive`. A local ad-hoc build is not a submission or a notarized public download.
+For an actual signed Store archive, configure a valid Apple team/distribution identity and use `scripts/archive.sh`; it selects `AppStore` and writes its archive to a local cache path configurable through `FORM_ARCHIVE_PATH`. A local ad-hoc build is not a submission or a notarized public download.
 
 
 ## Languages
@@ -96,7 +96,7 @@ npm run test:cad
 npm run package:source
 ```
 
-Downloaded library source archives remain in `vendor-source/`, outside the normal Git tree. Their pinned commits and SHA256 hashes are in `vendor-source-manifest.json`. Attach the corresponding-source package to any binary release and retain the LGPL replacement/rebuild instructions. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The exact dependency source archives are explicitly allowlisted under `vendor-source/` in the source-only repository, independently of any app release. Their pinned commits and SHA256 hashes are in `vendor-source-manifest.json`; direct and commit-pinned hosting instructions are in `vendor-source/README.md`. Publish/retain matching source access for the distributed Store version without uploading a Form binary to GitHub. The wrapper source packager includes those archives once and suppresses Finder metadata. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## License and support
 

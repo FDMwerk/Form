@@ -4,7 +4,7 @@
 - Lucide, pinned in package-lock.json — ISC. All toolbar symbols come from Lucide. Form's approved folded-F app icon is an original generated asset; see design/APP_ICON.md. https://github.com/lucide-icons/lucide
 - fflate 0.8.3 (bundled by Three.js 3MF loader) — MIT. https://github.com/101arrowz/fflate
 - occt-import-js 0.0.23 — LGPL 2.1. NPM source gitHead c2148e54b456b571238d35cac037d304053d64b2. https://github.com/kovacsv/occt-import-js/tree/c2148e54b456b571238d35cac037d304053d64b2
-- Open CASCADE compiled into the separate occt-import-js WASM binary — LGPL 2.1 with OCCT's applicable additional exception. Exact submodule revision: d2abb6d844231cb8f29be6894440874a4700e4a5. Exact source archives and SHA256 checksums are acquired in the separate vendor-source release package. Upstream OCCT licenses and all required source archives must accompany the release source distribution.
+- Open CASCADE compiled into the separate occt-import-js WASM binary — LGPL 2.1 with OCCT's applicable additional exception. Exact submodule revision: d2abb6d844231cb8f29be6894440874a4700e4a5. Exact source archives and SHA256 checksums are included in the allowlisted source-only `vendor-source/` repository directory; their public availability requires the corresponding source commit/push. Upstream OCCT licenses and all required source archives must accompany the release source distribution.
 
 Full installed license texts live in Resources/Web/licenses and are accessible in-app under Datenschutz & Lizenzen. Build tools (esbuild, Sharp, glTF Transform, meshoptimizer) are not shipped as app executables; their pinned licenses remain in their NPM distributions.
 
@@ -13,6 +13,14 @@ Full installed license texts live in Resources/Web/licenses and are accessible i
 The CAD loader is deliberately shipped separately as `occt.js` and `wasm.js`. The WASM payload is base64 encoded, not encrypted or DRM-protected by Form. Replace `node_modules/occt-import-js/dist/occt-import-js.js` and `.wasm` with a modified build, then run `npm run build` and rebuild/re-sign the app with Xcode. Modification and reverse engineering for debugging changes to the LGPL components are not prohibited by Form's license.
 
 **Release gate:** confirm the complete corresponding source of the exact distributed WASM (including submodule revision/build tools and OCCT exception) is packaged and reachable. Confirm App Store distribution terms do not remove recipients' LGPL rights. Merely linking to the current upstream repository is not treated as completion of this obligation.
+
+## Publisher-hosted exact dependency sources
+
+- [occt-import-js c2148e5 source archive](https://raw.githubusercontent.com/FDMwerk/Form/main/vendor-source/occt-import-js-c2148e5.tar.gz)
+- [OCCT d2abb6d source archive](https://raw.githubusercontent.com/FDMwerk/Form/main/vendor-source/OCCT-d2abb6d.tar.gz)
+- [Archive manifest and SHA-256 digests](https://raw.githubusercontent.com/FDMwerk/Form/main/vendor-source/manifest.json)
+
+These paths become public with the source commit/push and must be anonymously verified before distribution. Use that published commit instead of `main` for immutable version references. Keep earlier revision-named source files available when updating dependencies. The importer upstream tarball also includes the matching generated dependency WASM, not a Form app or installer; its runtime hash matches the pinned NPM build. No Form binary belongs in this source directory. See [retention and rebuild verification](docs/CORRESPONDING_SOURCE.md).
 
 ## Reference apple
 
