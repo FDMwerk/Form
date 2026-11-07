@@ -6,7 +6,7 @@
 
 Form is a free, open-source CAD viewer for Mac with a quiet interface, a fading grid and a collapsible assembly tree. It opens STEP, IGES, BREP, STL, OBJ, PLY, 3MF and self-contained glTF/GLB files without uploading your models.
 
-**Preview 0.3.0.** The source is available here; this version has not been released or approved in the Mac App Store. Public signed/notarized application downloads are not available yet. You can build it with Xcode using the instructions below.
+**Preview 0.3.0.** [Download the universal macOS test packages](https://github.com/FDMwerk/Form/releases/tag/v0.3.0-preview) · [MacBook installation notes](docs/INSTALL_MACBOOK_DE.md). The app has a local ad-hoc integrity signature; the DMG is unsigned and the packages are not notarized. This version has not been submitted or approved in the Mac App Store. You can also build it with Xcode using the instructions below.
 
 [User guide](docs/USER_GUIDE.md) · [Developer guide](docs/DEVELOPMENT.md) · [Controls](docs/CONTROLS.md) · [Privacy](docs/PRIVACY.md) · [Release readiness](docs/RELEASE_READINESS.md) · [App Store handoff](docs/APP_STORE_SUBMISSION.md) · [Third-party notices](THIRD_PARTY_NOTICES.md)
 

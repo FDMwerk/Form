@@ -49,6 +49,16 @@ The native PNG save dialog wrote a 1500 × 1640 image, then the saved image was 
 
 German system-language selection and manual English switching were verified in the app, including native menus. The same bundled viewer was checked in the local browser at 1040 × 600 with both sidebars: all three groups fit inside the viewport with 32 px bottom spacing. Arabic RTL layout was also rendered and checked at that size. Native macOS window-resize behaviour, physical mouse/trackpad variants and all translations have not received exhaustive manual validation.
 
+## Current release candidate — 2026-11-07
+
+Code commit `71a0437` passed the complete automated suite and both universal configurations in [GitHub Actions](https://github.com/FDMwerk/Form/actions/runs/42360030322). Native tests include a sandboxed real WKWebView test executing the actual production import/selection function bodies; this specifically prevents the missing-JavaScript-return bug discovered during app checks. Current tests also cover native capabilities, Store exclusion of external execution adapters, request/source correlation, UUID fallback, cancellation and last-model print-state cleanup.
+
+The actual desktop app showed the new folded-F sidebar mark, wider two-column application preferences and refined tree. An original 20 × 20 × 20 mm STL showed 8 cm³ volume; the geometric print range was 13–30 min with the displayed generic settings. The edges/orthographic view and right-click removal of the last file were exercised. The stalled native print/handoff discovered in that check was fixed and covered by the real WebKit regression; a final manual rerun after that fix remains pending because the development Mac was locked.
+
+ZIP and DMG preview artifacts were built from the final desktop payload. The clean staged app passed strict signature checks for both architectures, ZIP integrity and DMG checksums passed, and their explicit SHA256 manifest was published with [the preview release](https://github.com/FDMwerk/Form/releases/tag/v0.3.0-preview). They are not notarized or App Store distribution-signed. The exact corresponding-source archive is attached to the same release.
+
+The dependency-free product page was checked locally at desktop and 390px mobile widths, with all images loaded and no horizontal overflow. Its custom-domain WordPress publication is separate and still needs authenticated access. Final App Store interface screenshots also require the unlocked Mac; a model-only PNG export is not a substitute for those listing captures.
+
 ## Remaining validation
 
 Follow [QA.md](QA.md). Run real-app checks after the final source changes and packaging: native multi-file opening, file dialogs and drag/drop, color restoration, settings persistence, measurements, transforms, undo, docking, explosion, clipping and reference placement. Validate malformed and large files, minimum supported macOS, and an Intel Mac before presenting them as tested platforms. See `docs/RELEASE_READINESS.md` for the actual application/release review status.
