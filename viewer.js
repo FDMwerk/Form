@@ -139,7 +139,7 @@ window.selectedSourceID=()=>selectedObjects.size===1?(owner(selected)?.userData.
 $('#open-with').onclick=()=>window.webkit?.messageHandlers.native.postMessage('openWith');
 function remember(){const snapshot=[];model.traverse(o=>snapshot.push([o,o.position.clone(),o.quaternion.clone()]));undo.push(snapshot);if(undo.length>50)undo.shift()}
 window.undoScene=()=>{resetExplosion();const snap=undo.pop();if(!snap)return;for(const [o,p,q]of snap){o.position.copy(p);o.quaternion.copy(q)}preserveMeasurements();updateScene();updateInfo()};
-function isMeasurementPointer(event){return event.button===0&&!event.shiftKey&&!event.ctrlKey&&!event.metaKey&&!event.altKey}
+function isMeasurementPointer(event){if(window.formMobileInput?.isNavigationGesture(event))return false;return event.button===0&&!event.shiftKey&&!event.ctrlKey&&!event.metaKey&&!event.altKey}
 function visibleClippedHit(hits){return hits.find(hit=>isVisible(hit.object)&&(!cutEnabled||cutPlane.distanceToPoint(hit.point)>=0))}
 function cancelMeasurementPoint(){measurementTools?.cancelPending()}
 function stopTransform(){mode=null;transform.detach();for(const id of ['translate','rotate']){$('#'+id).classList.remove('active');$('#'+id).setAttribute('aria-pressed','false')}}
@@ -179,7 +179,7 @@ $('#remove').onclick=()=>{if(selectedObjects.size===1)removeAsset(owner(selected
 let selectionTransformDrag=false;
 renderer.domElement.addEventListener('pointerdown',()=>selectionTransformDrag=false);
 transform.addEventListener('dragging-changed',event=>{if(event.value)selectionTransformDrag=true});
-renderer.domElement.addEventListener('pointerup',event=>{if(measuring||mode||selectionTransformDrag||transform.dragging||event.button!==0||event.altKey||event.shiftKey||event.ctrlKey||event.metaKey||!down||Math.hypot(event.clientX-down[0],event.clientY-down[1])>4)return;const r=renderer.domElement.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1),camera);const hit=visibleClippedHit(ray.intersectObjects(meshes,false));if(hit)select(hit.object,{toggle:!!(event.metaKey||event.ctrlKey||event.shiftKey)})});
+renderer.domElement.addEventListener('pointerup',event=>{if(window.formMobileInput?.isNavigationGesture(event)||measuring||mode||selectionTransformDrag||transform.dragging||event.button!==0||event.altKey||event.shiftKey||event.ctrlKey||event.metaKey||!down||Math.hypot(event.clientX-down[0],event.clientY-down[1])>4)return;const r=renderer.domElement.getBoundingClientRect(),ray=new T.Raycaster();ray.setFromCamera(new T.Vector2((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1),camera);const hit=visibleClippedHit(ray.intersectObjects(meshes,false));if(hit)select(hit.object,{toggle:!!(event.metaKey||event.ctrlKey||event.shiftKey)})});
 
 $('#legal').onclick=()=>window.webkit?.messageHandlers.native.postMessage('legal');
 

@@ -1,6 +1,6 @@
-# Planned iPhone and iPad version
+# iPhone and iPad development
 
-This is a planned mobile workflow, not functionality included in the macOS release.
+Development started on 8 November 2026 in `mobile/`. The native iOS/iPadOS shell shares the local renderer and adds document import, sharing and touch layout. This is a development prototype, not a submitted or released mobile app. See [build and current limitations](../mobile/README.md) and [Bambu handoff research](MOBILE_BAMBU_HANDOFF.md). The workflow below remains the target; printer/preset setup and direct printing are not yet implemented.
 
 - Open supported 3D attachments from Mail through Share → Form, and files selected from Files/iCloud Drive.
 - Open model files legitimately downloaded from MakerWorld, Printables, Thingiverse and similar providers. A webpage URL is not itself a model file.
