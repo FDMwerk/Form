@@ -13,7 +13,7 @@ Form is a free, open-source CAD viewer for Mac with a quiet interface, a fading 
 ## Features
 
 - Open several CAD files, meshes or assemblies together; inspect their component hierarchy and file-type badges.
-- Orbit, pan, zoom and fit a selected file/part or all models; hide/show individual parts or groups.
+- Orbit, pan, zoom and fit a selected file/part or all models; hide/show individual parts or groups. Visible selection boxes and ⌘/Ctrl/Shift tree multi-selection share the same outer dimensions and fit bounds.
 - Switch solid, edge, wireframe and X-ray modes, perspective/orthographic projection and seven standard views.
 - Use familiar basic mouse profiles for Bambu Studio, Autodesk Fusion 360, Blender, SOLIDWORKS and Onshape, plus optional trackpad controls.
 - Preserve original material colors, CAD face colors, vertex colors and supported embedded textures. Use persistent app defaults plus session-only scene/file appearance overrides.

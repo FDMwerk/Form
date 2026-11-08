@@ -5,5 +5,20 @@ c('[data-display-mode="edges"]');const helper=r('meshes[0].children.find(child=>
 
 const corners=[...d.querySelectorAll('[data-nav-direction]')];assert.equal(corners.length,20);
 for(const button of corners){c('[data-nav-direction="'+button.dataset.navDirection+'"]');const expected=button.dataset.navDirection.split(',').map(Number),actual=Array.from(r('camera.position.clone().sub(controls.target).normalize().toArray()')),length=Math.hypot(...expected);actual.forEach((n,i)=>assert.ok(Math.abs(n-expected[i]/length)<1e-9));assert.equal(r('camera.matrixWorld.elements.every(Number.isFinite)'),true)}
-for(const face of d.querySelectorAll('[data-nav-view]')){assert.ok(face.textContent.trim().length>2);assert.ok(face.querySelector('[data-i18n]'),'Face label must retain a valid localization attribute')}
-console.log('PASS all 20 cube edge/corner targets preserve exact camera directions; six faces have readable localized labels.');
+const faceAxes={front:'-Y',back:'+Y',left:'-X',right:'+X',top:'+Z',bottom:'-Z'};
+for(const face of d.querySelectorAll('.view-cube-face[data-nav-view]')){
+ assert.equal(face.textContent.trim(),faceAxes[face.dataset.navView],'Cube face should show its axis only');
+ assert.equal(face.querySelector('.view-face-label'),null,'Directional words must not remain in visible cube content');
+ assert.equal(face.querySelector('.view-face-axis').getAttribute('aria-hidden'),'true');
+ assert.ok(face.getAttribute('data-i18n-aria-label'),'Localized accessible face name must remain');
+ assert.ok(face.getAttribute('data-i18n-title'),'Localized face tooltip must remain');
+ assert.ok(face.getAttribute('aria-label'));
+}
+for(const language of ['en','de','ja','ar']){
+ e(`window.applyViewportSettings({language:${JSON.stringify(language)}})`);
+ for(const face of d.querySelectorAll('.view-cube-face[data-nav-view]')){
+  assert.equal(face.textContent.trim(),faceAxes[face.dataset.navView],'Language changes must not replace axes with directional words');
+  assert.ok(face.getAttribute('aria-label'));
+ }
+}
+console.log('PASS all 20 cube targets preserve camera directions; six large axis-only faces retain localized accessibility/tooltips across four languages.');

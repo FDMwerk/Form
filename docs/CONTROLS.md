@@ -12,7 +12,7 @@ Use Form → Einstellungen (⌘,) or the settings button. Fundamental mouse prof
 
 These presets emulate the fundamental gestures, not every special gesture, selection mode, pivot rule or hardware driver behaviour of the original applications. Product names describe familiar mappings and do not imply endorsement or affiliation. A separately enabled trackpad mode uses two-finger scrolling for pan, Option + two fingers for orbit, and pinch for zoom. Speeds and zoom direction are adjustable. Settings are saved locally in the app's UserDefaults.
 
-A double click selects a component. Select a tree row to move a whole file or assembly group. Translation/rotation handles affect the selected group. While measuring, left clicks place measurement points; Escape exits measurement mode.
+A stationary primary click selects a component and shows its bounding box; navigation drags do not change selection. ⌘/Ctrl-click tree rows to toggle multiple items, or Shift-click to select a visible range. Outer dimensions measure the combined visible selection; All models selects the scene bounds. Select a tree row to move a whole file or assembly group. Translation/rotation handles affect the selected group. While measuring, left clicks place measurement points; Escape exits measurement mode.
 
 ## Display
 
