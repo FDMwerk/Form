@@ -29,7 +29,7 @@ const doodles=[
  {name:'Blocks',nodes:Blocks,x:2050,y:100,size:115,angle:12}
 ];
 export const suggestedSlides=[
- {id:'01-models',theme:'violet',de:{headline:'Deine Modelle.\nIn bester Form.',subtitle:'Der klare CAD Viewer für deinen Mac.'},en:{headline:'Your models.\nIn perfect Form.',subtitle:'The clear CAD viewer for your Mac.'}},
+ {id:'01-models',theme:'violet',de:{headline:'Kostenloser 3D Viewer',subtitle:'Der klare CAD Viewer für deinen Mac.'},en:{headline:'Free 3D Viewer',subtitle:'The clear CAD viewer for your Mac.'}},
  {id:'02-explore',theme:'ivory',de:{headline:'Öffnen. Drehen.\nVerstehen.',subtitle:'3D-Modelle entdecken. Ganz in deinem Tempo.'},en:{headline:'Open. Rotate.\nUnderstand.',subtitle:'Explore your 3D models at your own pace.'}},
  {id:'03-measure',theme:'lavender',de:{headline:'Maße, die\nKlarheit schaffen.',subtitle:'Außenmaße, Details und Abstände im Blick.'},en:{headline:'Measurements\nthat make sense.',subtitle:'See dimensions, details and distances clearly.'}},
  {id:'04-organize',theme:'plum',de:{headline:'Alles im Blick.',subtitle:'Mehrere Modelle. Eine aufgeräumte Ansicht.'},en:{headline:'Every detail in view.',subtitle:'Multiple models. One clear workspace.'}},
