@@ -16,7 +16,9 @@
 		90C47B946C5DE6310259FC6A /* FileInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C425B8A095420EEB66ABAAD /* FileInformation.swift */; };
 		A2D3174118D551C99E85C135 /* viewport.css in Resources */ = {isa = PBXBuildFile; fileRef = 55CB20ECC354AB3680A4D12C /* viewport.css */; };
 		BE1F89A12F38B9EBC246E78A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 42D8CD83408FC8E237289211 /* PrivacyInfo.xcprivacy */; };
+		C5E33D8DFC9305C0F2D6FFF9 /* ModelSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */; };
 		D225F5E0DB33D2DA51136AD5 /* MobileLegal.html in Resources */ = {isa = PBXBuildFile; fileRef = EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */; };
+		D6B145780D7C9C58290E778A /* sidebar.js in Resources */ = {isa = PBXBuildFile; fileRef = D9C55EA2F28A6C85D1D4881B /* sidebar.js */; };
 		EDA0B796EA16CCE2A68BD5AF /* Examples in Resources */ = {isa = PBXBuildFile; fileRef = 2CF78B49DE5E49469120F0F9 /* Examples */; };
 		F9B62C5A796FCAF67BB254BE /* viewport.js in Resources */ = {isa = PBXBuildFile; fileRef = 6735AABCD6F5A88EF3BAE8C6 /* viewport.js */; };
 /* End PBXBuildFile section */
@@ -42,6 +44,8 @@
 		BE0676F6A5982F863701872B /* MobileChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChrome.swift; sourceTree = "<group>"; };
 		BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5274BA2CFAFCF7065EE30B1 /* FormMobileTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FormMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSidebar.swift; sourceTree = "<group>"; };
+		D9C55EA2F28A6C85D1D4881B /* sidebar.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = sidebar.js; sourceTree = "<group>"; };
 		E6C206125563339A313519B0 /* native-chrome.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "native-chrome.js"; sourceTree = "<group>"; };
 		E8CB325CFBCA3052D4CDF1AF /* FormMobile.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FormMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = MobileLegal.html; sourceTree = "<group>"; };
@@ -72,6 +76,7 @@
 				491BE740BA982CBA7777720D /* App.swift */,
 				2C425B8A095420EEB66ABAAD /* FileInformation.swift */,
 				BE0676F6A5982F863701872B /* MobileChrome.swift */,
+				D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -99,6 +104,7 @@
 			children = (
 				2CF78B49DE5E49469120F0F9 /* Examples */,
 				E6C206125563339A313519B0 /* native-chrome.js */,
+				D9C55EA2F28A6C85D1D4881B /* sidebar.js */,
 				55CB20ECC354AB3680A4D12C /* viewport.css */,
 				6735AABCD6F5A88EF3BAE8C6 /* viewport.js */,
 				F6A11EDDD71FCFCDA5BE337B /* Web */,
@@ -195,6 +201,7 @@
 				BE1F89A12F38B9EBC246E78A /* PrivacyInfo.xcprivacy in Resources */,
 				8A5B1F2673EDB827BD1442EA /* Web in Resources */,
 				58AAE3891904ED142A20FE87 /* native-chrome.js in Resources */,
+				D6B145780D7C9C58290E778A /* sidebar.js in Resources */,
 				A2D3174118D551C99E85C135 /* viewport.css in Resources */,
 				F9B62C5A796FCAF67BB254BE /* viewport.js in Resources */,
 			);
@@ -210,6 +217,7 @@
 				31B228CF5AA045770BFC53FC /* App.swift in Sources */,
 				90C47B946C5DE6310259FC6A /* FileInformation.swift in Sources */,
 				4C8D4997FC171995FF4A8C9F /* MobileChrome.swift in Sources */,
+				C5E33D8DFC9305C0F2D6FFF9 /* ModelSidebar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -40,6 +40,19 @@ import CryptoKit
         XCTAssertEqual(headerDisplay, "contents")
         _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('scene-settings')")
         try await Task.sleep(nanoseconds: 200_000_000)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            controller.modelSidebar.loadViewIfNeeded()
+            XCTAssertGreaterThanOrEqual(controller.modelSidebar.collectionView(controller.modelSidebar.collectionView,numberOfItemsInSection:1),2)
+            let nativeSidebar = try await controller.web.evaluateJavaScript("document.documentElement.dataset.nativeSidebar === 'true'") as? Bool
+            XCTAssertEqual(nativeSidebar,true)
+            let toggled = try await controller.web.evaluateJavaScript("(()=>{const row=document.querySelector('#parts .partrow');window.formMobileSidebarAction('visibility',row.dataset.nodeId);return document.querySelector('#parts .partrow').classList.contains('tree-hidden')})()") as? Bool
+            XCTAssertEqual(toggled,true)
+            _ = try await controller.web.evaluateJavaScript("window.formMobileSidebarAction('visibility',document.querySelector('#parts .partrow').dataset.nodeId)")
+            _ = try await controller.web.evaluateJavaScript("window.formMobileSidebarAction('select','all')")
+            let allSelected = try await controller.web.evaluateJavaScript("document.querySelector('.scene-row').getAttribute('aria-selected')") as? String
+            XCTAssertEqual(allSelected,"true")
+            _ = try await controller.web.evaluateJavaScript("window.formMobileSidebarAction('select',document.querySelector('#parts .partrow').dataset.nodeId)")
+        }
         let image = UIGraphicsImageRenderer(bounds: host.bounds).image { _ in host.drawHierarchy(in: host.bounds, afterScreenUpdates: true) }
         let attachment = XCTAttachment(image: image); attachment.name = "Original 3DBenchy"; attachment.lifetime = .keepAlways; add(attachment)
         let screenshot = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("FormMobile-Benchy-\(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone").png")

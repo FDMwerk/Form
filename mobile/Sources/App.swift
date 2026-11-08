@@ -35,7 +35,7 @@ enum MobileFilePolicy {
     static func accepts(_ url: URL) -> Bool { url.isFileURL && extensions.contains(url.pathExtension.lowercased()) }
 }
 
-final class MobileViewerController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate, UIDocumentPickerDelegate {
+final class MobileViewerController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate, UIDocumentPickerDelegate, UIAdaptivePresentationControllerDelegate {
     private(set) var web: WKWebView!
     private(set) var ready = false
     private var importing = false
@@ -45,6 +45,14 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
     private let reader = DispatchQueue(label: "de.fdmwerk.form.mobile.import", qos: .userInitiated)
     private let chrome = MobileChrome()
     private var chromeWidth: CGFloat = 0
+    private(set) var modelSidebar = ModelSidebarController()
+    private lazy var sidebarNavigation = UINavigationController(rootViewController:modelSidebar)
+    private var webLeading: NSLayoutConstraint!
+    private var sidebarVisible = true
+    private var sidebarEmbedded = false
+    private var sidebarConstraints: [NSLayoutConstraint] = []
+    private var nativeSidebar: Bool { traitCollection.userInterfaceIdiom == .pad }
+    private var wideSidebar: Bool { nativeSidebar && view.bounds.width >= 800 }
     private let preferenceKey = "FormMobileViewportPreferences"
     private let sessionDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("Form-" + UUID().uuidString, isDirectory: true)
     override func viewDidLoad() {
@@ -53,7 +61,8 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = .nonPersistent()
         configuration.userContentController.add(self, name: "native")
-        for (name, ext) in [("viewport", "css"), ("viewport", "js"), ("native-chrome", "js")] {
+        if nativeSidebar {configuration.userContentController.addUserScript(WKUserScript(source:"window.FORM_NATIVE_SIDEBAR=true;",injectionTime:.atDocumentStart,forMainFrameOnly:true))}
+        for (name, ext) in [("viewport", "css"), ("viewport", "js"), ("native-chrome", "js"), ("sidebar", "js")] {
             guard let url = Bundle.main.url(forResource: name, withExtension: ext), let content = try? String(contentsOf: url) else { continue }
             let script: String
             if ext == "css", let data = try? JSONSerialization.data(withJSONObject: [content]), let literal = String(data: data, encoding: .utf8) {
@@ -67,23 +76,59 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         web.isOpaque = false
         view.addSubview(web)
         web.translatesAutoresizingMaskIntoConstraints = false
+        webLeading = web.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor)
         NSLayoutConstraint.activate([
-            web.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            webLeading,
             web.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             web.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             web.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
-        chrome.install(in: self) { [weak self] command in
-            if command == "info" { self?.showFileInformation(); return }
-            self?.web.callAsyncJavaScript("window.formMobileCommand?.(command)", arguments: ["command":command], in: nil, in: .page) { _ in }
+        chrome.install(in:self) { [weak self] command in self?.performMobileCommand(command) }
+        modelSidebar.command = { [weak self] action,id,multi in
+            guard let self else {return}
+            if action == "command" {
+                if self.sidebarNavigation.presentingViewController != nil {self.sidebarNavigation.dismiss(animated:true) {self.performMobileCommand(id)}}
+                else {self.performMobileCommand(id)}
+            } else {
+                self.web.callAsyncJavaScript("window.formMobileSidebarAction?.(action,id,multi)",arguments:["action":action,"id":id,"multi":multi],in:nil,in:.page) {_ in}
+                if action == "select", !multi, self.sidebarNavigation.presentingViewController != nil {self.sidebarNavigation.dismiss(animated:true)}
+            }
         }
         guard let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "Web") else { showError("Viewer resources are missing."); return }
         web.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if view.bounds.width != chromeWidth { chromeWidth = view.bounds.width; chrome.updateLayout() }
+        if view.bounds.width != chromeWidth { chromeWidth = view.bounds.width; chrome.updateLayout(); layoutModelSidebar() }
     }
+    private func performMobileCommand(_ command:String) {
+        if command == "side", nativeSidebar {
+            if wideSidebar {sidebarVisible.toggle();layoutModelSidebar()}
+            else if presentedViewController == nil {
+                modelSidebar.navigationItem.leftBarButtonItem=UIBarButtonItem(systemItem:.done,primaryAction:UIAction { [weak self] _ in self?.sidebarNavigation.dismiss(animated:true) {self?.layoutModelSidebar()} })
+                present(sidebarNavigation,animated:true);sidebarNavigation.presentationController?.delegate=self
+            }
+            return
+        }
+        if command == "info" {showFileInformation();return}
+        web.callAsyncJavaScript("window.formMobileCommand?.(command)",arguments:["command":command],in:nil,in:.page) {_ in}
+    }
+    private func layoutModelSidebar() {
+        guard isViewLoaded, nativeSidebar else {return}
+        let show = wideSidebar && sidebarVisible
+        if show, !sidebarEmbedded, sidebarNavigation.presentingViewController == nil {
+            modelSidebar.navigationItem.leftBarButtonItem=nil
+            addChild(sidebarNavigation);view.insertSubview(sidebarNavigation.view,aboveSubview:web)
+            sidebarNavigation.view.translatesAutoresizingMaskIntoConstraints=false
+            sidebarConstraints=[sidebarNavigation.view.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor,constant:8),sidebarNavigation.view.topAnchor.constraint(equalTo:view.safeAreaLayoutGuide.topAnchor,constant:52),sidebarNavigation.view.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor,constant:-68),sidebarNavigation.view.widthAnchor.constraint(equalToConstant:292)]
+            NSLayoutConstraint.activate(sidebarConstraints);sidebarNavigation.didMove(toParent:self);sidebarEmbedded=true
+            sidebarNavigation.view.layer.cornerRadius=20;sidebarNavigation.view.layer.cornerCurve = .continuous;sidebarNavigation.view.clipsToBounds=true
+        } else if !show, sidebarEmbedded {
+            sidebarNavigation.willMove(toParent:nil);NSLayoutConstraint.deactivate(sidebarConstraints);sidebarNavigation.view.removeFromSuperview();sidebarNavigation.removeFromParent();sidebarEmbedded=false
+        }
+        webLeading.constant=sidebarEmbedded ? 308 : 0
+    }
+    func presentationControllerDidDismiss(_ presentationController:UIPresentationController) {layoutModelSidebar()}
     func enqueue(_ urls: [URL]) {
         pending.append(contentsOf: urls)
         if isViewLoaded { drain() }
@@ -130,7 +175,11 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
         guard message.frameInfo.isMainFrame, message.webView === web, message.frameInfo.request.url?.isFileURL == true else { return }
         if let object = message.body as? [String: Any] {
-            if object["type"] as? String == "mobileChromeState", let state = object["state"] as? [String:Any] { chrome.setState(dictionary: state); return }
+            if object["type"] as? String == "mobileChromeState", let state = object["state"] as? [String:Any] {
+                chrome.setState(dictionary:state)
+                if nativeSidebar {modelSidebar.setState(state["sidebar"] as? [String:Any] ?? [:],controls:state["controls"] as? [String:[String:Any]] ?? [:],german:(state["language"] as? String ?? "en").hasPrefix("de"))}
+                return
+            }
             if object["type"] as? String == "viewportPreferences", let value = object["value"] as? [String: Any], JSONSerialization.isValidJSONObject(value) { UserDefaults.standard.set(value, forKey: preferenceKey) }
             if object["type"] as? String == "saveScreenshot", let png = object["png"] as? String, png.count < 64 * 1024 * 1024, let data = Data(base64Encoded: png), let image = UIImage(data: data) { share([image]) }
             return

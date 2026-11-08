@@ -7,6 +7,7 @@
       const el = document.getElementById(id); if (!el) continue;
       controls[id] = {label: el.getAttribute('aria-label') || el.title || el.textContent.trim(), enabled: !el.disabled, active: el.classList.contains('active') || el.getAttribute('aria-pressed') === 'true'};
     }
+    controls.open.label = document.querySelector('#open [data-i18n]')?.textContent.trim() || controls.open.label;
     const german = document.documentElement.lang.startsWith('de');
     controls['view-tools']={label:german?'Ansicht':'View',enabled:true};
     controls['measurement-tools']={label:german?'Messoptionen':'Measurement options',enabled:true};
@@ -20,7 +21,7 @@
     const language = (document.documentElement.lang || 'en').split('-')[0], labels = words[language] || words.en;
     controls.more = {label:labels[0],enabled:true}; controls.openExample = {label:labels[1],enabled:true};
     controls['open-with'].label = labels[2];
-    window.webkit?.messageHandlers.native.postMessage({type:'mobileChromeState',state:{title:document.getElementById('filename')?.textContent || '',language:document.documentElement.lang,controls,unit:document.getElementById('unit')?.value,units:[...document.querySelectorAll('#unit option')].map(o=>({value:o.value,label:o.textContent}))}});
+    window.webkit?.messageHandlers.native.postMessage({type:'mobileChromeState',state:{sidebar:window.formMobileSidebarSnapshot?.() || {},title:document.getElementById('filename')?.textContent || '',language:document.documentElement.lang,controls,unit:document.getElementById('unit')?.value,units:[...document.querySelectorAll('#unit option')].map(o=>({value:o.value,label:o.textContent}))}});
   };
   window.formMobileCommand = command => {
     if (command === 'openExample') { window.webkit?.messageHandlers.native.postMessage(command); return; }

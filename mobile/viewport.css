@@ -156,3 +156,6 @@ html[data-native-chrome] #tree-context-menu button { min-height:48px; font-size:
 }
 html[data-native-chrome] .mobile-subpanel-close { position:sticky; top:0; z-index:3; display:flex; align-items:center; justify-content:center; width:44px; height:44px; min-width:44px; min-height:44px; padding:11px; margin:0 0 8px auto; border-radius:22px; background:Canvas; color:CanvasText; border:1px solid #8884; flex-shrink:0 }
 html[dir=rtl][data-native-chrome] .mobile-subpanel-close { margin-inline-start:auto; margin-inline-end:0 }
+
+/* iPad uses UIKit's native model sidebar; retain hidden DOM as the renderer bridge. */
+html[data-native-sidebar] body>aside,html[data-native-sidebar] #mobile-panel-backdrop {display:none!important}

@@ -13,6 +13,7 @@ xcodegen generate --spec mobile/project.yml
 xcodebuild -project mobile/FormMobile.xcodeproj -scheme FormMobile -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build
 node mobile/viewport-test.mjs
 node mobile/native-chrome-test.mjs
+node mobile/sidebar-test.mjs
 ```
 
 Open `mobile/FormMobile.xcodeproj`, select `FormMobile`, then an iPhone/iPad simulator. For real-device installation select an authorized development team and provision the separate `de.fdmwerk.form.mobile` identifier. No new distribution certificate or Store submission is performed by these steps.
@@ -38,3 +39,5 @@ The original `3DBenchy.stl` from MakerWorld 40146 is included unchanged under `R
 Physical iPhone/iPad validation of Mail, Files/iCloud providers, memory/large CAD imports, accessibility/VoiceOver, touch measurements/cube and landscape. Some native prototype errors remain English. Multi-file external GLTF/OBJ dependencies need explicit packaging support. Harden resource/memory recovery and session-copy cleanup. Add verified machine/nozzle/profile catalogue and prototype setup UI; selecting PLA/PETG must not pretend to produce G-code. Follow the [Bambu investigation](../docs/MOBILE_BAMBU_HANDOFF.md) before promising a supported direct-print route. Add device signing/TestFlight, mobile icons/screenshots, full localization and a separate Store review only after these checks.
 
 The macOS app already submitted to Apple stays at its immutable release build. Building this prototype does not replace `/Applications/Form.app`.
+
+On iPad, a native system sidebar replaces the HTML model tree. It shows beside the viewport in wide windows and as a sheet in compact windows, with native swipe/context actions and hierarchy disclosure.

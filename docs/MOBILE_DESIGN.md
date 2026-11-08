@@ -22,3 +22,11 @@ The bottom bar now separates View (six focused commands), Measurement options (d
 File information uses a native grouped table in a system sheet with medium/large detents and readable wrapping labels/values. Position and docking remain separate editing controls. Web subpanels for display, background and scene settings have explicit close controls; all detailed panels are bounded and scrollable, with portrait/landscape rules and 44pt fields. These improvements retain the existing model operations and detailed measurement controls.
 
 Mobile grid spacing uses 1/2/5 mm steps selected from camera span and CSS viewport height, with hysteresis and stronger major lines. Desktop spacing and radial fading are retained. Tests cover camera zoom, grid visibility/background, all original toolbar commands, opening/closing detailed panels, unit changes and native information-sheet content. Simulator checks remain distinct from real-device touch/accessibility acceptance.
+
+## Native iPad sidebar
+
+The iPad model sidebar now uses `UICollectionView` with Apple's `.sidebar` list appearance, native large navigation title, SF Symbols, selection indicators and Dynamic Type text. The former HTML desktop sidebar is hidden on iPad only; its model state remains the renderer bridge. Opening files/example, hierarchy disclosure, selecting All Models or multiple parts, measurement focus, visibility, root-file removal, settings, feedback and legal actions remain connected to the original operations.
+
+Wide iPad windows show a separate 292pt native sidebar; it can be hidden using the sidebar button. Compact iPad windows open the same list as a dismissible native sheet, preserving viewport space. Visibility and removal use native swipe actions and context menus; full-swipe deletion is disabled. The native sidebar is not installed on iPhone. Real-device resizing/VoiceOver acceptance remains outstanding.
+
+References: [Apple Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars), [UIKit sidebar appearance](https://developer.apple.com/documentation/uikit/uicollectionlayoutlistconfiguration-swift.struct/appearance-swift.enum/sidebar).

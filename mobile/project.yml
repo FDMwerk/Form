@@ -22,6 +22,8 @@ targets:
         buildPhase: resources
       - path: viewport.js
         buildPhase: resources
+      - path: sidebar.js
+        buildPhase: resources
       - path: native-chrome.js
         buildPhase: resources
       - path: viewport.css
