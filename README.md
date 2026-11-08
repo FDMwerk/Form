@@ -13,11 +13,11 @@ Form is a free, open-source CAD viewer for Mac with a quiet interface, a fading 
 ## Features
 
 - Open several CAD files, meshes or assemblies together; inspect their component hierarchy and file-type badges.
-- Orbit, pan, zoom and fit a selected file/part or all models; hide/show individual parts or groups. Visible selection boxes and ⌘/Ctrl/Shift tree multi-selection share the same outer dimensions and fit bounds.
+- Orbit, pan, zoom and fit a selected file/part or all models; hide/show individual parts or groups. Toggle the selection box without losing the selection; ⌘/Ctrl/Shift tree multi-selection shares the same outer dimensions and fit bounds. Drag the view cube to orbit, or click its faces, edges and corners for standard views.
 - Switch solid, edge, wireframe and X-ray modes, perspective/orthographic projection and seven standard views.
 - Use familiar basic mouse profiles for Bambu Studio, Autodesk Fusion 360, Blender, SOLIDWORKS and Onshape, plus optional trackpad controls.
 - Preserve original material colors, CAD face colors, vertex colors and supported embedded textures. Use persistent app defaults plus session-only scene/file appearance overrides.
-- Inspect file information, overall dimensions, two-point surface measurements and closed-mesh volume.
+- Inspect file information, overall dimensions, point-to-point distances, multi-point paths, three-point angles and closed-mesh volume.
 - Estimate FFF print time with editable generic material parameters. When Bambu Studio is installed, optionally calculate an original STL with its local A1 mini CLI profile; no print job is sent.
 - Hand original files to compatible installed CAD applications, Blender or slicers using Open With.
 - Translate and rotate components or groups with handles and numeric world positions.
@@ -25,6 +25,7 @@ Form is a free, open-source CAD viewer for Mac with a quiet interface, a fading 
 - Move a planar clipping section through the model.
 - View models with studio lighting, smoother STL surfaces and ground shadows.
 - Toggle a textured apple size reference, normalized to an 80 mm maximum bounding dimension.
+- Manage individual measurements in the sidebar: focus, show/hide or delete them; optionally snap to displayed mesh vertices and triangle edges.
 - Save clean PNG viewport screenshots with visible dimension and measurement labels.
 - Use 41 interface languages, automatic macOS language selection and right-to-left layouts.
 - Work without an account, advertising, analytics, model uploads or runtime AI services. Preference settings are saved locally.

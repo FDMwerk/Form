@@ -1,10 +1,10 @@
 # Form release readiness — updated 2026-11-08
 
-Status: **Build 9 is the current locally tested candidate; Build 7 passed Apple validation. Upload and App Review submission remain pending**. Source is public and the product website is live. No App Store binary upload, App Review submission/approval, notarization or public production binary release is claimed. The current user instruction permits **source-only GitHub publication**, with no App Store or desktop-preview binaries uploaded to GitHub.
+Status: **Build 10 is the current locally tested and privately packaged candidate; the final Build 10 archive passed Xcode Organizer validation. Upload and App Review submission remain pending**. Source is public and the product website is live. No App Store binary upload, App Review submission/approval, notarization or public production binary release is claimed. The current user instruction permits **source-only GitHub publication**, with no App Store or desktop-preview binaries uploaded to GitHub.
 
 ## Latest candidate
 
-Build 9 adds explicit selection boxes, shared dimensions and tree multi-selection, plus larger axis-only navigation cube labels. Successful imports keep the box hidden until explicit selection. The complete automated suite, universal Desktop/AppStore builds and private signed archive/installer checks passed. Real native selection checks are recorded in [VERIFICATION.md](VERIFICATION.md). The Build 7 Apple validation result does not validate the changed Build 9 binary.
+Build 10 adds mesh-anchored distance, path and angle measurements with individual visibility, focusing and deletion, optional vertex/triangle-edge snapping, a separate selection-box toggle and camera dragging on the view cube. The full automated suite and subsequent targeted angle-localization checks passed. Native QA verified the controls and their interactions. Both universal builds, signed Store archive and expanded installer passed local integrity checks. Desktop build 10 is installed; existing isolated QA sessions were preserved. Store media and metadata are prepared in six languages and persisted in App Store Connect; Apple is still processing some media. No build has been selected/uploaded for review. See [VERIFICATION.md](VERIFICATION.md) and [APP_STORE_SUBMISSION.md](APP_STORE_SUBMISSION.md).
 
 ## Current publisher and channel decision
 
@@ -83,3 +83,7 @@ On **8 November 2026**, the user reauthenticated the existing Apple account in X
 On **8 November 2026**, the user reported that the MacBook test completed successfully and accepted the local test. This is a user-reported smoke-test result; it does not identify a specific processor/minimum macOS version or establish exhaustive hardware/accessibility testing.
 
 DSA address proof was submitted earlier. The **last verified** portal status remains **“In Prüfung” from 7 November 2026**; no fresh DSA check or approval is claimed in this checkpoint.
+
+## Final Build 10 Apple validation — 2026-11-08
+
+Xcode Organizer completed validation of the final Form 0.3.0 (10) archive successfully, using the existing team distribution certificate and Store profile. This supersedes build 7 as the latest validated archive. It does not mean an upload, App Review submission, approval or release. The binary-upload/build-selection step remains pending.

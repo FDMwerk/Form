@@ -36,8 +36,8 @@ export const suggestedSlides=[
  {id:'05-appearance',theme:'violet',de:{headline:'Dein Blick.\nDeine Perspektive.',subtitle:'Vertraute Ansichten. Farben, die bleiben.'},en:{headline:'Your view.\nYour perspective.',subtitle:'Familiar views. Original colors.'}}
 ];
 
-async function textImage(text,{size=96,color=brand.white,width=2240,weight=300,align='centre'}={}){
- const buffer=await sharp({text:{text:`<span foreground="${color}" weight="${weight}">${escape(text)}</span>`,font:`Manrope ${size}`,fontfile:font,width,align,rgba:true,dpi:72,spacing:4}}).png().toBuffer();
+async function textImage(text,{size=96,color=brand.white,width=2240,weight=300,align='centre',fontFamily='Manrope',fontPath=font}={}){
+ const buffer=await sharp({text:{text:`<span foreground="${color}" weight="${weight}">${escape(text)}</span>`,font:`${fontFamily} ${size}`,fontfile:fontPath,width,align,rgba:true,dpi:72,spacing:4}}).png().toBuffer();
  const info=await sharp(buffer).metadata();return {buffer,width:info.width,height:info.height};
 }
 function background(theme,generic=false){
@@ -50,7 +50,7 @@ function background(theme,generic=false){
 function slideTheme(slide){const theme=themes[slide.theme||'ivory'];if(!theme)throw Error('Unknown brand theme.');return theme}
 function slideCopy(copy){return {headline:copy.headline.replaceAll('\\n','\n'),subtitle:copy.subtitle||''}}
 async function brandOverlays(manifest,copy,slide,theme){
- const headline=await textImage(slideCopy(copy).headline,{size:slide.headlineSize||104,color:theme.foreground,width:2240,weight:600});
+ const headline=await textImage(slideCopy(copy).headline,{size:copy.headlineSize||slide.headlineSize||104,color:theme.foreground,width:2240,weight:600,fontFamily:copy.fontFamily||'Manrope',fontPath:copy.fontPath||font});
  if(headline.height>320)throw Error('Headline exceeds the reserved title area; shorten it or reduce headlineSize.');
  const top=Number.isFinite(manifest.headerCenterY)?Math.round(manifest.headerCenterY-headline.height/2):slide.headlineTop??(slideCopy(copy).headline.includes('\n')?126:190);
  const overlays=[{input:headline.buffer,left:Math.round((W-headline.width)/2),top}];
@@ -108,7 +108,7 @@ export async function composeStoreMedia(manifest){
  const output=path.resolve(manifest.outputDirectory||path.join(project,'build/store-media-2026-11-08'));
  const generic=manifest.presentation==='generic-screen';
  const device=generic?null:await verifyDevice(manifest.device),languages=manifest.languages||['de','en'];
- if(!languages.length||languages.some(locale=>!['de','en'].includes(locale)))throw Error('Use separate German and/or English media sets.');
+ if(!languages.length||languages.some(locale=>!['de','en','zh-Hans','ja','hi','ru'].includes(locale)))throw Error('Use supported separate localized media sets.');
  await fs.mkdir(output,{recursive:true});
  const sourceReport={createdAt:new Date().toISOString(),artDirection:'Light surface, large Manrope headlines and subtle Lucide model doodles',doodles:{source:'lucide 1.70.0',license:'ISC',names:doodles.map(d=>d.name)},canvas:{width:W,height:H},brandGuide:'FDMwerk Brandbook V7 / AKTUELL.txt',font:{family:'Manrope',license:'SIL OFL 1.1',notice:'scripts/store-media-assets/OFL-Manrope.txt'},device:generic?{type:'Generic rounded display border',appleAssetUsed:false,details:'No notch, logo, chassis or claim of Apple hardware. Lower canvas clipping intentional.'}:{source:manifest.device.sourceURL||null,asset:path.basename(manifest.device.file),sha256:digest(device.input),screen:device.screen,alterations:'Proportional resizing only. No crop, added shadow, tilt or repaint.'},images:[]};
  for(const [index,slide]of(manifest.slides||[]).entries())for(const locale of languages){
@@ -152,7 +152,7 @@ export async function composeStoreMedia(manifest){
   const directory=path.join(output,locale);await fs.mkdir(directory,{recursive:true});const filename=`${String(index+1).padStart(2,'0')}-${slide.id||'form'}-${locale}.png`,target=path.join(directory,filename);
   await sharp(background(theme,generic)).composite(overlays).flatten({background:theme.background}).removeAlpha().png().toFile(target);
   const rendered=await sharp(target).metadata();if(rendered.width!==W||rendered.height!==H||rendered.hasAlpha)throw Error('App Store output dimensions/alpha mismatch.');
-  sourceReport.images.push({locale,file:path.relative(output,target),capture:path.basename(copy.capture),captureSHA256:digest(capture),cropTopPixels:copy.cropTopPixels??manifest.captureTopCropPixels??0,headline:copy.headline,theme:slide.theme||'violet',credit:credit||null});
+  sourceReport.images.push({locale,file:path.relative(output,target),capture:path.basename(copy.capture),captureSHA256:digest(capture),cropTopPixels:copy.cropTopPixels??manifest.captureTopCropPixels??0,headline:copy.headline,titleFont:copy.fontFamily||'Manrope',captureLanguage:copy.captureLanguage||locale,theme:slide.theme||'violet',credit:credit||null});
  }
  await fs.writeFile(path.join(output,'MEDIA_PROVENANCE.json'),JSON.stringify(sourceReport,null,2)+'\n');
  // A contact sheet is a private review artifact, not a screenshot for upload.
