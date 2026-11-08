@@ -1,6 +1,10 @@
 # Form release readiness — updated 2026-11-08
 
-Status: **Build 7 passed Apple validation; upload and App Review submission remain pending**. Source is public and the product website is live. No App Store binary upload, App Review submission/approval, notarization or public production binary release is claimed. The current user instruction permits **source-only GitHub publication**, with no App Store or desktop-preview binaries uploaded to GitHub.
+Status: **Build 9 is the current locally tested candidate; Build 7 passed Apple validation. Upload and App Review submission remain pending**. Source is public and the product website is live. No App Store binary upload, App Review submission/approval, notarization or public production binary release is claimed. The current user instruction permits **source-only GitHub publication**, with no App Store or desktop-preview binaries uploaded to GitHub.
+
+## Latest candidate
+
+Build 9 adds explicit selection boxes, shared dimensions and tree multi-selection, plus larger axis-only navigation cube labels. Successful imports keep the box hidden until explicit selection. The complete automated suite, universal Desktop/AppStore builds and private signed archive/installer checks passed. Real native selection checks are recorded in [VERIFICATION.md](VERIFICATION.md). The Build 7 Apple validation result does not validate the changed Build 9 binary.
 
 ## Current publisher and channel decision
 

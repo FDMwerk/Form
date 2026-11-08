@@ -76,3 +76,10 @@ On **8 November 2026**, the user reauthenticated the existing Apple account in X
 On **8 November 2026**, the user reported that the MacBook test completed successfully and accepted the local test. This is a user-reported smoke-test result; it does not identify a specific processor/minimum macOS version or establish exhaustive hardware/accessibility testing.
 
 DSA remains last observed 7 November 2026 “In Prüfung”; this is not a fresh portal verification.
+
+
+## Build 9 selection and navigation checkpoint — 2026-11-08
+
+The full automated suite, including seven integrated selection scenarios, passed. Both Desktop and AppStore products were built for arm64 and x86_64. The separate signed AppStore archive and the fully expanded installer were checked for build 9, the existing distribution team/profile, sandboxing and absence of get-task-allow or external execution payloads. The extracted private Desktop test ZIP passed strict signature checks. This is local build/package verification; Apple Organizer validation remains recorded for build 7 only. No build 9 upload, App Review submission or approval is claimed.
+
+Real native QA used an isolated Store-flavor build 9 window and the unchanged MakerWorld Benchy mesh: opening initially showed no selection box; explicit tree selection enabled the violet box; Measure displayed 60 × 31 × 48 mm outer dimensions. Cmd-click selected two files and displayed 140 × 31 × 48 mm; All models expanded the selection to 220 × 31 × 48 mm across three files. Navigation cube faces displayed large signed axes, with no visible direction words. Fresh German and English app captures were taken for private Store media. Native QA did not replace the user's other open app sessions.
