@@ -1,6 +1,6 @@
 # App Store submission handoff
 
-Status: **Build 10 is the current locally tested and signed candidate. Build 10 passed Xcode Organizer validation; no binary upload, review submission or approval is claimed**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
+Status: **Build 11 is the current locally tested and signed candidate. Build 11 passed Xcode Organizer validation; upload/submission are tracked below; no binary upload, review submission or approval is claimed**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
 
 ## Verified publisher and distribution policy
 
@@ -89,3 +89,13 @@ Final media: revision 8 contains 24 localized stills, and V3 has six separate 28
 All six version localizations retain four correctly named images and one matching V3 preview after a full reload. Four new descriptions/promotional texts/keywords and support/marketing URLs persisted. English and four additional app-name/subtitle localizations were saved and verified after reload. Image thumbnails are partly still loading/processing and videos are processing, with no upload-error indicators at the final check; Apple's final media acceptance remains pending. The content-rights field now records licensed third-party content. The app-level page identifies the seller as a trader, but this is not evidence that the separate DSA review is approved. Manual release remains selected. No binary upload, App Review submission or public release occurred. Earlier revision 3/7 and build 7/9 records above are historical.
 
 Apple validation checkpoint: the final signed **Form 0.3.0 (10)** archive passed Xcode Organizer validation on 8 November 2026. The actual success dialog stated “Form 0.3.0 (10) validated” and “Your app successfully passed all validation checks.” Distribution was not started; there was no binary upload, App Review submission or public release.
+
+## Build 11 submission checkpoint — 8 November 2026
+
+The final Mac candidate is build 11. It improves snapping to visible crease-edge endpoints/segments, adds contrast rings with constant screen size and a hover preview, keeps hidden measurement values current, and moves instructions to a clean top-center notice. The full automated suite passed, including 12 measurement interaction cases and seven snapping/marker math cases. Universal Desktop/AppStore products and the expanded signed installer were checked; the final generated viewer SHA256 is a45eaaf6211c1c0919336fa0a4dc5123ad9a4b1131be863e485b22022e8e2198. The Store installer SHA256 is ec36958bea7aecab00a23435dbb44d6fa532bdf1cf162ba6abfc19555e562a86. Desktop build 11 is installed in Applications. Native QA verified exact 80 mm vertex snapping, visible edge anchoring, larger contrast markers, top-center instructions and hidden values updating from 80 to 800 mm when source units changed.
+
+All six locales now retain revision 8's four images and the matching V4 video after a full reload, without upload-error indicators. V4 is 26 seconds at 30 fps with one language's chapter titles, edited at 1.3× on the owner's request. It shows genuine loading/orbit, distance/path creation, file information and generic print estimation. The unchanged Benchy demonstrates viewing/measurement; the owned closed Montageblock sample demonstrates a real 105.6 cm³ volume and the clearly labelled geometric estimate. Some previews remain in Apple's processing queue. Following the owner's explicit release instruction, the release setting is now automatic after Apple approval; this supersedes earlier manual-release checkpoints. No public availability is implied by media upload or local tests.
+
+The iPhone/iPad file-opening and configurable Generic PLA/PETG prototype workflow is a separate planned mobile version, not part of Mac build 11. No Bambu Handy integration or cloud slicer is claimed in this Mac release.
+
+The exact final build 11 archive subsequently passed Xcode Organizer validation. The success result was saved privately; the owner-authorized upload was then started. Upload and review completion still require their separate portal evidence.

@@ -27,8 +27,8 @@ export function createViewerHarness(){
  class RoomEnvironment{dispose(){}}
  class OrbitControls{constructor(camera,element){this.target=new Three.Vector3();this.mouseButtons={};this.enableRotate=true;this.enabled=true;}update(){}}
  class TransformControls extends Three.EventDispatcher{constructor(){super();this.dragging=false;this.helper=new Three.Group();this.object=null}setSpace(){}getHelper(){return this.helper}attach(object){this.object=object}detach(){this.object=null}setMode(mode){this.mode=mode}}
- const messages=[],window={innerWidth:1200,innerHeight:800,addEventListener:domWindow.addEventListener.bind(domWindow),webkit:{messageHandlers:{native:{postMessage:message=>messages.push(message)}}}};
- const context=vm.createContext({console,crypto,attachCubeNavigation,createMeasurementTools,createSectionHighlight,createViewportDisplay,createViewportCameras,measureMeshes,estimatePrint,materialProfiles,createI18n,languageCodes,T:{...Three,WebGLRenderer,PMREMGenerator},document,window,innerWidth:1200,innerHeight:800,MutationObserver:domWindow.MutationObserver,devicePixelRatio:1,OrbitControls,TransformControls,RoomEnvironment,ResizeObserver:class{observe(){}},requestAnimationFrame(){},setTimeout:callback=>setTimeout(callback,0),clearTimeout,atob,btoa,Uint8Array,ArrayBuffer,DataView,TextDecoder,TextEncoder,DOMParser,...Lucide,Map,Set,STLLoader,OBJLoader,PLYLoader,ThreeMFLoader,GLTFLoader,toCreasedNormals,unzipSync,strFromU8,navigationProfiles,navigationAction,orbitBinding});
+ const frameCallbacks=[],messages=[],window={innerWidth:1200,innerHeight:800,addEventListener:domWindow.addEventListener.bind(domWindow),webkit:{messageHandlers:{native:{postMessage:message=>messages.push(message)}}}};
+ const context=vm.createContext({console,crypto,attachCubeNavigation,createMeasurementTools,createSectionHighlight,createViewportDisplay,createViewportCameras,measureMeshes,estimatePrint,materialProfiles,createI18n,languageCodes,T:{...Three,WebGLRenderer,PMREMGenerator},document,window,innerWidth:1200,innerHeight:800,MutationObserver:domWindow.MutationObserver,devicePixelRatio:1,OrbitControls,TransformControls,RoomEnvironment,ResizeObserver:class{observe(){}},requestAnimationFrame:callback=>frameCallbacks.push(callback),setTimeout:callback=>setTimeout(callback,0),clearTimeout,atob,btoa,Uint8Array,ArrayBuffer,DataView,TextDecoder,TextEncoder,DOMParser,...Lucide,Infinity:Number.POSITIVE_INFINITY,Map,Set,STLLoader,OBJLoader,PLYLoader,ThreeMFLoader,GLTFLoader,toCreasedNormals,unzipSync,strFromU8,navigationProfiles,navigationAction,orbitBinding});
  const source=fs.readFileSync('viewer.js','utf8').replace(/^import .*;\n/gm,'');vm.runInContext(source,context,{filename:'viewer.js'});
  const read=expression=>vm.runInContext(expression,context);
  const evaluate=code=>vm.runInContext(code,context);
@@ -37,5 +37,6 @@ export function createViewerHarness(){
  const change=(selector,value)=>{const element=document.querySelector(selector);element.value=value;element.onchange?.({target:element})};
  const load=async(file,name=file.split('/').pop(),sourceID=null)=>window.openModel(name,fs.readFileSync(file).toString('base64'),sourceID);
  const key=(key,target=document.body,properties={})=>{const event=new domWindow.Event('keydown',{bubbles:true,cancelable:true});Object.assign(event,{key,...properties});target.dispatchEvent(event)};
- return {context,document,window,messages,read,evaluate,click,input,change,load,key,domWindow};
+ const frame=()=>{for(const callback of frameCallbacks.splice(0))callback()};
+ return {context,document,window,messages,read,evaluate,click,input,change,load,key,domWindow,frame};
 }

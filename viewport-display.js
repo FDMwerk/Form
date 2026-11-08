@@ -56,9 +56,16 @@ export function createViewportDisplay({getMeshes,refreshAppearance,getClippingPl
     const used=new Set([...helpers.values()].map(helper=>helper.userData.sourceGeometry));
     for(const [geometry,edges] of edgeGeometry)if(!used.has(geometry)){edges.dispose();edgeGeometry.delete(geometry)}
   }
+  // Reuse exactly the crease edges shown in the viewport for measurement snapping.
+  function getSnapEdges(mesh){
+    if(disposed||!getMeshes().includes(mesh))return null;
+    const existing=helpers.get(mesh);
+    if(existing&&(existing.userData.sourceGeometry!==mesh.geometry||existing.userData.geometryRevision!==revision(mesh.geometry)))cleanup();
+    const helper=edgeHelper(mesh);helper.visible=mode==='edges';return helper.geometry;
+  }
   function updateClipping(){for(const helper of helpers.values()){helper.material.clippingPlanes=getClippingPlanes();helper.material.needsUpdate=true}}
   function dispose(){if(disposed)return;restoreDisplayStyle();for(const [mesh,helper] of helpers){mesh.remove(helper);helper.material.dispose()}for(const geometry of edgeGeometry.values())geometry.dispose();for(const snapshot of snapshots.values())snapshot.dispose();helpers.clear();edgeGeometry.clear();snapshots.clear();disposed=true}
-  return {get mode(){return mode},setMode,applyDisplayStyle,restoreDisplayStyle,updateClipping,detachHelpers,dispose};
+  return {get mode(){return mode},setMode,applyDisplayStyle,restoreDisplayStyle,updateClipping,getSnapEdges,detachHelpers,dispose};
 }
 
 const directions={front:[0,-1,0],back:[0,1,0],left:[-1,0,0],right:[1,0,0],top:[0,0,1],bottom:[0,0,-1],iso:[1,-1,1]};

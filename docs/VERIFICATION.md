@@ -94,3 +94,12 @@ Actual native QA in a separate build 10 window verified distance, path completio
 Both final Desktop/AppStore products contain identical generated viewer SHA256 f2c4448cc60cf9ea6b486c3709e2c89b4dbfa4b6a92a4097a75f4165d61ae070. The final Store installer SHA256 is b4cbf594be286cfbf97a99e94caf6aa7fc8f2b3800c1517eff3bd20fed2ce700. It was fully expanded; actual payload build 10, Store flavor, arm64+x86_64, strict signature, sandbox and absence of debug entitlements were checked. Desktop build 10 was installed only while the production app was closed, preserving the previous build and active QA windows. No minimum-OS/Intel hardware test or Apple review approval is inferred from these checks.
 
 Xcode Organizer then validated the exact final signed Form 0.3.0 (10) archive, bundle de.fdmwerk.form and the existing team distribution certificate/profile. The actual success dialog confirmed that all validation checks passed. No Distribute/Upload or review action was taken.
+
+
+## Build 11 final Mac candidate — 2026-11-08
+
+The full automated suite passed, including 12 measurement UI cases, seven snapping/math cases, eight selection cases, six cube cases and the top-center status regression. Coverage includes visible neighbor features outside the hit triangle, perspective-correct edge interpolation, same-mesh/foreground occlusion, clipping, reflected transforms, constant marker size under both camera projections, real RAF pointermove with button -1, preview-to-click identity and hidden sidebar value updates. Native QA separately verified an exact 80 mm model edge, contrast markers, top-center instructions and hidden 80→800→80 mm unit changes. Hover-only motion itself is covered in the production-code harness because the native control API exposes click/drag rather than a standalone hover action.
+
+Universal Desktop/AppStore builds and strict signed package checks passed. Product resource SHA256 a45eaaf6211c1c0919336fa0a4dc5123ad9a4b1131be863e485b22022e8e2198 matches the fully expanded Store installer payload. Installer SHA256: ec36958bea7aecab00a23435dbb44d6fa532bdf1cf162ba6abfc19555e562a86. The production app was updated only while closed; active isolated QA sessions were preserved. Apple's validation/upload/submission status is tracked independently in the handoff.
+
+The exact final signed build 11 archive passed all Xcode Organizer validation checks. Upload was started only after that success, under the owner's explicit release instruction.

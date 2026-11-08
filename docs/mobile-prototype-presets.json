@@ -1,0 +1,31 @@
+{
+  "status": "Planned mobile settings; not sliced or ready-to-print output; not included in macOS runtime",
+  "selection": [
+    "manufacturer",
+    "printerModel",
+    "supportedNozzleDiameter",
+    "material",
+    "confirm"
+  ],
+  "process": {
+    "name": "Prototype",
+    "layerHeightMM": {
+      "maximum": 0.2,
+      "maximumNozzleFraction": 0.5
+    },
+    "infillPercent": 15,
+    "wallCount": 2,
+    "machineLimits": "inherit selected compatible slicer profile",
+    "supports": "review in slicer for the actual model"
+  },
+  "materials": [
+    {
+      "id": "pla",
+      "filamentPreset": "Generic PLA"
+    },
+    {
+      "id": "petg",
+      "filamentPreset": "Generic PETG"
+    }
+  ]
+}
