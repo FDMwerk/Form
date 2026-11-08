@@ -9,10 +9,14 @@
 /* Begin PBXBuildFile section */
 		1D9853B273D7498C40DE2226 /* MobileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61F7BF0BBA43A885D6F7D0 /* MobileTests.swift */; };
 		31B228CF5AA045770BFC53FC /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491BE740BA982CBA7777720D /* App.swift */; };
+		4C8D4997FC171995FF4A8C9F /* MobileChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0676F6A5982F863701872B /* MobileChrome.swift */; };
+		58AAE3891904ED142A20FE87 /* native-chrome.js in Resources */ = {isa = PBXBuildFile; fileRef = E6C206125563339A313519B0 /* native-chrome.js */; };
 		8A5B1F2673EDB827BD1442EA /* Web in Resources */ = {isa = PBXBuildFile; fileRef = F6A11EDDD71FCFCDA5BE337B /* Web */; };
 		8D5B8D4FDC186F7323C65C70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */; };
 		A2D3174118D551C99E85C135 /* viewport.css in Resources */ = {isa = PBXBuildFile; fileRef = 55CB20ECC354AB3680A4D12C /* viewport.css */; };
 		BE1F89A12F38B9EBC246E78A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 42D8CD83408FC8E237289211 /* PrivacyInfo.xcprivacy */; };
+		D225F5E0DB33D2DA51136AD5 /* MobileLegal.html in Resources */ = {isa = PBXBuildFile; fileRef = EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */; };
+		EDA0B796EA16CCE2A68BD5AF /* Examples in Resources */ = {isa = PBXBuildFile; fileRef = 2CF78B49DE5E49469120F0F9 /* Examples */; };
 		F9B62C5A796FCAF67BB254BE /* viewport.js in Resources */ = {isa = PBXBuildFile; fileRef = 6735AABCD6F5A88EF3BAE8C6 /* viewport.js */; };
 /* End PBXBuildFile section */
 
@@ -28,13 +32,17 @@
 
 /* Begin PBXFileReference section */
 		1A61F7BF0BBA43A885D6F7D0 /* MobileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileTests.swift; sourceTree = "<group>"; };
+		2CF78B49DE5E49469120F0F9 /* Examples */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Examples; path = Resources/Examples; sourceTree = SOURCE_ROOT; };
 		42D8CD83408FC8E237289211 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		491BE740BA982CBA7777720D /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		55CB20ECC354AB3680A4D12C /* viewport.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = viewport.css; sourceTree = "<group>"; };
 		6735AABCD6F5A88EF3BAE8C6 /* viewport.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = viewport.js; sourceTree = "<group>"; };
+		BE0676F6A5982F863701872B /* MobileChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChrome.swift; sourceTree = "<group>"; };
 		BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5274BA2CFAFCF7065EE30B1 /* FormMobileTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FormMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E6C206125563339A313519B0 /* native-chrome.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "native-chrome.js"; sourceTree = "<group>"; };
 		E8CB325CFBCA3052D4CDF1AF /* FormMobile.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FormMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = MobileLegal.html; sourceTree = "<group>"; };
 		F6A11EDDD71FCFCDA5BE337B /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Web; path = ../Resources/Web; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -43,6 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */,
+				EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -59,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				491BE740BA982CBA7777720D /* App.swift */,
+				BE0676F6A5982F863701872B /* MobileChrome.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -84,6 +94,8 @@
 		FCDB7DDAF5A3AA978058C8EE = {
 			isa = PBXGroup;
 			children = (
+				2CF78B49DE5E49469120F0F9 /* Examples */,
+				E6C206125563339A313519B0 /* native-chrome.js */,
 				55CB20ECC354AB3680A4D12C /* viewport.css */,
 				6735AABCD6F5A88EF3BAE8C6 /* viewport.js */,
 				F6A11EDDD71FCFCDA5BE337B /* Web */,
@@ -175,8 +187,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D5B8D4FDC186F7323C65C70 /* Assets.xcassets in Resources */,
+				EDA0B796EA16CCE2A68BD5AF /* Examples in Resources */,
+				D225F5E0DB33D2DA51136AD5 /* MobileLegal.html in Resources */,
 				BE1F89A12F38B9EBC246E78A /* PrivacyInfo.xcprivacy in Resources */,
 				8A5B1F2673EDB827BD1442EA /* Web in Resources */,
+				58AAE3891904ED142A20FE87 /* native-chrome.js in Resources */,
 				A2D3174118D551C99E85C135 /* viewport.css in Resources */,
 				F9B62C5A796FCAF67BB254BE /* viewport.js in Resources */,
 			);
@@ -190,6 +205,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31B228CF5AA045770BFC53FC /* App.swift in Sources */,
+				4C8D4997FC171995FF4A8C9F /* MobileChrome.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

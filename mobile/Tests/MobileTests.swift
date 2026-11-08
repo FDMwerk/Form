@@ -1,8 +1,47 @@
 import XCTest
 import WebKit
+import CryptoKit
 @testable import FormMobile
 
 @MainActor final class MobileTests: XCTestCase {
+    func testBundledBenchyMatchesOriginalAndLoadsThroughExampleButton() async throws {
+        let url = try XCTUnwrap(Bundle.main.url(forResource: "3DBenchy", withExtension: "stl", subdirectory: "Examples"))
+        let digest = SHA256.hash(data: try Data(contentsOf: url)).map { String(format: "%02x", $0) }.joined()
+        XCTAssertEqual(digest, "fd99f33201b2d0ca60de7973748e489f813452f91b511a661548eee50370f3eb")
+        let controller = MobileViewerController()
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let host = UIWindow(windowScene: scene); host.frame = scene.coordinateSpace.bounds; host.rootViewController = controller; host.makeKeyAndVisible()
+        defer { host.isHidden = true }
+        controller.loadViewIfNeeded()
+        for _ in 0..<180 { if controller.ready { break }; try await Task.sleep(nanoseconds: 250_000_000) }
+        XCTAssertTrue(controller.ready)
+        let buttonCount = try await controller.web.evaluateJavaScript("document.querySelectorAll('.mobile-example').length") as? Int
+        XCTAssertEqual(buttonCount, 2)
+        _ = try await controller.web.evaluateJavaScript("document.querySelector('.mobile-example').click()")
+        var loaded = false
+        for _ in 0..<180 {
+            try await Task.sleep(nanoseconds: 250_000_000)
+            if let filename = try? await controller.web.evaluateJavaScript("document.getElementById('filename').textContent") as? String, filename == "3DBenchy.stl" { loaded = true; break }
+        }
+        XCTAssertTrue(loaded)
+        let toolbar = try XCTUnwrap(controller.view.subviews.compactMap { $0 as? UIToolbar }.first)
+        XCTAssertNotNil(toolbar.items?.first { $0.accessibilityIdentifier == "form.measure" })
+        _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('measure')")
+        let measuring = try await controller.web.evaluateJavaScript("document.getElementById('measure').classList.contains('active')") as? Bool
+        XCTAssertEqual(measuring, true)
+        _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('measure');window.formMobileCommand('unit:10')")
+        let unit = try await controller.web.evaluateJavaScript("document.getElementById('unit').value") as? String
+        XCTAssertEqual(unit, "10")
+        _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('unit:1');window.formMobileCommand('scene-settings')")
+        let headerDisplay = try await controller.web.evaluateJavaScript("getComputedStyle(document.querySelector('header')).display") as? String
+        XCTAssertEqual(headerDisplay, "contents")
+        _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('scene-settings')")
+        try await Task.sleep(nanoseconds: 200_000_000)
+        let image = UIGraphicsImageRenderer(bounds: host.bounds).image { _ in host.drawHierarchy(in: host.bounds, afterScreenUpdates: true) }
+        let attachment = XCTAttachment(image: image); attachment.name = "Original 3DBenchy"; attachment.lifetime = .keepAlways; add(attachment)
+        let screenshot = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("FormMobile-Benchy-\(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone").png")
+        try image.pngData()?.write(to: screenshot)
+    }
     func testFilePolicyRejectsWebpagesAndUnknownFiles() {
         XCTAssertFalse(MobileFilePolicy.accepts(URL(string: "https://makerworld.com/model.stl")!))
         XCTAssertFalse(MobileFilePolicy.accepts(URL(fileURLWithPath: "/tmp/file.html")))
@@ -11,7 +50,8 @@ import WebKit
     }
     func testRealWebKitImportsQueuedModelsAndRecoversFromInvalidMesh() async throws {
         let controller = MobileViewerController()
-        let host = UIWindow(frame: UIScreen.main.bounds)
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let host = UIWindow(windowScene: scene); host.frame = scene.coordinateSpace.bounds
         host.rootViewController = controller; host.makeKeyAndVisible()
         defer { host.isHidden = true }
         controller.loadViewIfNeeded()
@@ -45,7 +85,8 @@ import WebKit
         let mobile = try await controller.web.evaluateJavaScript("document.documentElement.dataset.formMobile === 'true'") as? Bool
         XCTAssertEqual(mobile, true)
         let overflow = try await controller.web.evaluateJavaScript("document.documentElement.scrollWidth > innerWidth") as? Bool
-        XCTAssertEqual(overflow, false, "Mobile viewport must not overflow horizontally")
+        let overflowDetail = try await controller.web.evaluateJavaScript("JSON.stringify([...document.querySelectorAll('body *')].map(e=>({id:e.id,tag:e.tagName,right:e.getBoundingClientRect().right,left:e.getBoundingClientRect().left})).filter(r=>r.right>innerWidth+1||r.left < -1))") as? String
+        XCTAssertEqual(overflow, false, "Mobile viewport overflow: \(overflowDetail ?? "unknown")")
         let image = try await controller.web.takeSnapshot(configuration: nil)
         let attachment = XCTAttachment(image: image); attachment.name = "Form Mobile imported models"; attachment.lifetime = .keepAlways; add(attachment)
         let screenshot = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("FormMobile-\(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone").png")

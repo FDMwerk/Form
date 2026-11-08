@@ -14,10 +14,15 @@ targets:
         buildPhase: resources
       - path: Resources
         buildPhase: resources
-        excludes: [Info.plist]
+        excludes: [Info.plist, Examples]
+      - path: Resources/Examples
+        type: folder
+        buildPhase: resources
       - path: ../Resources/PrivacyInfo.xcprivacy
         buildPhase: resources
       - path: viewport.js
+        buildPhase: resources
+      - path: native-chrome.js
         buildPhase: resources
       - path: viewport.css
         buildPhase: resources

@@ -1,0 +1,12 @@
+3DBenchy — Quelle und Lizenz
+
+Autor: CreativeTools
+Geteilt von: Bambu Lab
+Quelle: https://makerworld.com/de/models/40146-benchy-bambu-pla-basic#profileId-109644
+Angezeigte Lizenz laut Herkunftsnachweis: CC BY-ND 4.0
+Lizenz: https://creativecommons.org/licenses/by-nd/4.0/
+
+Die originale type=model-Geometrie wurde lediglich als binäre STL serialisiert: gleiche Vertices und Dreiecksreihenfolge, keine Vereinfachung, Skalierung oder Modelländerung. Reine Slicer-Modifikatoren sind nicht Teil der STL. Details: Benchy-Provenienz.json.
+
+SHA256 3DBenchy.stl: fd99f33201b2d0ca60de7973748e489f813452f91b511a661548eee50370f3eb
+SHA256 Benchy-Provenienz.json: 3bcd52d337311735ed69539cbe58137065b408e23be1b9923fa48427a51043cb

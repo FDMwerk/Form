@@ -40,6 +40,17 @@
     }
     window.addEventListener('blur', () => tracker.reset());
     const body = document.body, sidebar = document.querySelector('aside');
+    for (const id of ['open', 'empty-open']) {
+      const original = document.getElementById(id);
+      if (!original) continue;
+      const example = document.createElement('button');
+      example.type = 'button'; example.className = 'mobile-example';
+      example.textContent = '3DBenchy';
+      example.title = '3DBenchy © CreativeTools · Bambu Lab / MakerWorld · CC BY-ND 4.0';
+      example.onclick = () => { window.webkit?.messageHandlers.native.postMessage('openExample'); if (innerWidth < 1000) document.body.classList.add('collapsed'); };
+      original.after(example);
+    }
+
     const compact = matchMedia('(max-width: 999px)');
     if (compact.matches) body.classList.add('collapsed');
     const words = {

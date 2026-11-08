@@ -59,3 +59,19 @@ html[data-form-mobile] .measurement-context button,html[data-form-mobile] #tree-
  html[data-form-mobile] #view-navigator { transform:scale(.85); transform-origin:top right }
 }
 @media(prefers-reduced-motion:reduce) { html[data-form-mobile] aside { transition:none } }
+
+html[data-form-mobile] .mobile-example { min-height:44px; margin:8px 0; padding:10px 18px; border-radius:22px; font-size:14px; background:#fff; color:#333; border:1px solid #ddd; justify-content:center }
+/* Native system bars replace the desktop header and tool rows. No fake glass material. */
+html[data-native-chrome] header { display:contents!important }
+html[data-native-chrome] header>button,html[data-native-chrome] header>#filename,html[data-native-chrome] header>#filetype,html[data-native-chrome] header>#tools { display:none!important }
+html[data-native-chrome] main { --tools-bottom:12px; --tools-height:54px }
+html[data-native-chrome] #tool-panels { bottom:78px; max-height:calc(100% - 210px) }
+html[data-native-chrome] #viewport-display-controls { top:58px }
+html[data-native-chrome] #view-navigator { top:58px }
+html[data-native-chrome] #status { top:180px }
+html[data-native-chrome] aside { padding-top:68px }
+html[data-native-chrome] #inspector { padding-top:76px }
+html[data-native-chrome] .mobile-panel-close { top:52px }
+@media(prefers-reduced-motion:reduce) { html[data-form-mobile] *,html[data-form-mobile] *::before,html[data-form-mobile] *::after { animation-duration:0s!important; transition-duration:0s!important } }
+@media(prefers-contrast:more) { html[data-form-mobile] .partrow .part,html[data-form-mobile] #tool-panels { border:1px solid currentColor } }
+html[data-native-chrome] aside,html[data-native-chrome] #inspector { padding-bottom:80px }

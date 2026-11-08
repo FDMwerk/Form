@@ -1,0 +1,19 @@
+{
+  "source": "https://makerworld.com/de/models/40146-benchy-bambu-pla-basic#profileId-109644",
+  "sourceSHA256": "8753a07902e1f5481155acec6a08d3f23110882372398c419987a61a7d70b51e",
+  "author": "CreativeTools",
+  "sharedBy": "Bambu Lab",
+  "licenseShown": "CC BY-ND 4.0",
+  "licenseURL": "https://creativecommons.org/licenses/by-nd/4.0/",
+  "meshMember": "3D/Objects/3DBenchy.stl_1.model",
+  "meshObjectID": "1",
+  "vertices": 112569,
+  "triangles": 225154,
+  "dimensionsMM": [
+    60.0009994,
+    31.0039998,
+    48.0
+  ],
+  "conversion": "Only original type=model mesh serialized as binary STL; same vertices and triangle order, no simplification, scaling or model edits. Slicer modifier type=other objects excluded.",
+  "outputSHA256": "fd99f33201b2d0ca60de7973748e489f813452f91b511a661548eee50370f3eb"
+}
