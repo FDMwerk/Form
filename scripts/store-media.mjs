@@ -63,7 +63,7 @@ async function brandOverlays(manifest,copy,slide,theme){
   overlays.push({input:mark,left:96,top:60});
  }
  const credit=copy.credit||slide.credit||manifest.modelCredit;
- if(credit){const caption=await textImage(credit,{size:19,color:theme.secondary,width:2300,weight:400});if(caption.height>50)throw Error('Credit caption is too long.');overlays.push({input:caption.buffer,left:Math.round((W-caption.width)/2),top:1552})}
+ if(credit){const caption=await textImage(credit,{size:19,color:manifest.footerColor||theme.secondary,width:2300,weight:400});if(caption.height>50)throw Error('Credit caption is too long.');overlays.push({input:caption.buffer,left:Math.round((W-caption.width)/2),top:manifest.footerBandHeight?Math.round(H-manifest.footerBandHeight+(manifest.footerBandHeight-caption.height)/2):1552})}
  return {overlays,headline,credit};
 }
 async function verifyDevice(device){
@@ -120,14 +120,17 @@ export async function composeStoreMedia(manifest){
    const cropTop=copy.cropTopPixels??manifest.captureTopCropPixels??0;
    if(!Number.isInteger(cropTop)||cropTop<0||cropTop>64)throw Error('Invalid reserved top crop.');
    const box={left:100,top:340,width:2360,height:1416,...manifest.genericScreen};
-   const border=18,radius=38,innerWidth=box.width-border*2;
+   const border=18,radius=38,innerRadius=radius-border,innerWidth=box.width-border*2;
    let app=sharp(capture).extract({left:0,top:cropTop,width:captureMeta.width,height:captureMeta.height-cropTop}).resize({width:innerWidth});
-   const appBuffer=await app.png().toBuffer(),appMeta=await sharp(appBuffer).metadata();
+   let appBuffer=await app.png().toBuffer();const appMeta=await sharp(appBuffer).metadata();
+   const innerMask=Buffer.from(`<svg width="${appMeta.width}" height="${appMeta.height}"><rect width="${appMeta.width}" height="${appMeta.height}" rx="${innerRadius}" fill="white"/></svg>`);
+   appBuffer=await sharp(appBuffer).composite([{input:innerMask,blend:'dest-in'}]).png().toBuffer();
    const fullHeight=Math.max(box.height,appMeta.height+border*2);
    const mask=Buffer.from(`<svg width="${box.width}" height="${fullHeight}"><rect width="${box.width}" height="${fullHeight}" rx="${radius}" fill="white"/></svg>`);
    const screen=await sharp({create:{width:box.width,height:fullHeight,channels:4,background:'#151515'}}).composite([{input:appBuffer,left:border,top:border}]).png().toBuffer();
    let framed=await sharp(screen).composite([{input:mask,blend:'dest-in'}]).png().toBuffer();
-   const visibleHeight=Math.min(fullHeight,H-box.top);
+   const footerHeight=manifest.footerBandHeight||0;
+   const visibleHeight=Math.min(fullHeight,H-footerHeight-box.top);
    framed=await sharp(framed).extract({left:0,top:0,width:box.width,height:visibleHeight}).png().toBuffer();
    overlays.push({input:framed,left:box.left,top:box.top});
   }else{

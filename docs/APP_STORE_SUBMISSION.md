@@ -1,6 +1,6 @@
 # App Store submission handoff
 
-Status: **Build 7 passed Apple validation on 8 November 2026; no binary upload, review submission or approval is claimed**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
+Status: **Build 9 is the current locally tested and signed candidate. Apple validation is recorded for Build 7 only; no binary upload, review submission or approval is claimed**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
 
 ## Verified publisher and distribution policy
 
@@ -68,3 +68,14 @@ On **8 November 2026**, the user reauthenticated the existing Apple account in X
 On **8 November 2026**, the user reported that the MacBook test completed successfully and accepted the local test. This is a user-reported smoke-test result; it does not identify a specific processor/minimum macOS version or establish exhaustive hardware/accessibility testing.
 
 DSA provider verification remains at its last observed **7 November 2026 “In Prüfung”** state, not newly rechecked or approved.
+
+
+## Current media and package checkpoint — 8 November 2026
+
+The current Desktop build 9 is installed locally; a private MacBook-test ZIP and signed Store installer were verified after extraction. The complete test suite and universal Desktop/AppStore builds passed. These newer local checks do not inherit build 7’s Apple validation.
+
+Private Store media now comprise four German and four English 2560×1600 images made from real Store-flavor build 9 captures, plus a 28-second 1920×1080/30-fps H.264/AAC preview of actual use. The preview has German chapter text and English subtitles. Footage is edited and the orbit segment is slowed, with those changes labelled. The example is the unchanged CreativeTools Benchy geometry from MakerWorld 40146, credited under the source’s CC BY-ND 4.0 terms; it is not bundled in Form.
+
+The latest local image revision rounds the actual capture corners and places the light-gray credit at the bottom center. Its large cropped presentation uses a generic software-display border, without an Apple device image, logo, notch or chassis. Official Apple artwork remains private and is not modified or distributed in GitHub source.
+
+German revision 3 images were visibly loaded without upload-error icons and one preview was uploaded but still processing. English version metadata was saved and its media upload was initiated. Reauthentication was required when reloading for persistence verification. Revision 4 replaces the local image design; do not claim that replacement or the final post-reload check succeeded until the authenticated portal is checked again. All media and application installers remain private; the public repository contains source only.
