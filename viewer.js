@@ -50,7 +50,41 @@ let sceneAppearance={},printSoftware=[],printMetricsCache=null,printEstimateResu
 scene.add(model); let grid, apple=new T.Group(); scene.add(apple);apple.visible=false;
 let appleReady=false;
 async function loadApple(){if(appleReady)return true;try{const gltf=await new GLTFLoader().parseAsync(decode(window.APPLE).buffer,'');apple.position.set(0,0,0);apple.rotation.set(0,0,0);apple.scale.setScalar(1);const oriented=new T.Group();oriented.rotation.x=Math.PI/2;oriented.add(gltf.scene);apple.add(oriented);apple.updateMatrixWorld(true);let box=new T.Box3().setFromObject(oriented),size=box.getSize(new T.Vector3());oriented.scale.setScalar(80/Math.max(size.x,size.y,size.z));apple.updateMatrixWorld(true);box.setFromObject(oriented);const center=box.getCenter(new T.Vector3());oriented.position.set(-center.x,-center.y,-box.min.z);gltf.scene.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=false}});appleReady=true;updateScene();return true}catch(e){status(t('referenceError',{error:e.message}),true);return false}}
-function makeGrid(size=600,step=10,z=0){if(grid){scene.remove(grid);grid.geometry.dispose();grid.material.dispose()}const a=[];for(let i=-size;i<=size;i+=step){a.push(-size,i,z,size,i,z,i,-size,z,i,size,z)}const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(a,3));grid=new T.LineSegments(g,new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{extent:{value:size},gridColor:{value:(new T.Color(scene.background.getHex()).getHSL({}).l<.3?new T.Color('#b9bdc6'):new T.Color('#adb0b5')).convertLinearToSRGB()},gridOpacity:{value:scene.background.getHSL({}).l<.3?.22:.26}},vertexShader:'varying vec3 p;void main(){p=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying vec3 p;uniform float extent;uniform vec3 gridColor;uniform float gridOpacity;void main(){float fade=1.-smoothstep(extent*.18,extent*.9,length(p.xy));gl_FragColor=vec4(gridColor,fade*gridOpacity);}'}));scene.add(grid);grid.visible=$('#grid').classList.contains('active')}
+// Mobile cells follow CSS pixels so pinch zoom cannot turn the grid into noise.
+// 1/2/5 spacing is always expressed in model millimetres, independent of DPR.
+let gridSource={size:600,step:10,z:0},mobileGridSpacing=0;
+function mobileGridStep(worldPerPixel,previous=0){
+ if(!Number.isFinite(worldPerPixel)||worldPerPixel<=0)return previous||10;
+ const projected=previous/worldPerPixel;
+ if(previous>0&&projected>=15&&projected<=55)return previous;
+ const desired=worldPerPixel*24,power=10**Math.floor(Math.log10(desired)),fraction=desired/power;
+ return power*(fraction<=1?1:fraction<=2?2:fraction<=5?5:10);
+}
+function mobileGridWorldPerPixel(){
+ const height=renderer.domElement.getBoundingClientRect().height;
+ if(!(height>0))return NaN;
+ const span=camera.isOrthographicCamera?(camera.top-camera.bottom)/camera.zoom:2*camera.position.distanceTo(controls.target)*Math.tan(T.MathUtils.degToRad(camera.fov)/2)/camera.zoom;
+ return span/height;
+}
+function updateMobileGrid(){
+ if(!window.formMobileInput&&!document.documentElement.dataset.formMobile)return;
+ const step=mobileGridStep(mobileGridWorldPerPixel(),mobileGridSpacing);
+ if(step!==mobileGridSpacing){mobileGridSpacing=step;makeGrid(gridSource.size,step,gridSource.z,true)}
+}
+function makeGrid(size=600,step=10,z=0,adaptive=false){
+ if(!adaptive){gridSource={size,step,z};mobileGridSpacing=0}
+ if(grid){scene.remove(grid);grid.geometry.dispose();grid.material.dispose()}
+ const a=[],weights=[];
+ if(adaptive){
+  // Bound geometry even when inspecting a tiny detail of a large assembly.
+  size=Math.max(step*32,Math.min(size,step*80));const count=Math.ceil(size/step);size=count*step;
+  for(let n=-count;n<=count;n++){const i=n*step;a.push(-size,i,z,size,i,z,i,-size,z,i,size,z);const weight=n%5===0?1.55:.8;weights.push(weight,weight,weight,weight)}
+ }else for(let i=-size;i<=size;i+=step){a.push(-size,i,z,size,i,z,i,-size,z,i,size,z);weights.push(1,1,1,1)}
+ const g=new T.BufferGeometry();g.setAttribute('position',new T.Float32BufferAttribute(a,3));g.setAttribute('gridWeight',new T.Float32BufferAttribute(weights,1));
+ grid=new T.LineSegments(g,new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{extent:{value:size},gridColor:{value:(new T.Color(scene.background.getHex()).getHSL({}).l<.3?new T.Color('#b9bdc6'):new T.Color('#adb0b5')).convertLinearToSRGB()},gridOpacity:{value:scene.background.getHSL({}).l<.3?.22:.26}},vertexShader:'attribute float gridWeight;varying float weight;varying vec3 p;void main(){p=position;weight=gridWeight;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',fragmentShader:'varying float weight;varying vec3 p;uniform float extent;uniform vec3 gridColor;uniform float gridOpacity;void main(){float fade=1.-smoothstep(extent*.18,extent*.9,length(p.xy));gl_FragColor=vec4(gridColor,fade*gridOpacity*weight);}'}));
+ scene.add(grid);grid.visible=$('#grid').classList.contains('active');
+}
+
 makeGrid();
 const material=()=>{const m=new T.MeshStandardMaterial({color:0xc6c9ce,metalness:.12,roughness:.32,side:T.DoubleSide});m.userData.formFallback=true;return m};
 function cadMaterial(color){const mat=material();if(color){mat.color.setRGB(...color,T.SRGBColorSpace);mat.userData.formFallback=false}return mat}
@@ -128,7 +162,7 @@ $('#dimensions').onclick=()=>{dimensions=$('#dimensions').classList.toggle('acti
 document.addEventListener('keydown',e=>{if(e.target.matches?.('input,select,textarea,[contenteditable=true]'))return;if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='z'){e.preventDefault();window.undoScene();return}if(measurementTools?.handleKey(e))return;if(e.key==='Escape'){setMeasuring(false);stopTransform();status('')}if(e.key==='0')fit()});
 document.addEventListener('dragover',e=>{e.preventDefault()});document.addEventListener('drop',async e=>{e.preventDefault();for(const f of e.dataTransfer.files){if(f.size>maxFileBytes){status(t('dropTooLarge',{name:f.name}),true);continue}if(!supportedFormats.has(f.name.split('.').pop().toLowerCase())){status(t('dropUnsupported',{name:f.name}),true);continue}try{const bytes=new Uint8Array(await f.arrayBuffer());let str='';for(let i=0;i<bytes.length;i+=32768)str+=String.fromCharCode(...bytes.subarray(i,i+32768));await window.openModel(f.name,btoa(str))}catch(error){status(t('dropReadError',{name:f.name,error:error.message}),true)}}});
 new ResizeObserver(()=>{const r=$('#canvas').getBoundingClientRect();renderer.setSize(r.width,r.height);viewportCameras?.resize(r.width,r.height);camera.aspect=r.width/r.height;camera.updateProjectionMatrix()}).observe($('#canvas'));
-function animate(){requestAnimationFrame(animate);controls.update();updateViewNavigator();measurementTools?.update();if(sectionHighlight)sectionHighlight.update({enabled:cutEnabled,plane:cutPlane});for(const l of labels){const p=l.point.clone().project(camera);l.el.style.transform=`translate(-50%,-50%) translate(${(p.x+1)*$('#canvas').clientWidth/2}px,${(-p.y+1)*$('#canvas').clientHeight/2}px)`;l.el.hidden=p.z>1||p.z< -1}renderer.render(scene,camera)}animate();
+function animate(){requestAnimationFrame(animate);controls.update();updateMobileGrid();updateViewNavigator();measurementTools?.update();if(sectionHighlight)sectionHighlight.update({enabled:cutEnabled,plane:cutPlane});for(const l of labels){const p=l.point.clone().project(camera);l.el.style.transform=`translate(-50%,-50%) translate(${(p.x+1)*$('#canvas').clientWidth/2}px,${(-p.y+1)*$('#canvas').clientHeight/2}px)`;l.el.hidden=p.z>1||p.z< -1}renderer.render(scene,camera)}animate();
 
 
 const transform=new TransformControls(camera,renderer.domElement);transform.setSpace('world');scene.add(transform.getHelper());

@@ -74,6 +74,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
             web.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         chrome.install(in: self) { [weak self] command in
+            if command == "info" { self?.showFileInformation(); return }
             self?.web.callAsyncJavaScript("window.formMobileCommand?.(command)", arguments: ["command":command], in: nil, in: .page) { _ in }
         }
         guard let url = Bundle.main.url(forResource: "index", withExtension: "html", subdirectory: "Web") else { showError("Viewer resources are missing."); return }
@@ -168,6 +169,21 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         }
     }
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) { enqueue(urls) }
+    func showFileInformation() {
+        guard ready, presentedViewController == nil else { return }
+        let script = """
+        return {title:document.getElementById('info').getAttribute('aria-label'),german:document.documentElement.lang.startsWith('de'),note:document.getElementById('volume-note').textContent,rows:[...document.querySelectorAll('#file-info .info-row')].map(row=>({label:row.firstElementChild.textContent,value:row.lastElementChild.textContent,metric:/[0-9].*(?:mm|cm|µm|cm³|m|in|ft)$/.test(row.lastElementChild.textContent)?'true':'false'}))};
+        """
+        web.callAsyncJavaScript(script, arguments:[:], in:nil, in:.page) { result in
+            guard case .success(let value) = result, let info = value as? [String:Any] else { return }
+            let controller = FileInformationController(title:info["title"] as? String ?? "Information",rows:info["rows"] as? [[String:String]] ?? [],note:info["note"] as? String ?? "",german:info["german"] as? Bool == true)
+            let navigation=UINavigationController(rootViewController:controller)
+            navigation.modalPresentationStyle = .pageSheet
+            navigation.sheetPresentationController?.detents=[.medium(),.large()]
+            navigation.sheetPresentationController?.prefersGrabberVisible=true
+            self.present(navigation,animated:true)
+        }
+    }
     private func share(_ items: [Any]) {
         guard presentedViewController == nil else { return }
         let controller = UIActivityViewController(activityItems: items, applicationActivities: nil)

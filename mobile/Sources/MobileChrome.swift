@@ -91,35 +91,26 @@ final class MobileChrome: NSObject {
         }
         return UIMenu(title: label("unit", fallback: "Units"), image: UIImage(systemName: "ruler"), options: .singleSelection, children: children)
     }
-    private func moreMenu() -> UIMenu {
+    private func viewMenu() -> UIMenu {
         UIMenu(children: [
-            inline([
-                action("clear", symbol: "trash", fallback: "Delete measurements"),
-                action("dimensions", symbol: "arrow.up.left.and.arrow.down.right", fallback: "Dimensions"),
-                action("selection-box-toggle", symbol: "cube.transparent", fallback: "Selection box"),
-                action("clear", symbol: "trash", fallback: "Delete measurements"),
-                action("display-menu", symbol: "cube", fallback: "Display", defaultEnabled: true),
-                action("background-menu", symbol: "sun.max", fallback: "Background", defaultEnabled: true),
-                action("palette", symbol: "paintpalette", fallback: "Component colors"),
-                action("grid", symbol: "grid", fallback: "Grid", defaultEnabled: true),
-                action("apple", symbol: "leaf", fallback: "Reference apple"),
-                unitsMenu()
-            ]),
-            inline([
-                action("translate", symbol: "arrow.up.and.down.and.arrow.left.and.right", fallback: "Move"),
-                action("rotate", symbol: "rotate.3d", fallback: "Rotate"),
-                action("explode", symbol: "square.stack.3d.up", fallback: "Explode"),
-                action("undo", symbol: "arrow.uturn.backward", fallback: "Undo"),
-                action("scene-settings", symbol: "slider.horizontal.3", fallback: "Scene settings", defaultEnabled: true)
-            ]),
-            inline([
-                action("screenshot", symbol: "camera", fallback: "Screenshot", defaultEnabled: true),
-                action("openExample", symbol: "sailboat", fallback: "Open example", defaultEnabled: true),
-                action("settings", symbol: "gearshape", fallback: "Settings", defaultEnabled: true),
-                action("legal", symbol: "hand.raised", fallback: "Privacy & licenses", defaultEnabled: true),
-                action("feedback", symbol: "bubble.left", fallback: "Request a feature", defaultEnabled: true)
-            ])
+            action("display-menu", symbol:"cube", fallback:"Display", defaultEnabled:true),
+            action("background-menu", symbol:"sun.max", fallback:"Background", defaultEnabled:true),
+            action("grid", symbol:"grid", fallback:"Grid"),
+            action("palette", symbol:"paintpalette", fallback:"Component colors"),
+            action("apple", symbol:"leaf", fallback:"Reference apple"),
+            action("screenshot", symbol:"camera", fallback:"Screenshot")
         ])
+    }
+    private func measurementMenu() -> UIMenu {
+        UIMenu(children:[action("dimensions",symbol:"arrow.up.left.and.arrow.down.right",fallback:"Dimensions"), action("selection-box-toggle",symbol:"cube.transparent",fallback:"Selection box"), action("clear",symbol:"trash",fallback:"Delete measurements"), unitsMenu()])
+    }
+    private func modelMenu() -> UIMenu {
+        UIMenu(children:[action("translate",symbol:"arrow.up.and.down.and.arrow.left.and.right",fallback:"Move"),action("rotate",symbol:"rotate.3d",fallback:"Rotate"),action("explode",symbol:"square.stack.3d.up",fallback:"Explode"),action("undo",symbol:"arrow.uturn.backward",fallback:"Undo"),action("scene-settings",symbol:"slider.horizontal.3",fallback:"Scene settings"),action("model-tools",symbol:"wrench.and.screwdriver",fallback:"Position & docking")])
+    }
+    private func menuItem(_ id:String, symbol:String, menu:UIMenu) -> UIBarButtonItem {
+        let item = UIBarButtonItem(title:nil,image:UIImage(systemName:symbol),primaryAction:nil,menu:menu)
+        item.accessibilityLabel = label(id,fallback:id); item.accessibilityIdentifier="form."+id;item.isEnabled=enabled(id,default:true)
+        return item
     }
     private func rebuild() {
         navigationItem.title = (state["title"] as? String).flatMap { $0.isEmpty ? nil : $0 } ?? "Form"
@@ -131,16 +122,14 @@ final class MobileChrome: NSObject {
             item("open-with", symbol: "square.and.arrow.up", fallback: "Share"),
             item("info", symbol: "info.circle", fallback: "File information", defaultEnabled: true)
         ]
-        let more = UIBarButtonItem(title: nil, image: UIImage(systemName: "ellipsis"), primaryAction: nil, menu: moreMenu())
-        more.accessibilityLabel = label("more", fallback: "More")
         let wide = controller?.traitCollection.horizontalSizeClass == .regular && (controller?.view.bounds.width ?? 0) >= 700
-        var items = [item("fit", symbol: "viewfinder", fallback: "Fit model")]
-        if wide { items.append(item("screenshot", symbol: "camera", fallback: "Screenshot")) }
-        items += [UIBarButtonItem(systemItem: .flexibleSpace), item("measure", symbol: "ruler", fallback: "Measure"), item("cut", symbol: "square.split.2x1", fallback: "Section")]
-        if wide { items.append(item("dimensions", symbol: "arrow.up.left.and.arrow.down.right", fallback: "Dimensions")) }
-        items.append(UIBarButtonItem(systemItem: .flexibleSpace))
-        if wide { items += [item("translate", symbol: "arrow.up.and.down.and.arrow.left.and.right", fallback: "Move"), item("explode", symbol: "square.stack.3d.up", fallback: "Explode")] }
-        items.append(more)
-        toolbar.setItems(items, animated: false)
+        var items = [item("fit",symbol:"viewfinder",fallback:"Fit model"),menuItem("view-tools",symbol:"cube",menu:viewMenu()),UIBarButtonItem(systemItem:.flexibleSpace)]
+        items.append(item("measure",symbol:"ruler",fallback:"Measure"))
+        items.append(menuItem("measurement-tools",symbol:"slider.horizontal.3",menu:measurementMenu()))
+        items.append(item("cut",symbol:"square.split.2x1",fallback:"Section"))
+        items.append(UIBarButtonItem(systemItem:.flexibleSpace))
+        if wide { items.append(item("translate",symbol:"arrow.up.and.down.and.arrow.left.and.right",fallback:"Move")) }
+        items.append(menuItem("model-tools",symbol:"wrench.and.screwdriver",menu:modelMenu()))
+        toolbar.setItems(items,animated:false)
     }
 }

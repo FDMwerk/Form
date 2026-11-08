@@ -20,3 +20,5 @@ On Xcode 27, open **Xcode → Open Developer Tool → Device Hub** for simulated
 Build instructions and implemented scope: [mobile/README.md](../mobile/README.md). Supported print handoff findings: [MOBILE_BAMBU_HANDOFF.md](MOBILE_BAMBU_HANDOFF.md).
 
 Liquid Glass adaptation: [MOBILE_DESIGN.md](MOBILE_DESIGN.md). Native UIKit bars on iOS 26, SF Symbols, compact phone actions and additional direct iPad actions. Genuine original Benchy is bundled with separate CC BY-ND 4.0 attribution.
+
+Further mobile UX pass: focused View/Measurement/Model menus, native grouped file-information sheet, explicit subpanel closes, scrollable landscape layouts and camera-adaptive coarser grid. Real WebKit tests verify panel open/close, units and native info groups on phone/tablet; source-based tests cover all original toolbar commands, detailed panel touch/layout contracts and adaptive grid math. Full existing regression suite passed. This does not establish real-device accessibility or physical print operation.

@@ -24,6 +24,9 @@ import CryptoKit
             if let filename = try? await controller.web.evaluateJavaScript("document.getElementById('filename').textContent") as? String, filename == "3DBenchy.stl" { loaded = true; break }
         }
         XCTAssertTrue(loaded)
+        _ = try await controller.web.evaluateJavaScript("window.applyViewportSettings({showGrid:true,backgroundColor:'#fafafa'})")
+        let gridVisible = try await controller.web.evaluateJavaScript("document.getElementById('grid').classList.contains('active')") as? Bool
+        XCTAssertEqual(gridVisible,true)
         let toolbar = try XCTUnwrap(controller.view.subviews.compactMap { $0 as? UIToolbar }.first)
         XCTAssertNotNil(toolbar.items?.first { $0.accessibilityIdentifier == "form.measure" })
         _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('measure')")
@@ -41,6 +44,25 @@ import CryptoKit
         let attachment = XCTAttachment(image: image); attachment.name = "Original 3DBenchy"; attachment.lifetime = .keepAlways; add(attachment)
         let screenshot = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)[0].appendingPathComponent("FormMobile-Benchy-\(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone").png")
         try image.pngData()?.write(to: screenshot)
+        for (command,panel) in [("display-menu","display-panel"),("background-menu","background-panel"),("scene-settings","scene-settings-panel")] {
+            _ = try await controller.web.evaluateJavaScript("window.formMobileCommand('\(command)')")
+            let opened = try await controller.web.evaluateJavaScript("!document.getElementById('\(panel)').hidden && getComputedStyle(document.getElementById('\(panel)')).display !== 'none'") as? Bool
+            XCTAssertEqual(opened,true,"Panel must be visible: " + panel)
+            _ = try await controller.web.evaluateJavaScript("document.getElementById('\(panel)').querySelector('.mobile-subpanel-close').click()")
+            let closed = try await controller.web.evaluateJavaScript("document.getElementById('\(panel)').hidden") as? Bool
+            XCTAssertEqual(closed,true)
+        }
+        controller.showFileInformation()
+        try await Task.sleep(nanoseconds:500_000_000)
+        let navigation = try XCTUnwrap(controller.presentedViewController as? UINavigationController)
+        let information = try XCTUnwrap(navigation.topViewController as? FileInformationController)
+        information.loadViewIfNeeded()
+        XCTAssertEqual(information.numberOfSections(in:information.tableView),2)
+        XCTAssertGreaterThan(information.tableView(information.tableView,numberOfRowsInSection:0),0)
+        let infoImage = UIGraphicsImageRenderer(bounds:host.bounds).image { _ in host.drawHierarchy(in:host.bounds,afterScreenUpdates:true) }
+        let infoURL = screenshot.deletingLastPathComponent().appendingPathComponent("FormMobile-Info-\(UIDevice.current.userInterfaceIdiom == .pad ? "iPad" : "iPhone").png")
+        try infoImage.pngData()?.write(to:infoURL)
+        controller.dismiss(animated:false)
     }
     func testFilePolicyRejectsWebpagesAndUnknownFiles() {
         XCTAssertFalse(MobileFilePolicy.accepts(URL(string: "https://makerworld.com/model.stl")!))

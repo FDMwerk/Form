@@ -14,3 +14,11 @@ Reviewed 8 November 2026 against Apple's current [Materials](https://developer.a
 ## Boundaries
 
 This is a tested development adaptation, not Apple certification or a complete accessibility audit. Real-device VoiceOver, larger text, Reduce Transparency/Increase Contrast, light/dark appearance, small and resizable iPad windows, Pencil, external keyboard and long measurement sessions remain release gates. Native toolbar menus expose the current actions; full native inspector/sheet conversion can be refined without changing geometry behavior. There is no direct Bambu print claim.
+
+## Mobile workspace pass
+
+The bottom bar now separates View (six focused commands), Measurement options (dimensions, selection box, clearing and units) and Model tools (move, rotate, explode, undo, scene settings, position/docking). Settings, feedback, legal and the example remain in the model sidebar. The former general-purpose More menu and duplicate top-left view/background buttons are removed. Empty-scene model actions are disabled.
+
+File information uses a native grouped table in a system sheet with medium/large detents and readable wrapping labels/values. Position and docking remain separate editing controls. Web subpanels for display, background and scene settings have explicit close controls; all detailed panels are bounded and scrollable, with portrait/landscape rules and 44pt fields. These improvements retain the existing model operations and detailed measurement controls.
+
+Mobile grid spacing uses 1/2/5 mm steps selected from camera span and CSS viewport height, with hysteresis and stronger major lines. Desktop spacing and radial fading are retained. Tests cover camera zoom, grid visibility/background, all original toolbar commands, opening/closing detailed panels, unit changes and native information-sheet content. Simulator checks remain distinct from real-device touch/accessibility acceptance.
