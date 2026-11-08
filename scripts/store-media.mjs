@@ -29,7 +29,7 @@ const doodles=[
  {name:'Blocks',nodes:Blocks,x:2050,y:100,size:115,angle:12}
 ];
 export const suggestedSlides=[
- {id:'01-models',theme:'violet',de:{headline:'Kostenloser 3D Viewer',subtitle:'Der klare CAD Viewer für deinen Mac.'},en:{headline:'Free 3D Viewer',subtitle:'The clear CAD viewer for your Mac.'}},
+ {id:'01-models',theme:'violet',de:{headline:'3D-Modelle. Klar bis ins Detail.',subtitle:'Der klare CAD Viewer für deinen Mac.'},en:{headline:'3D models. Every detail in view.',subtitle:'The clear CAD viewer for your Mac.'}},
  {id:'02-explore',theme:'ivory',de:{headline:'Öffnen. Drehen.\nVerstehen.',subtitle:'3D-Modelle entdecken. Ganz in deinem Tempo.'},en:{headline:'Open. Rotate.\nUnderstand.',subtitle:'Explore your 3D models at your own pace.'}},
  {id:'03-measure',theme:'lavender',de:{headline:'Maße, die\nKlarheit schaffen.',subtitle:'Außenmaße, Details und Abstände im Blick.'},en:{headline:'Measurements\nthat make sense.',subtitle:'See dimensions, details and distances clearly.'}},
  {id:'04-organize',theme:'plum',de:{headline:'Alles im Blick.',subtitle:'Mehrere Modelle. Eine aufgeräumte Ansicht.'},en:{headline:'Every detail in view.',subtitle:'Multiple models. One clear workspace.'}},
@@ -42,7 +42,7 @@ async function textImage(text,{size=96,color=brand.white,width=2240,weight=300,a
 }
 function background(theme,generic=false){
  // Decorative model doodles use unmodified Lucide paths, not invented icon drawings.
- const headerPositions=[{x:420,y:35,size:90},{x:2250,y:65,size:105},{x:690,y:25,size:85},{x:2400,y:210,size:85},{x:1870,y:35,size:100},{x:100,y:215,size:90},{x:560,y:245,size:62},{x:1990,y:240,size:70},{x:1580,y:35,size:70},{x:1110,y:28,size:65}];
+ const headerPositions=[{x:420,y:35,size:90},{x:2250,y:65,size:105},{x:690,y:0,size:85},{x:2400,y:210,size:85},{x:1870,y:35,size:100},{x:100,y:215,size:90},{x:560,y:245,size:62},{x:1990,y:240,size:70},{x:1580,y:15,size:70},{x:1110,y:28,size:65}];
  const visibleDoodles=generic?doodles.map((d,i)=>({...d,...headerPositions[i]})):doodles;
  const drawings=visibleDoodles.map(({nodes,x,y,size,angle})=>`<g transform="translate(${x} ${y}) rotate(${angle} ${size/2} ${size/2})" opacity="${generic?.42:.21}"><svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#ABA7B1" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">${nodes.map(([tag,attrs])=>`<${tag} ${Object.entries(attrs).map(([key,value])=>`${key}="${escape(value)}"`).join(' ')}/>`).join('')}</svg></g>`).join('');
  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="${theme.background}"/>${drawings}<rect x="1238" y="478" width="84" height="4" rx="2" fill="${brand.violet}" opacity=".32"/></svg>`);
