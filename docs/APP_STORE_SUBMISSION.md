@@ -1,6 +1,6 @@
 # App Store submission handoff
 
-Status: **preparation only; no upload, submission or approval performed by this audit**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
+Status: **Build 7 passed Apple validation on 8 November 2026; no binary upload, review submission or approval is claimed**. Form is free, with no account, advertising, subscriptions or in-app purchases. This review does not certify App Store acceptance.
 
 ## Verified publisher and distribution policy
 
@@ -16,7 +16,7 @@ Use configuration **AppStore**, not desktop **Release**. `FORM_APP_STORE` remove
 
 `project.yml` currently defaults to local ad-hoc signing. `scripts/archive.sh` explicitly selects AppStore, requests Apple Distribution signing and requires `FORM_DEVELOPMENT_TEAM`; the verified value is `D5VE86DJ5H`. Do not run it as a substitute for establishing the correct distribution credentials. The authorized session owner subsequently created the required signing/installer assets and completed local archive/export. No private signing material is placed in source. No Apple upload, server validation, submission or approval is established by those local results.
 
-## Current signed-candidate evidence — 2026-11-07
+## Signed-candidate evidence — local checks 2026-11-07, validation 2026-11-08
 
 | Evidence | Current result | Remaining step |
 | --- | --- | --- |
@@ -24,7 +24,7 @@ Use configuration **AppStore**, not desktop **Release**. `FORM_APP_STORE` remove
 | New AppStore archive | Archive log ends with `ARCHIVE SUCCEEDED`; archived app is `0.3.0 (7)`, x86_64 and arm64, with `TeamIdentifier=D5VE86DJ5H`. | Preserve exact archive/source provenance. |
 | Strict actual-bundle verification | `codesign --verify --deep --strict --all-architectures` succeeds. | Recheck the actual exported installer and app after export. |
 | Signed archive entitlements | Sandbox enabled; `get-task-allow` absent/false. | Confirm the submitted candidate is this production flavor. |
-| Local export/package | Log ends with `EXPORT SUCCEEDED`; exported Form.pkg signature independently verified through the 3rd Party Mac Developer Installer/WWDR/Apple Root chain for D5VE86DJ5H. Expired account-session warnings belonged to an earlier export; they are historical rather than evidence that the new build 7 export failed. | Reauthenticate before authorized Apple validation/upload if required; local package verification is not Apple server acceptance. |
+| Local export/package | Log ends with `EXPORT SUCCEEDED`; exported Form.pkg signature independently verified through the 3rd Party Mac Developer Installer/WWDR/Apple Root chain for D5VE86DJ5H. Expired account-session warnings belonged to an earlier export; they are historical rather than evidence that the new build 7 export failed. | The user reauthenticated and exact Build 7 passed actual Organizer validation on 8 November. Binary upload remains pending. |
 
 Earlier ad-hoc local products failed because of metadata and carried debug task access. They are historical findings, not the status of the new signed archive. Local signing/export is not Apple server validation, App Store upload, review approval, notarization or a public release. No new direct binary publication is authorized here.
 
@@ -50,7 +50,7 @@ Application source is MIT; dependencies and model assets retain their own notice
 
 ## Final review gates
 
-1. Authorized Xcode Organizer/App Store Connect validation; signed universal archive, local export and installer-signature verification have succeeded, not Apple server validation.
+1. Authorized binary upload, processing and build selection in App Store Connect. Organizer validation of exact Build 7 succeeded on 8 November; upload and review submission remain separate pending actions.
 2. Preserve the now-explicit Desktop-only qualification for Blender/Bambu in the final Store legal/reviewer material.
 3. Final Store screenshots and manual keyboard/VoiceOver, RTL, contrast and minimum-size/MacBook checks. Tests and universal architecture do not prove physical Intel or macOS 14 compatibility.
 4. Current dependency/license check and completed privacy/export/age-rating/trader metadata.
@@ -59,6 +59,12 @@ Application source is MIT; dependencies and model assets retain their own notice
 
 ## Latest metadata checkpoint
 
-The active session saved age rating 4+ and no-data-collected privacy answers. After explicit user legal confirmation, privacy answers were published and the portal confirmed publication. The user submitted the requested DSA address proof directly to Apple. The actual Business portal now lists “Gesetz über digitale Dienste”, 27 countries, 7 November 2026, status “In Prüfung”. Provider/trader verification is under Apple review, not approved; no missing user upload is currently recorded. The replacement Store screenshots JPEG01 and filled-cap JPEG03 (1280×800) now render as actual images with no error indicators and persist after reload as 2 of 10. Earlier failed PNG entries were removed from this version, with media-library copies still recoverable. Manual release after review was saved and confirmed after reload. Build 7 archive/package verification, full tests, universal Desktop/Store builds and native visual GLB-cap/STL-hole checks passed. The release agent confirmed Desktop build 7 installed locally, with strict signature/architecture/icon/sandbox checks, and a verified private MacBook-test ZIP. The Store 7 installer’s expanded payload was independently confirmed as build 7/AppStore/team D5VE86DJ5H with a valid strict signature. These packages stay local; the earlier build 6 installation is historical. None of these checkpoints means a Store binary upload, review submission or Apple approval has occurred.
+The active session saved age rating 4+ and no-data-collected privacy answers. After explicit user legal confirmation, privacy answers were published and the portal confirmed publication. The user submitted the requested DSA address proof directly to Apple. The last verified Business portal observation, on 7 November 2026, listed “Gesetz über digitale Dienste”, 27 countries, status “In Prüfung”; no new DSA check is claimed. Provider/trader verification is under Apple review, not approved; no missing user upload is currently recorded. The replacement Store screenshots JPEG01 and filled-cap JPEG03 (1280×800) now render as actual images with no error indicators and persist after reload as 2 of 10. Earlier failed PNG entries were removed from this version, with media-library copies still recoverable. Manual release after review was saved and confirmed after reload. Build 7 archive/package verification, full tests, universal Desktop/Store builds and native visual GLB-cap/STL-hole checks passed. The release agent confirmed Desktop build 7 installed locally, with strict signature/architecture/icon/sandbox checks, and a verified private MacBook-test ZIP. The Store 7 installer’s expanded payload was independently confirmed as build 7/AppStore/team D5VE86DJ5H with a valid strict signature. These packages stay local; the earlier build 6 installation is historical. These earlier checkpoints did not themselves establish Apple validation. The separately observed 8 November validation is recorded below; binary upload, review submission and approval are still not claimed.
 
-Apple binary validation/upload is not completed. Xcode GUI requires installation of official system components and currently waits on another OS installation. Finish that environment step before the authorized validation/upload workflow; do not confuse the successful archive/export or saved metadata with Apple binary validation. DSA address proof is submitted and provider verification is under Apple review (“In Prüfung”), not approved.
+## Validated candidate — 2026-11-08
+
+On **8 November 2026**, the user reauthenticated the existing Apple account in Xcode and downloaded the manual profiles. Organizer opened the exact signed **Form 0.3.0 (7)** archive. The custom validation used the app certificate dated 7 November, profile **Form Mac App Store 2026**, and unchanged build 7. The final actual UI displayed **“Form 0.3.0 (7) validated”** and **“Your app successfully passed all validation checks.”** This is successful Apple validation, **not a binary upload, App Review submission, review approval or public release**. The earlier component-installation and expired-session blockers are resolved/historical.
+
+On **8 November 2026**, the user reported that the MacBook test completed successfully and accepted the local test. This is a user-reported smoke-test result; it does not identify a specific processor/minimum macOS version or establish exhaustive hardware/accessibility testing.
+
+DSA provider verification remains at its last observed **7 November 2026 “In Prüfung”** state, not newly rechecked or approved.
