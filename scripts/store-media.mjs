@@ -42,7 +42,7 @@ async function textImage(text,{size=96,color=brand.white,width=2240,weight=300,a
 }
 function background(theme,generic=false){
  // Decorative model doodles use unmodified Lucide paths, not invented icon drawings.
- const headerPositions=[{x:420,y:35,size:90},{x:2250,y:65,size:105},{x:760,y:35,size:85},{x:2400,y:210,size:85},{x:1870,y:35,size:100},{x:100,y:215,size:90},{x:560,y:245,size:62},{x:1990,y:240,size:70},{x:1580,y:35,size:70},{x:1110,y:28,size:65}];
+ const headerPositions=[{x:420,y:35,size:90},{x:2250,y:65,size:105},{x:690,y:25,size:85},{x:2400,y:210,size:85},{x:1870,y:35,size:100},{x:100,y:215,size:90},{x:560,y:245,size:62},{x:1990,y:240,size:70},{x:1580,y:35,size:70},{x:1110,y:28,size:65}];
  const visibleDoodles=generic?doodles.map((d,i)=>({...d,...headerPositions[i]})):doodles;
  const drawings=visibleDoodles.map(({nodes,x,y,size,angle})=>`<g transform="translate(${x} ${y}) rotate(${angle} ${size/2} ${size/2})" opacity="${generic?.42:.21}"><svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#ABA7B1" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">${nodes.map(([tag,attrs])=>`<${tag} ${Object.entries(attrs).map(([key,value])=>`${key}="${escape(value)}"`).join(' ')}/>`).join('')}</svg></g>`).join('');
  return Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><rect width="${W}" height="${H}" fill="${theme.background}"/>${drawings}<rect x="1238" y="478" width="84" height="4" rx="2" fill="${brand.violet}" opacity=".32"/></svg>`);
@@ -52,18 +52,18 @@ function slideCopy(copy){return {headline:copy.headline.replaceAll('\\n','\n'),s
 async function brandOverlays(manifest,copy,slide,theme){
  const headline=await textImage(slideCopy(copy).headline,{size:slide.headlineSize||104,color:theme.foreground,width:2240,weight:600});
  if(headline.height>320)throw Error('Headline exceeds the reserved title area; shorten it or reduce headlineSize.');
- const top=slide.headlineTop??(slideCopy(copy).headline.includes('\n')?126:190);
+ const top=Number.isFinite(manifest.headerCenterY)?Math.round(manifest.headerCenterY-headline.height/2):slide.headlineTop??(slideCopy(copy).headline.includes('\n')?126:190);
  const overlays=[{input:headline.buffer,left:Math.round((W-headline.width)/2),top}];
  if(copy.subtitle){const subtitle=await textImage(copy.subtitle,{size:28,color:theme.secondary,width:2100,weight:400});if(subtitle.height>80)throw Error('Subtitle exceeds reserved space.');overlays.push({input:subtitle.buffer,left:Math.round((W-subtitle.width)/2),top:top+headline.height+24})}
  if(manifest.publisherLogo){
   const logo=await sharp(await fs.readFile(manifest.publisherLogo)).resize(manifest.publisherLogoWidth||125,manifest.publisherLogoHeight||46,{fit:'contain',background:theme.background}).flatten({background:theme.background}).png().toBuffer();
-  overlays.push({input:logo,left:96,top:60});
+  overlays.push({input:logo,left:96,top:Number.isFinite(manifest.headerCenterY)?Math.round(manifest.headerCenterY-(manifest.publisherLogoHeight||46)/2):60});
  }else{
   const mark=await sharp(await fs.readFile(manifest.formMark||path.join(project,'Resources/Web/app-mark.png'))).resize(40,46,{fit:'contain'}).png().toBuffer();
   overlays.push({input:mark,left:96,top:60});
  }
  const credit=copy.credit||slide.credit||manifest.modelCredit;
- if(credit){const caption=await textImage(credit,{size:19,color:manifest.footerColor||theme.secondary,width:2300,weight:400});if(caption.height>50)throw Error('Credit caption is too long.');overlays.push({input:caption.buffer,left:Math.round((W-caption.width)/2),top:manifest.footerBandHeight?Math.round(H-manifest.footerBandHeight+(manifest.footerBandHeight-caption.height)/2):1552})}
+ if(credit){const caption=await textImage(credit,{size:19,color:manifest.footerColor||theme.secondary,width:2300,weight:400});if(caption.height>50)throw Error('Credit caption is too long.');overlays.push({input:caption.buffer,left:Math.round((W-caption.width)/2),top:manifest.creditTop??(manifest.footerBandHeight?Math.round(H-manifest.footerBandHeight+(manifest.footerBandHeight-caption.height)/2):1552)})}
  return {overlays,headline,credit};
 }
 async function verifyDevice(device){
@@ -116,6 +116,7 @@ export async function composeStoreMedia(manifest){
   const capture=await fs.readFile(copy.capture),captureMeta=await sharp(capture).metadata();
   if(captureMeta.width<1000||captureMeta.height<600)throw Error('Use a real app capture of at least 1000×600 pixels.');
   const theme=slideTheme(slide),{overlays,headline,credit}=await brandOverlays(manifest,copy,slide,theme);
+  const insideCredit=generic&&manifest.creditInsideScreen&&credit?overlays.pop():null;
   if(generic){
    const cropTop=copy.cropTopPixels??manifest.captureTopCropPixels??0;
    if(!Number.isInteger(cropTop)||cropTop<0||cropTop>64)throw Error('Invalid reserved top crop.');
@@ -147,6 +148,7 @@ export async function composeStoreMedia(manifest){
   const bezel=await sharp(device.input).resize(dw,dh,{fit:'fill'}).png().toBuffer();
   overlays.push({input:screenshot,left:dx+sx,top:dy+sy},{input:bezel,left:dx,top:dy});
   }
+  if(insideCredit)overlays.push(insideCredit);
   const directory=path.join(output,locale);await fs.mkdir(directory,{recursive:true});const filename=`${String(index+1).padStart(2,'0')}-${slide.id||'form'}-${locale}.png`,target=path.join(directory,filename);
   await sharp(background(theme,generic)).composite(overlays).flatten({background:theme.background}).removeAlpha().png().toFile(target);
   const rendered=await sharp(target).metadata();if(rendered.width!==W||rendered.height!==H||rendered.hasAlpha)throw Error('App Store output dimensions/alpha mismatch.');
