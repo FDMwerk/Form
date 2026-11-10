@@ -1,4 +1,4 @@
-/* This WKWebView is a local 3D surface. All application controls are UIKit. */
+/* The local 3D surface uses native UIKit controls and an iPad orientation widget. */
 html,body { width:100%;height:100%;margin:0;overflow:hidden;overscroll-behavior:none;-webkit-text-size-adjust:100% }
 body { display:block!important;background:transparent }
 body>aside,body>#inspector,body>#settings-dialog,body>#mobile-panel-backdrop,main>header,main>#empty,main>#tool-panels,main>#status,main>footer,main>#viewport-display-controls,main>#scene-settings-panel,main>#scene-settings { display:none!important }
@@ -6,6 +6,21 @@ main { position:absolute;inset:0;min-width:0;width:100%;height:100%;display:bloc
 #canvas,#labels { position:absolute;inset:0 }
 #canvas canvas {touch-action:none;display:block}
 #view-navigator {display:none!important}
+/* Device identity, rather than window width, preserves the navigator in narrow
+   iPad multitasking windows. Insets come from the native overlay bars. */
+html[data-form-ipad=true] #view-navigator {
+  display:block!important;top:calc(var(--form-safe-top,0px) + 12px);
+  inset-inline-end:calc(var(--form-safe-right,0px) + 16px);
+  width:120px;height:154px;transform:none;transform-origin:top right
+}
+html[data-form-ipad=true] .view-cube-stage {
+  margin:0 auto;pointer-events:auto;touch-action:none;
+  transform:scale(1.16);transform-origin:50% 50%
+}
+html[data-form-ipad=true] #view-cube .view-face-axis {font-size:24px}
+html[data-form-ipad=true] #view-cube .view-cube-hit {width:22px;height:22px;margin:-4px}
+html[data-form-ipad=true] #view-axis-labels {bottom:8px}
+html[data-form-ipad=true] #view-axis-labels span {width:19px;font-size:12px}
 #view-home {min-width:44px;min-height:44px}
 #tooltip,#control-tooltip,#tree-context-menu,.measurement-context {display:none!important}
 .measurement-label {min-height:36px;border-radius:12px;font-size:13px;padding:8px 12px}

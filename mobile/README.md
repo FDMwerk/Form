@@ -6,7 +6,9 @@
 
 The user interface uses Apple's system components: `UISplitViewController`, `UINavigationController`, a sidebar collection-view list, navigation/toolbars, menus, grouped inspector tables, document/share sheets, color pickers and native empty/loading states. On iPad, models and the viewport appear in adaptive columns. On iPhone, the same content uses the system's compact navigation. Controls use SF Symbols, Dynamic Type and the current system material, including Liquid Glass on supported OS versions.
 
-WebKit renders the 3D scene and model annotations. The desktop header, sidebar, view cube and HTML editor panels are hidden in the mobile product; settings and editing controls are native. One renderer snapshot drives the native title, enabled tools, model list and sharing identity. State delivery is throttled rather than waiting for animation updates to stop.
+WebKit renders the 3D scene and model annotations. The desktop header, sidebar and HTML editor panels are hidden; settings and editing controls are native. iPad retains a touch-enabled XYZ navigator for orbiting and standard views, while iPhone uses the native view controls. One renderer snapshot drives the native title, enabled tools, model list and sharing identity. State delivery is throttled rather than waiting for animation updates to stop.
+
+On iPad, general sidebar actions stay at the bottom while the model tree scrolls independently. The 3D surface extends beneath the floating system bars; the navigator respects the control safe area. View, measurement, section and model tools have a secondary native icon bar above the main toolbar. Detailed tool options and file information open in compact anchored popovers when space permits, with touch navigation available in the remaining viewport. File information presents dimensions and volume as adaptive metric tiles; larger accessibility text uses a single column.
 
 Implemented operations include:
 
@@ -42,7 +44,7 @@ xcodebuild -project mobile/FormMobile.xcodeproj -scheme FormMobile \
   CODE_SIGNING_ALLOWED=NO test
 ```
 
-The suite contains four hosted native/renderer integration tests and three native-form tests. The completed redesign run passed all seven on iPhone 17 Pro and iPad Pro 13-inch (M5), both using iOS/iPadOS 26.1 Simulator: **14 successful runs**. Tests cover the production native example command, continuous animation/state updates, synchronized UIKit title/tree/file identity, import-error recovery, sidebar operations, actual native panel routes, ruler activation, native information, and the real canvas/native safe-area geometry. Form tests exercise typed toggles, current-value menus, slider quantization and state updates during a drag. This is simulator evidence, not physical-device acceptance.
+The suite contains five hosted native/renderer integration tests and three native-form tests. The iPad refinements run passed eight on iPad Pro 13-inch (M5) and seven on iPhone 17 Pro, both using iOS/iPadOS 26.1 Simulator; the iPad-specific layout test is intentionally skipped on iPhone. Tests cover the production native example command, continuous animation/state updates, synchronized UIKit title/tree/file identity, import-error recovery, a long scrolling model tree with pinned actions, secondary tool controls, compact popovers, ruler activation, native information, and the actual full-surface/safe-area geometry. Form tests exercise typed toggles, current-value menus, slider quantization and state updates during a drag. This is simulator evidence, not physical-device acceptance.
 
 Open `mobile/FormMobile.xcodeproj`, select `FormMobile`, and choose a simulator. In Xcode 27, the simulator UI is **Device Hub**. For real-device installation, use an authorized development team and provision the separate `de.fdmwerk.form.mobile` identifier; these build commands do not create certificates or submit an app. Debug builds support `--example` to load the example at launch.
 

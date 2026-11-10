@@ -25,6 +25,7 @@
   globalThis.FormMobileTouchTracker = createTouchTracker;
   if (typeof document === 'undefined') return;
   const boot = () => {
+    document.documentElement.dataset.formIpad = String(window.FORM_IPAD === true);
     if (window.formMobileInput) return;
     document.documentElement.dataset.formMobile = 'true';
     const viewport = document.querySelector('meta[name="viewport"]');

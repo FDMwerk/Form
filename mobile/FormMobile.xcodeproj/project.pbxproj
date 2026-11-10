@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1D9853B273D7498C40DE2226 /* MobileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61F7BF0BBA43A885D6F7D0 /* MobileTests.swift */; };
 		31B228CF5AA045770BFC53FC /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491BE740BA982CBA7777720D /* App.swift */; };
+		550728366793F93702C514E3 /* ContextToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4F608700F69160C37DC3C9F /* ContextToolbar.swift */; };
 		58AAE3891904ED142A20FE87 /* native-chrome.js in Resources */ = {isa = PBXBuildFile; fileRef = E6C206125563339A313519B0 /* native-chrome.js */; };
 		8158555DAA40E413A53B5466 /* NativePanelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B129A2CF3E8E9C3AB32D50A /* NativePanelTests.swift */; };
 		8A5B1F2673EDB827BD1442EA /* Web in Resources */ = {isa = PBXBuildFile; fileRef = F6A11EDDD71FCFCDA5BE337B /* Web */; };
@@ -45,6 +46,7 @@
 		60448280A04866C09151EEC6 /* MobileWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWorkspace.swift; sourceTree = "<group>"; };
 		6735AABCD6F5A88EF3BAE8C6 /* viewport.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = viewport.js; sourceTree = "<group>"; };
 		8B129A2CF3E8E9C3AB32D50A /* NativePanelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePanelTests.swift; sourceTree = "<group>"; };
+		A4F608700F69160C37DC3C9F /* ContextToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextToolbar.swift; sourceTree = "<group>"; };
 		BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5274BA2CFAFCF7065EE30B1 /* FormMobileTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FormMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSidebar.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				491BE740BA982CBA7777720D /* App.swift */,
+				A4F608700F69160C37DC3C9F /* ContextToolbar.swift */,
 				2C425B8A095420EEB66ABAAD /* FileInformation.swift */,
 				60448280A04866C09151EEC6 /* MobileWorkspace.swift */,
 				D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */,
@@ -221,6 +224,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				31B228CF5AA045770BFC53FC /* App.swift in Sources */,
+				550728366793F93702C514E3 /* ContextToolbar.swift in Sources */,
 				90C47B946C5DE6310259FC6A /* FileInformation.swift in Sources */,
 				FD4016EA141124489F12B11C /* MobileWorkspace.swift in Sources */,
 				C5E33D8DFC9305C0F2D6FFF9 /* ModelSidebar.swift in Sources */,

@@ -48,10 +48,11 @@ import CryptoKit
         try diagnosticData.write(to: cache.appendingPathComponent("FormMobile-\(name)-Geometry-\(device).json"))
         let diagnosticAttachment = XCTAttachment(data: diagnosticData, uniformTypeIdentifier: "public.json"); diagnosticAttachment.name = name + " viewport geometry"; diagnosticAttachment.lifetime = .keepAlways; add(diagnosticAttachment)
         if assertGeometry {
-            XCTAssertEqual(webFrame.minX, safeFrame.minX, accuracy: 1)
-            XCTAssertEqual(webFrame.minY, safeFrame.minY, accuracy: 1)
-            XCTAssertEqual(webFrame.width, safeFrame.width, accuracy: 1)
-            XCTAssertEqual(webFrame.height, safeFrame.height, accuracy: 1)
+            let expectedFrame = UIDevice.current.userInterfaceIdiom == .pad ? host.viewer.view.bounds : safeFrame
+            XCTAssertEqual(webFrame.minX, expectedFrame.minX, accuracy: 1)
+            XCTAssertEqual(webFrame.minY, expectedFrame.minY, accuracy: 1)
+            XCTAssertEqual(webFrame.width, expectedFrame.width, accuracy: 1)
+            XCTAssertEqual(webFrame.height, expectedFrame.height, accuracy: 1)
             let canvas = try XCTUnwrap(geometry["canvas"] as? [String: Any])
             let width = try XCTUnwrap(geometry["innerWidth"] as? Double), height = try XCTUnwrap(geometry["innerHeight"] as? Double)
             XCTAssertEqual(width, Double(host.viewer.web.bounds.width), accuracy: 1, "Web viewport must match actual native renderer width")
@@ -170,6 +171,85 @@ import CryptoKit
         XCTAssertTrue(models(host.viewer).contains { $0["name"] as? String == "Second" }, "Unloading one file must retain the other native row and model")
     }
 
+    func testIPadSidebarActionsStayPinnedWhenTheModelTreeScrolls() async throws {
+        guard UIDevice.current.userInterfaceIdiom == .pad else { throw XCTSkip("Pinned sidebar actions are iPad-specific") }
+        let host = try makeHost(); defer { host.close() }
+        try await openExample(host)
+        host.workspace.show(.primary)
+        let sidebar = host.viewer.modelSidebar
+        sidebar.loadViewIfNeeded()
+        let controls = host.viewer.latestState["controls"] as? [String: [String: Any]] ?? [:]
+        let liveState = host.viewer.latestState["sidebar"] as? [String: Any] ?? [:]
+        let longRows: [[String: Any]] = (0..<100).map {
+            ["id": "layout-fixture-\($0)", "kind": "model", "name": "Component \($0)", "badge": "STL", "depth": 0, "visible": true]
+        }
+        sidebar.setState(["rows": longRows], controls: controls, german: host.viewer.german)
+        host.window.layoutIfNeeded(); sidebar.view.layoutIfNeeded()
+        let footer = sidebar.footerCollectionView
+        let ready = await waitUntil(seconds: 3) {
+            sidebar.view.layoutIfNeeded(); footer.layoutIfNeeded()
+            return !footer.isHidden && footer.bounds.height > 0 && (0..<3).allSatisfy { footer.cellForItem(at: IndexPath(item: $0, section: 0)) != nil }
+        }
+        XCTAssertTrue(ready, "All three app actions must be visible at the bottom of the iPad sidebar")
+        let safeFrame = sidebar.view.convert(sidebar.view.safeAreaLayoutGuide.layoutFrame, to: host.window)
+        let before = footer.convert(footer.bounds, to: host.window)
+        XCTAssertEqual(before.maxY, safeFrame.maxY, accuracy: 1)
+        XCTAssertEqual(sidebar.collectionView.frame.maxY, footer.frame.minY, accuracy: 1, "The model tree must end above the fixed actions")
+        let expectedIDs = ["form.sidebar.settings", "form.sidebar.feedback", "form.sidebar.legal"]
+        for (index, id) in expectedIDs.enumerated() {
+            let cell = try XCTUnwrap(footer.cellForItem(at: IndexPath(item: index, section: 0)))
+            XCTAssertEqual(cell.accessibilityIdentifier, id)
+            let frame = cell.convert(cell.bounds, to: host.window)
+            XCTAssertGreaterThanOrEqual(frame.minY, before.minY - 1)
+            XCTAssertLessThanOrEqual(frame.maxY, safeFrame.maxY + 1)
+        }
+        let tree = sidebar.collectionView
+        tree.setContentOffset(CGPoint(x: 0, y: max(0, tree.contentSize.height - tree.bounds.height + tree.adjustedContentInset.bottom)), animated: false)
+        host.window.layoutIfNeeded()
+        tree.layoutIfNeeded()
+        let finalModelVisible = await waitUntil(seconds: 3) {
+            tree.layoutIfNeeded()
+            tree.setContentOffset(CGPoint(x:0,y:max(0,tree.contentSize.height-tree.bounds.height+tree.adjustedContentInset.bottom)),animated:false)
+            tree.layoutIfNeeded()
+            guard let cell=tree.cellForItem(at:IndexPath(item:longRows.count-1,section:1)) else {return false}
+            return cell.convert(cell.bounds,to:host.window).maxY <= before.minY+1
+        }
+        XCTAssertTrue(finalModelVisible,"The final model must scroll above the fixed actions after native self-sizing settles")
+        let after = footer.convert(footer.bounds, to: host.window)
+        XCTAssertEqual(after.minY, before.minY, accuracy: 1, "Scrolling a long assembly must not move app actions")
+        XCTAssertEqual(after.maxY, before.maxY, accuracy: 1)
+        // Restore production content for the review capture.
+        sidebar.setState(liveState, controls: controls, german: host.viewer.german)
+        tree.setContentOffset(CGPoint(x: 0, y: -tree.adjustedContentInset.top), animated: false)
+        host.window.layoutIfNeeded(); sidebar.view.layoutIfNeeded()
+        host.viewer.performMobileCommand("measurement-tools")
+        let context = host.viewer.contextToolbar
+        XCTAssertEqual(context.tool, "measure")
+        XCTAssertFalse(context.isHidden)
+        XCTAssertNil(host.viewer.presentedViewController, "iPad quick options must not cover the scene with a sheet")
+        host.window.layoutIfNeeded()
+        let contextFrame = context.convert(context.bounds, to: host.viewer.view)
+        XCTAssertGreaterThan(contextFrame.height, 40)
+        XCTAssertLessThanOrEqual(contextFrame.maxY, host.viewer.view.safeAreaLayoutGuide.layoutFrame.maxY)
+        XCTAssertLessThanOrEqual(contextFrame.width, host.viewer.view.safeAreaLayoutGuide.layoutFrame.width)
+        let item: (String) -> [String: Any]? = { id in
+            let panel = (host.viewer.latestState["panels"] as? [String: [String: Any]])?["measurement"] ?? [:]
+            return (panel["sections"] as? [[String: Any]] ?? []).flatMap { $0["items"] as? [[String: Any]] ?? [] }.first { $0["id"] as? String == id }
+        }
+        context.onAction?("native-measure-mode", "path")
+        let pathSelected = await waitUntil(seconds: 3) { item("native-measure-mode")?["value"] as? String == "path" }
+        XCTAssertTrue(pathSelected, "The quick toolbar must change the production renderer's measuring mode")
+        let previousSnap = item("native-measure-action-snap")?["value"] as? Bool ?? false
+        context.onAction?("native-measure-action-snap", !previousSnap)
+        let snapChanged = await waitUntil(seconds: 3) { item("native-measure-action-snap")?["value"] as? Bool == !previousSnap }
+        XCTAssertTrue(snapChanged, "The quick toolbar snap state must be synchronized with the renderer")
+        XCTAssertEqual(host.viewer.navigationItem.title, "3DBenchy.stl")
+        XCTAssertEqual(host.viewer.latestState["modelCount"] as? Int, 1, "Changing measuring options must preserve the open model")
+        try await capture(host, name: "iPad-Pinned-Actions-Context-Cube", assertGeometry: true)
+        host.viewer.performMobileCommand("measurement-tools")
+        XCTAssertTrue(context.isHidden, "Tapping measurement options again must close the secondary toolbar")
+    }
+
     func testNativePanelsAndAdaptiveWorkspaceRetainRendererControls() async throws {
         let host = try makeHost(); defer { host.close() }
         try await openExample(host)
@@ -194,6 +274,12 @@ import CryptoKit
             XCTAssertTrue(presented, "Expected native editor through production route for \(key)")
             guard let nav = host.viewer.presentedViewController as? UINavigationController,
                   let panel = nav.topViewController as? NativePanelController else { continue }
+            let expectsPopover = UIDevice.current.userInterfaceIdiom == .pad && key != "settings"
+            XCTAssertEqual(nav.modalPresentationStyle, expectsPopover ? .popover : .pageSheet, "iPad tool editors must preserve the scene with a native popover")
+            if expectsPopover {
+                XCTAssertEqual(nav.preferredContentSize.width, min(400,max(280,host.viewer.view.bounds.width-24)), accuracy: 1)
+                XCTAssertTrue(nav.popoverPresentationController?.passthroughViews?.contains(where: { $0 === host.viewer.view }) == true, "The model remains available for touch navigation beside the tool editor")
+            }
             panel.loadViewIfNeeded()
             let count = (0..<panel.numberOfSections(in: panel.tableView)).reduce(0) { $0 + panel.tableView(panel.tableView, numberOfRowsInSection: $1) }
             XCTAssertGreaterThan(count, 0, key)
@@ -213,8 +299,14 @@ import CryptoKit
             ((host.viewer.latestState["controls"] as? [String: [String: Any]])?["measure"]?["active"] as? Bool) == false
         }
         XCTAssertTrue(stopped)
-        let overlayVisible = try await host.viewer.web.evaluateJavaScript("[...document.querySelectorAll('header,body>aside,#tool-panels,#viewport-display-controls,#view-navigator')].some(e=>getComputedStyle(e).display!=='none' && e.getBoundingClientRect().width>0)") as? Bool
+        let overlayVisible = try await host.viewer.web.evaluateJavaScript("[...document.querySelectorAll('header,body>aside,#tool-panels,#viewport-display-controls')].some(e=>getComputedStyle(e).display!=='none' && e.getBoundingClientRect().width>0)") as? Bool
         XCTAssertEqual(overlayVisible, false, "The native product must not leave desktop interaction chrome on screen")
+        let navigatorVisible = try await host.viewer.web.evaluateJavaScript("(()=>{const e=document.getElementById('view-navigator'),r=e.getBoundingClientRect();return getComputedStyle(e).display!=='none'&&r.width>0&&r.height>0})()") as? Bool
+        XCTAssertEqual(navigatorVisible, UIDevice.current.userInterfaceIdiom == .pad, "iPad keeps the interactive XYZ navigator; iPhone uses native view controls")
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let navigatorFits = try await host.viewer.web.evaluateJavaScript("(()=>{const r=document.getElementById('view-navigator').getBoundingClientRect();return r.top>=0&&r.left>=0&&r.right<=innerWidth&&r.bottom<=innerHeight})()") as? Bool
+            XCTAssertEqual(navigatorFits, true, "The XYZ widget must fit completely inside the real iPad viewport")
+        }
         let fits = try await host.viewer.web.evaluateJavaScript("document.documentElement.scrollWidth <= innerWidth") as? Bool
         XCTAssertEqual(fits, true)
         host.viewer.showFileInformation()
@@ -222,8 +314,13 @@ import CryptoKit
         XCTAssertTrue(infoPresented)
         let infoNavigation = try XCTUnwrap(host.viewer.presentedViewController as? UINavigationController)
         let information = try XCTUnwrap(infoNavigation.topViewController as? FileInformationController)
+        let expectsInfoPopover = UIDevice.current.userInterfaceIdiom == .pad
+        XCTAssertEqual(infoNavigation.modalPresentationStyle, expectsInfoPopover ? .popover : .pageSheet)
         information.loadViewIfNeeded()
         XCTAssertGreaterThan(information.numberOfSections(in: information.tableView), 0)
+        let infoVisible = await waitUntil(seconds: 3) { information.viewIfLoaded?.window != nil && information.view.bounds.width > 0 }
+        XCTAssertTrue(infoVisible)
+        try await Task.sleep(nanoseconds: 350_000_000)
         try await capture(host, name: "Redesign-Information")
         host.viewer.dismiss(animated: false)
         // Adaptive split view is the actual workspace, not a hand-positioned web sidebar.

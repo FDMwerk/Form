@@ -42,7 +42,7 @@ private final class WeakMobileHandler: NSObject, WKScriptMessageHandler {
     func userContentController(_ controller:WKUserContentController,didReceive message:WKScriptMessage) {target?.userContentController(controller,didReceive:message)}
 }
 
-final class MobileViewerController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate, UIDocumentPickerDelegate {
+final class MobileViewerController: UIViewController, WKScriptMessageHandler, WKNavigationDelegate, UIDocumentPickerDelegate, UIPopoverPresentationControllerDelegate {
     private(set) var web: WKWebView!
     private(set) var ready=false
     private(set) var latestState:[String:Any]=[:]
@@ -60,13 +60,16 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
     private var presentationHost:UIViewController {viewIfLoaded?.window != nil ? self : modelSidebar}
     private let notice=UILabel()
     private var lastNotice=""
+    let contextToolbar=ContextToolbar()
+    private var viewportInsets=UIEdgeInsets(top:-1,left:-1,bottom:-1,right:-1)
+    private var isPad:Bool {traitCollection.userInterfaceIdiom == .pad}
     var german:Bool {(latestState["language"] as? String ?? Locale.preferredLanguages.first ?? "en").hasPrefix("de")}
     func sourceURL(for id:String)->URL? {sources[id]}
     override func viewDidLoad() {
         super.viewDidLoad();view.backgroundColor = .systemBackground
         let configuration=WKWebViewConfiguration();configuration.websiteDataStore = .nonPersistent()
         configuration.userContentController.add(WeakMobileHandler(self),name:"native")
-        configuration.userContentController.addUserScript(WKUserScript(source:"window.FORM_NATIVE_SIDEBAR=true;window.FORM_NATIVE_UI=true;",injectionTime:.atDocumentStart,forMainFrameOnly:true))
+        configuration.userContentController.addUserScript(WKUserScript(source:"window.FORM_NATIVE_SIDEBAR=true;window.FORM_NATIVE_UI=true;window.FORM_IPAD=\(isPad ? "true":"false");",injectionTime:.atDocumentStart,forMainFrameOnly:true))
         for (name,ext) in [("viewport","css"),("viewport","js"),("native-chrome","js"),("sidebar","js")] {
             guard let url=Bundle.main.url(forResource:name,withExtension:ext),let content=try? String(contentsOf:url) else {continue}
             var script=content
@@ -79,7 +82,23 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         web.scrollView.isScrollEnabled=false;web.scrollView.contentInsetAdjustmentBehavior = .never;web.isOpaque=false;web.translatesAutoresizingMaskIntoConstraints=false
         view.addSubview(web)
         let annotationPress=UILongPressGestureRecognizer(target:self,action:#selector(annotationMenu(_:)));annotationPress.cancelsTouchesInView=false;annotationPress.allowableMovement=8;web.addGestureRecognizer(annotationPress)
-        NSLayoutConstraint.activate([web.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor),web.trailingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.trailingAnchor),web.topAnchor.constraint(equalTo:view.safeAreaLayoutGuide.topAnchor),web.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor)])
+        // The 3D surface extends behind iPad's floating system bars. Only its
+        // controls need the safe area; trimming the surface leaves blank strips.
+        if isPad {
+            let surface=view!
+            NSLayoutConstraint.activate([web.leadingAnchor.constraint(equalTo:surface.leadingAnchor),web.trailingAnchor.constraint(equalTo:surface.trailingAnchor),web.topAnchor.constraint(equalTo:surface.topAnchor),web.bottomAnchor.constraint(equalTo:surface.bottomAnchor)])
+        } else {
+            NSLayoutConstraint.activate([web.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor),web.trailingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.trailingAnchor),web.topAnchor.constraint(equalTo:view.safeAreaLayoutGuide.topAnchor),web.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor)])
+        }
+        contextToolbar.translatesAutoresizingMaskIntoConstraints=false;view.addSubview(contextToolbar)
+        let preferredWidth=contextToolbar.widthAnchor.constraint(equalTo:view.safeAreaLayoutGuide.widthAnchor,constant:-24);preferredWidth.priority = .defaultHigh
+        NSLayoutConstraint.activate([contextToolbar.centerXAnchor.constraint(equalTo:view.safeAreaLayoutGuide.centerXAnchor),contextToolbar.leadingAnchor.constraint(greaterThanOrEqualTo:view.safeAreaLayoutGuide.leadingAnchor,constant:12),contextToolbar.trailingAnchor.constraint(lessThanOrEqualTo:view.safeAreaLayoutGuide.trailingAnchor,constant:-12),preferredWidth,contextToolbar.widthAnchor.constraint(lessThanOrEqualToConstant:700),contextToolbar.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor,constant:-8)])
+        contextToolbar.onAction={ [weak self] id,value in
+            guard let self else {return}
+            if id.hasPrefix("context-more:") {let tool=String(id.dropFirst("context-more:".count));self.showPanel(tool=="view" ? "display" : tool=="model" ? "position" : tool);return}
+            if let value {self.web.callAsyncJavaScript("return window.formNative?.set(id,value)",arguments:["id":id,"value":value],in:nil,in:.page) {_ in self.refreshNativeState()}}
+            else {self.execute(id)}
+        }
         notice.numberOfLines=0;notice.textAlignment = .center;notice.font = .preferredFont(forTextStyle:.footnote);notice.adjustsFontForContentSizeCategory=true
         notice.backgroundColor = .secondarySystemBackground;notice.textColor = .label;notice.layer.cornerRadius=14;notice.clipsToBounds=true;notice.isHidden=true;notice.translatesAutoresizingMaskIntoConstraints=false
         view.addSubview(notice)
@@ -97,6 +116,15 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         web.loadFileURL(url,allowingReadAccessTo:url.deletingLastPathComponent())
     }
     override func viewWillAppear(_ animated:Bool) {super.viewWillAppear(animated);navigationController?.setToolbarHidden(false,animated:animated);updateChrome()}
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        updateViewportInsets()
+    }
+    private func updateViewportInsets(force:Bool=false) {
+        let insets=isPad ? view.safeAreaInsets : .zero
+        guard force || insets != viewportInsets else {return};viewportInsets=insets
+        web?.callAsyncJavaScript("for(const [edge,value] of Object.entries(insets))document.documentElement.style.setProperty('--form-safe-'+edge,value+'px')",arguments:["insets":["top":insets.top,"right":insets.right,"bottom":insets.bottom,"left":insets.left]],in:nil,in:.page,completionHandler:nil)
+    }
     func refreshNativeState() {
         guard ready else {return}
         web.callAsyncJavaScript("return window.formNative?.snapshot()",arguments:[:],in:nil,in:.page) { [weak self] result in
@@ -105,6 +133,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
     }
     private func receive(_ state:[String:Any]) {
         latestState=state;updateChrome()
+        contextToolbar.update(state:state,german:german)
         modelSidebar.setState(state["sidebar"] as? [String:Any] ?? [:],controls:state["controls"] as? [String:[String:Any]] ?? [:],german:german)
         if let id=activePanelID,let descriptor=(state["panels"] as? [String:[String:Any]])?[id],let sections=descriptor["sections"] as? [[String:Any]] {activePanel?.update(sections:sections)}
         let status=(state["status"] as? [String:Any])?["text"] as? String ?? ""
@@ -145,10 +174,11 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         navigationItem.leftBarButtonItems=[sidebarButton,button("open","plus",german ? "Öffnen":"Open")]
         navigationItem.rightBarButtonItems=[button("open-with","square.and.arrow.up",german ? "Teilen":"Share"),button("info","info.circle",german ? "Informationen":"Information")]
         let edit=UIBarButtonItem(title:nil,image:UIImage(systemName:"move.3d"),primaryAction:nil,menu:UIMenu(children:[menuAction("translate","arrow.up.and.down.and.arrow.left.and.right",german ? "Verschieben":"Move"),menuAction("rotate","rotate.3d",german ? "Drehen":"Rotate"),menuAction("explode","square.stack.3d.up",german ? "Explodieren":"Explode"),menuAction("model-tools","wrench.and.screwdriver",german ? "Position & Andocken":"Position & docking"),menuAction("scene-settings","slider.horizontal.3",german ? "Darstellung":"Appearance"),menuAction("undo","arrow.uturn.backward",german ? "Rückgängig":"Undo")]))
+        if isPad {edit.menu=nil;edit.primaryAction=UIAction {[weak self] _ in self?.toggleContext("model")}}
         edit.accessibilityLabel=german ? "Modellwerkzeuge":"Model tools";edit.accessibilityIdentifier="form.model-tools";edit.isEnabled=enabled("model-tools")
-        let viewButton=UIBarButtonItem(title:nil,image:UIImage(systemName:"cube"),primaryAction:UIAction(title:german ? "Ansicht":"View") {[weak self] _ in self?.showPanel("display")})
+        let viewButton=UIBarButtonItem(title:nil,image:UIImage(systemName:"cube"),primaryAction:UIAction(title:german ? "Ansicht":"View") {[weak self] _ in guard let self else {return};if self.isPad {self.toggleContext("view")} else {self.showPanel("display")}})
         viewButton.accessibilityLabel=german ? "Ansicht":"View";viewButton.accessibilityIdentifier="form.view-tools"
-        let options=UIBarButtonItem(title:nil,image:UIImage(systemName:"slider.horizontal.3"),primaryAction:UIAction(title:german ? "Messoptionen":"Measurement options") {[weak self] _ in self?.showPanel("measure")})
+        let options=UIBarButtonItem(title:nil,image:UIImage(systemName:"slider.horizontal.3"),primaryAction:UIAction(title:german ? "Messoptionen":"Measurement options") {[weak self] _ in self?.performMobileCommand("measurement-tools")})
         options.accessibilityLabel=german ? "Messoptionen":"Measurement options";options.accessibilityIdentifier="form.measurement-tools";options.isEnabled=enabled("measure")
         let ruler=button("measure","ruler",german ? "Messen":"Measure")
         ruler.menu=UIMenu(children:[menuAction("native-measure-action-finish","checkmark",german ? "Messung abschließen":"Finish measurement"),menuAction("native-measure-action-cancel","xmark",german ? "Messpunkte verwerfen":"Cancel points")])
@@ -168,7 +198,9 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
             contentUnavailableConfiguration=config
         } else {contentUnavailableConfiguration=nil}
     }
+    private func toggleContext(_ tool:String) {contextToolbar.setTool(contextToolbar.tool==tool ? nil:tool);contextToolbar.update(state:latestState,german:german)}
     func performMobileCommand(_ command:String) {
+        if command=="measurement-tools" {if isPad {toggleContext("measure")} else {showPanel("measure")};return}
         if command=="side" {splitViewController?.show(.primary);return}
         if command=="open" {openPicker();return}
         if command=="openExample" {if let url=Bundle.main.url(forResource:"3DBenchy",withExtension:"stl",subdirectory:"Examples") {enqueue([url]);splitViewController?.show(.secondary)};return}
@@ -179,7 +211,8 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         let panels=["settings":"settings","scene-settings":"appearance","background-menu":"background","display-menu":"display","model-tools":"position","explode":"explode"]
         if let panel=panels[command] {showPanel(panel);return}
         execute(command)
-        if command=="cut" {showPanel("cut")}
+        if isPad,["measure","cut"].contains(command) {contextToolbar.setTool(command);contextToolbar.update(state:latestState,german:german)}
+        else if command=="cut" {showPanel("cut")}
     }
     private func execute(_ command:String) {
         web.callAsyncJavaScript("return window.formNative?.command(command)",arguments:["command":command],in:nil,in:.page) {_ in self.refreshNativeState()}
@@ -198,11 +231,27 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         activePanel=panel;activePanelID=id;presentSheet(panel,compact:id != "settings")
     }
     private func presentSheet(_ controller:UIViewController,compact:Bool=true) {
-        let navigation=UINavigationController(rootViewController:controller);navigation.modalPresentationStyle = .pageSheet
+        let navigation=UINavigationController(rootViewController:controller)
+        if isPad,compact {
+            navigation.modalPresentationStyle = .popover
+            navigation.preferredContentSize=CGSize(width:min(400,max(280,view.bounds.width-24)),height:min(500,max(200,view.safeAreaLayoutGuide.layoutFrame.height-80)))
+            if let popover=navigation.popoverPresentationController {
+                popover.delegate=self
+                let id=activePanelID
+                let anchorID=id=="view" ? "form.view-tools" : id=="measurement" ? "form.measurement-tools" : id=="section" ? "form.cut" : "form.model-tools"
+                popover.barButtonItem=(toolbarItems ?? []).first {$0.accessibilityIdentifier==anchorID}
+                if controller is FileInformationController || id=="print" {popover.barButtonItem=navigationItem.rightBarButtonItems?.first {$0.accessibilityIdentifier=="form.info"}}
+                if popover.barButtonItem==nil {popover.sourceView=view;popover.sourceRect=CGRect(x:view.bounds.midX,y:view.safeAreaLayoutGuide.layoutFrame.maxY,width:1,height:1)}
+                popover.passthroughViews=[view]
+            }
+            presentationHost.present(navigation,animated:true);return
+        }
+        navigation.modalPresentationStyle = .pageSheet
         navigation.sheetPresentationController?.detents=compact ? [.medium(),.large()]:[.large()]
         navigation.sheetPresentationController?.prefersGrabberVisible=true;navigation.sheetPresentationController?.prefersScrollingExpandsWhenScrolledToEdge=true
         presentationHost.present(navigation,animated:true)
     }
+    func adaptivePresentationStyle(for controller:UIPresentationController,traitCollection:UITraitCollection)->UIModalPresentationStyle {isPad ? .none:.automatic}
     @objc private func annotationMenu(_ gesture:UILongPressGestureRecognizer) {
         guard gesture.state == .began,gesture.numberOfTouches==1,presentationHost.presentedViewController==nil else {return}
         let location=gesture.location(in:web)
@@ -274,7 +323,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
             let prefs=UserDefaults.standard.dictionary(forKey:preferenceKey) ?? [:]
             web.callAsyncJavaScript("window.applySystemLanguages(languages);window.applyViewportSettings(preferences);window.applyNativeCapabilities({externalSliceEstimate:false,blenderImport:false,donations:false});window.applyPrintSoftware([])",arguments:["languages":Locale.preferredLanguages,"preferences":prefs],in:nil,in:.page) {result in
                 guard case .success=result else {self.showError("Viewer initialization failed");return}
-                self.ready=true;self.refreshNativeState();self.drain()
+                self.ready=true;self.updateViewportInsets(force:true);self.refreshNativeState();self.drain()
             }
         case "openExample":performMobileCommand("openExample")
         case "open":openPicker()
@@ -332,11 +381,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
             guard case .success(let value) = result, let info = value as? [String:Any] else { return }
             let controller = FileInformationController(title:info["title"] as? String ?? "Information",rows:info["rows"] as? [[String:String]] ?? [],note:info["note"] as? String ?? "",german:info["german"] as? Bool == true)
             controller.navigationItem.leftBarButtonItem=UIBarButtonItem(title:self.german ? "3D-Druck":"3D printing",image:UIImage(systemName:"cube.box"),primaryAction:UIAction {[weak self,weak controller] _ in controller?.dismiss(animated:true) {self?.showPanel("print")}})
-            let navigation=UINavigationController(rootViewController:controller)
-            navigation.modalPresentationStyle = .pageSheet
-            navigation.sheetPresentationController?.detents=[.medium(),.large()]
-            navigation.sheetPresentationController?.prefersGrabberVisible=true
-            self.present(navigation,animated:true)
+            self.presentSheet(controller)
         }
     }
     private func share(_ items: [Any]) {
