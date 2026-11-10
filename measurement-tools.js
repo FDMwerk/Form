@@ -83,7 +83,7 @@ export function createMeasurementTools({THREE:T,scene,camera,getCamera=()=>camer
  function remove(id){const index=objects.findIndex(o=>o.id===Number(id));if(index<0)return false;const [object]=objects.splice(index,1);disposeVisual(object.visual);if(object.arc)disposeVisual(object.arc);object.el.remove();if(selectedID===object.id)selectedID=null;hideMenu();notify();return true}
  function clear(){clearHover();for(const object of [...objects])remove(object.id);cancelPending();selectedID=null;hideMenu();notify()}
  function cancelPending(){clearHover();if(!pending.length)return;pending.length=0;preview.node.visible=false;notify();prompt()}
- function setMode(next){if(!modes.includes(next))return false;if(mode!==next)cancelPending();mode=next;setActive(true);return true}
+ function setMode(next){if(!modes.includes(next))return false;if(mode!==next)cancelPending();setActive(true,next);return true}
  function setActive(next,nextMode){if(active===!!next&&(!modes.includes(nextMode)||mode===nextMode)&&(!pending.length||next))return active;if(modes.includes(nextMode)&&nextMode!==mode){pending.length=0;mode=nextMode}active=!!next;if(!active){pending.length=0;clearHover()}preview.node.visible=false;hideMenu();notify();prompt();return active}
  function setSnap(next){clearHover();snap=!!next;notify()}
  function toggleAll(){const show=!objects.some(o=>o.visible);for(const object of objects)object.visible=show;update();notify()}

@@ -1,202 +1,153 @@
 import UIKit
 
-/// iPad tool options stay next to the scene rather than covering it with a sheet.
-/// Every value and availability flag comes from the same renderer descriptors as
-/// the full native inspector. The toolbar owns presentation, never CAD state.
+/// A system toolbar, with UIKit-owned glass groups and overflow menus. Renderer
+/// descriptors remain the only authority for values and action availability.
 @MainActor
-final class ContextToolbar: UIView {
+final class ContextToolbar: UIToolbar {
     var onAction: ((String, Any?) -> Void)?
     var onDismiss: (() -> Void)?
     private(set) var tool: String?
-    private let scroll = UIScrollView()
-    private let bar = UIToolbar()
-    private var barWidth: NSLayoutConstraint!
+    private(set) var detailAnchor: UIBarButtonItem?
     private var state: [String: Any] = [:]
     private var german = true
-    private var editing = false
     private var lastDescriptor: NSDictionary?
+    private let moreItem = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), menu: nil)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         accessibilityIdentifier = "form.contextToolbar"
-        scroll.showsHorizontalScrollIndicator = false
-        scroll.contentInsetAdjustmentBehavior = .never
-        scroll.translatesAutoresizingMaskIntoConstraints = false
-        bar.translatesAutoresizingMaskIntoConstraints = false
-        bar.isTranslucent = true
-        bar.layer.cornerRadius=26;bar.layer.cornerCurve = .continuous;bar.clipsToBounds=true
-        addSubview(scroll); scroll.addSubview(bar)
-        barWidth = bar.widthAnchor.constraint(equalToConstant: 320)
-        NSLayoutConstraint.activate([
-            scroll.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scroll.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scroll.topAnchor.constraint(equalTo: topAnchor),
-            scroll.bottomAnchor.constraint(equalTo: bottomAnchor),
-            bar.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
-            bar.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
-            bar.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor),
-            bar.bottomAnchor.constraint(equalTo: scroll.contentLayoutGuide.bottomAnchor),
-            bar.heightAnchor.constraint(equalTo: scroll.frameLayoutGuide.heightAnchor),
-            barWidth
-        ])
+        isTranslucent = true
         isHidden = true
     }
-
     required init?(coder: NSCoder) { fatalError("init(coder:) unavailable") }
     override var intrinsicContentSize: CGSize { CGSize(width: UIView.noIntrinsicMetric, height: 52) }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        let padding = max(0, (scroll.bounds.width - barWidth.constant) / 2)
-        guard abs(scroll.contentInset.left - padding) > 0.5 else { return }
-        scroll.contentInset = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
-        // A short tool group stays centered above the primary toolbar. In a
-        // narrow window the padding becomes zero and all options still scroll.
-        scroll.setContentOffset(CGPoint(x: -padding, y: 0), animated: false)
-    }
 
     func setTool(_ requested: String?) {
         let aliases = ["measurement": "measure", "section": "cut", "display": "view"]
         let next = requested.map { aliases[$0] ?? $0 }
         guard next != tool else { return }
-        tool = next; lastDescriptor = nil; editing = false
-        isHidden = next == nil
-        scroll.setContentOffset(CGPoint(x: -scroll.contentInset.left, y: 0), animated: false)
+        tool = next; lastDescriptor = nil; isHidden = next == nil
         rebuild()
     }
-
     func update(state: [String: Any], german: Bool) {
         self.state = state; self.german = german
-        // A renderer response must not replace the slider underneath a finger.
-        if !editing { rebuild() }
+        rebuild()
     }
-
     private func title(_ de: String, _ en: String) -> String { german ? de : en }
     private func string(_ value: Any?) -> String {
         if let value = value as? String { return value }
         return (value as? NSNumber)?.stringValue ?? ""
     }
-    private func number(_ value: Any?, _ fallback: Double) -> Double {
-        if let value = value as? NSNumber { return value.doubleValue }
-        return Double(string(value)) ?? fallback
-    }
     private func isOn(_ item: [String: Any]) -> Bool { item["value"] as? Bool ?? false }
 
     private func rebuild() {
-        guard let tool else { bar.items = []; return }
+        guard let tool else { items = []; detailAnchor = nil; return }
         let key = ["measure": "measurement", "cut": "section"][tool] ?? tool
         let panel = (state["panels"] as? [String: [String: Any]])?[key] ?? [:]
-        let snapshot: [String: Any] = ["panel": panel, "german": german, "tool": tool, "hasModels": state["hasModels"] ?? false]
+        let snapshot: [String: Any] = ["panel": panel, "german": german, "tool": tool]
         guard lastDescriptor?.isEqual(to: snapshot) != true else { return }
         lastDescriptor = snapshot as NSDictionary
         let descriptors = (panel["sections"] as? [[String: Any]] ?? []).flatMap { $0["items"] as? [[String: Any]] ?? [] }
-        let itemsByID = Dictionary(descriptors.compactMap { item in
-            (item["id"] as? String).map { ($0, item) }
-        }, uniquingKeysWith: { first, _ in first })
-        var items: [UIBarButtonItem] = []
-        func add(_ id: String, _ symbol: String, width: CGFloat = 44) {
-            guard let descriptor = itemsByID[id] else { return }
-            let item: UIBarButtonItem
-            switch descriptor["kind"] as? String {
-            case "range": item = slider(descriptor)
-            case "select": item = choice(descriptor, symbol: symbol)
-            default: item = action(descriptor, symbol: symbol)
-            }
-            if item.customView == nil { item.width = width }
-            items.append(item)
+        let byID = Dictionary(descriptors.compactMap { item in (item["id"] as? String).map { ($0, item) } }, uniquingKeysWith: { first, _ in first })
+        func button(_ id: String, _ symbol: String) -> UIBarButtonItem? {
+            guard let item = byID[id] else { return nil }
+            return item["kind"] as? String == "select" ? choice(item, symbol: symbol) : action(item, symbol: symbol)
         }
+        func menuItems(_ ids: [String]) -> [UIMenuElement] {
+            ids.compactMap { id in byID[id].map { menuElement($0) } }
+        }
+        func inline(_ children: [UIMenuElement]) -> UIMenu { UIMenu(options: .displayInline, children: children) }
+        var tools: [UIBarButtonItem] = [], commands: [UIBarButtonItem] = []
+        var additional: [UIMenuElement] = []
         switch tool {
         case "measure":
-            add("native-measure-mode", "ruler")
-            add("native-measure-action-snap", "scope")
-            add("dimensions", "arrow.up.left.and.arrow.down.right")
-            add("selection-box-toggle", "cube.transparent")
-            add("unit", "number")
-            add("native-measure-action-finish", "checkmark")
-            add("native-measure-action-cancel", "xmark")
-            add("native-measure-action-visibility", "eye")
-            add("native-measure-action-delete", "trash")
+            tools = [button("native-measure-mode", "ruler"), button("native-measure-action-snap", "scope")].compactMap { $0 }
+            if let finish = button("native-measure-action-finish", "checkmark") { commands.append(finish) }
+            additional = [
+                inline(menuItems(["dimensions", "selection-box-toggle", "unit", "native-measure-action-visibility"])),
+                inline(menuItems(["native-measure-action-cancel", "native-measure-action-delete"])),
+                detail(tool, title("Alle Messoptionen", "All measurement options"), "slider.horizontal.3")
+            ]
         case "cut":
-            add("cut", "square.split.2x1")
-            add("cut-axis", "square.3.layers.3d")
-            add("cut-value", "slider.horizontal.3")
-            add("cut-reverse", "arrow.left.arrow.right")
+            tools = [button("cut-axis", "square.3.layers.3d"), button("cut-reverse", "arrow.left.arrow.right")].compactMap { $0 }
+            additional = [inline(menuItems(["cut"])), detail(tool, title("Schnittposition", "Section position"), "slider.horizontal.3")]
         case "view":
-            add("native-projection", "cube")
-            add("native-display-mode", "square.stack.3d.up")
-            add("grid", "grid")
-            add("palette", "paintpalette")
-            add("apple", "leaf")
-            add("screenshot", "camera")
+            tools = [button("native-projection", "cube"), button("native-display-mode", "square.stack.3d.up")].compactMap { $0 }
+            if let camera = button("screenshot", "camera") { commands.append(camera) }
+            additional = [
+                inline(menuItems(["grid", "palette", "apple"])),
+                detail(tool, title("Ansicht & Hintergrund", "View & background"), "slider.horizontal.3"),
+                detail("appearance", title("Farben & Texturen", "Colors & textures"), "paintpalette")
+            ]
         case "model":
-            add("translate", "arrow.up.and.down.and.arrow.left.and.right")
-            add("rotate", "rotate.3d")
-            add("explode", "square.stack.3d.up")
-            add("explode-value", "slider.horizontal.3")
-            add("undo", "arrow.uturn.backward")
+            tools = [button("translate", "arrow.up.and.down.and.arrow.left.and.right"), button("rotate", "rotate.3d")].compactMap { $0 }
+            if let explode = button("explode", "square.stack.3d.up") { commands.append(explode) }
+            additional = [
+                detail(tool, title("Position & Andocken", "Position & docking"), "move.3d"),
+                detail("explode", title("Explosionsansicht", "Exploded view"), "square.stack.3d.up"),
+                detail("appearance", title("Farben & Texturen", "Colors & textures"), "paintpalette"),
+                inline(menuItems(["undo"]))
+            ]
         default: break
         }
-        let more = UIBarButtonItem(image: UIImage(systemName: "ellipsis"), primaryAction: UIAction { [weak self] _ in
-            self?.onAction?("context-more:" + tool, nil)
-        })
-        more.width = 44; more.accessibilityLabel = title("Weitere Optionen", "More options")
+        // Keep the popover's origin item stable while renderer values change.
+        let more = moreItem; more.menu = UIMenu(children: additional)
+        more.accessibilityLabel = title("Weitere Optionen", "More options")
         more.accessibilityIdentifier = "form.context.more"
-        if ["view","model"].contains(tool) {
-            more.primaryAction=nil
-            more.menu=UIMenu(children:[
-                UIAction(title:title(tool=="view" ? "Ansicht & Hintergrund":"Position & Andocken",tool=="view" ? "View & background":"Position & docking"),image:UIImage(systemName:"slider.horizontal.3")) { [weak self] _ in self?.onAction?("context-more:"+tool,nil) },
-                UIAction(title:title("Farben & Texturen","Colors & textures"),image:UIImage(systemName:"paintpalette")) { [weak self] _ in self?.onAction?("context-more:appearance",nil) }
-            ])
-        }
-        let close = UIBarButtonItem(image: UIImage(systemName: "xmark"), primaryAction: UIAction { [weak self] _ in
+        detailAnchor = more
+        if tool == "measure" { tools.append(more) } else { commands.append(more) }
+        let close = UIBarButtonItem(systemItem: .close, primaryAction: UIAction { [weak self] _ in
             self?.setTool(nil); self?.onDismiss?()
         })
-        close.width = 44; close.accessibilityLabel = title("Werkzeugoptionen schließen", "Close tool options")
+        close.accessibilityLabel = title("Werkzeugoptionen schließen", "Close tool options")
         close.accessibilityIdentifier = "form.context.close"
-        items.append(contentsOf: [more, close])
-        bar.setItems(items, animated: false)
-        // A small Split View window can scroll the options, instead of shrinking
-        // controls below Apple's touch target or dropping hidden actions.
-        // UIKit's floating toolbar groups need outer and inter-item spacing in
-        // addition to the 44-point targets, including the first/last menu item.
-        barWidth.constant = items.reduce(CGFloat(112)) { $0 + ($1.customView?.bounds.width ?? max(44, $1.width)) }
-        invalidateIntrinsicContentSize()
-        setNeedsLayout()
+        // Fixed spaces split native glass backgrounds; Close is a separate
+        // system action. No custom capsule, clipping, scrolling or glass tint.
+        setItems([UIBarButtonItem(systemItem: .flexibleSpace)] + tools + [separator()] + commands + [separator(), close, UIBarButtonItem(systemItem: .flexibleSpace)], animated: false)
     }
-
+    private func separator() -> UIBarButtonItem {
+        if #available(iOS 26.0, *) { return UIBarButtonItem.fixedSpace() }
+        return UIBarButtonItem.fixedSpace(16)
+    }
+    private func detail(_ tool: String, _ name: String, _ symbol: String) -> UIAction {
+        UIAction(title: name, image: UIImage(systemName: symbol), identifier: .init("context-more:" + tool)) { [weak self] _ in self?.onAction?("context-more:" + tool, nil) }
+    }
     private func action(_ descriptor: [String: Any], symbol: String) -> UIBarButtonItem {
         let id = string(descriptor["id"]), name = string(descriptor["title"])
-        let toggle = descriptor["kind"] as? String == "toggle"
-        let selected = isOn(descriptor)
-        let item = UIBarButtonItem(image: UIImage(systemName: symbol), primaryAction: UIAction(title: name) { [weak self] _ in
-            self?.onAction?(id, toggle ? !selected : nil)
-        })
+        let toggle = descriptor["kind"] as? String == "toggle", selected = isOn(descriptor)
+        let callback = UIAction { [weak self] _ in self?.onAction?(id, toggle ? !selected : nil) }
+        let item = id == "native-measure-action-finish" ? UIBarButtonItem(systemItem: .done, primaryAction: callback) : UIBarButtonItem(image: UIImage(systemName: symbol), primaryAction: callback)
         item.isEnabled = descriptor["enabled"] as? Bool ?? true
+        item.isSelected = selected
         item.accessibilityLabel = name; item.accessibilityIdentifier = "form.context." + id
-        if toggle {
-            item.accessibilityValue = selected ? title("Ein", "On") : title("Aus", "Off")
-            if selected { item.tintColor = .systemGreen; item.accessibilityTraits.insert(.selected) }
-        }
+        if toggle { item.accessibilityValue = selected ? title("Ein", "On") : title("Aus", "Off") }
         return item
     }
-
     private func choice(_ descriptor: [String: Any], symbol: String) -> UIBarButtonItem {
         let id = string(descriptor["id"]), current = string(descriptor["value"])
         let options = descriptor["options"] as? [[String: Any]] ?? []
-        let name = string(descriptor["title"])
-        let menu = UIMenu(title: name, options: .singleSelection, children: options.map { option in
-            let value = string(option["value"])
-            return UIAction(title: string(option["title"]), image: optionSymbol(id: id, value: value), attributes: option["enabled"] as? Bool == false ? [.disabled] : [], state: current == value ? .on : .off) { [weak self] _ in
-                self?.onAction?(id, value)
-            }
-        })
-        let item = UIBarButtonItem(image: optionSymbol(id: id, value: current) ?? UIImage(systemName: symbol), menu: menu)
+        let item = UIBarButtonItem(image: optionSymbol(id: id, value: current) ?? UIImage(systemName: symbol), menu: selectionMenu(descriptor))
         item.isEnabled = descriptor["enabled"] as? Bool ?? true
-        item.accessibilityLabel = name; item.accessibilityIdentifier = "form.context." + id
+        item.accessibilityLabel = string(descriptor["title"]); item.accessibilityIdentifier = "form.context." + id
         item.accessibilityValue = options.first { string($0["value"]) == current }.map { string($0["title"]) }
         return item
     }
-
+    private func selectionMenu(_ descriptor: [String: Any]) -> UIMenu {
+        let id = string(descriptor["id"]), current = string(descriptor["value"])
+        let options = descriptor["options"] as? [[String: Any]] ?? []
+        return UIMenu(title: string(descriptor["title"]), options: .singleSelection, children: options.map { option in
+            let value = string(option["value"])
+            return UIAction(title: string(option["title"]), image: optionSymbol(id: id, value: value), identifier: .init(id + ":" + value), attributes: (descriptor["enabled"] as? Bool == false || option["enabled"] as? Bool == false) ? [.disabled] : [], state: current == value ? .on : .off) { [weak self] _ in self?.onAction?(id, value) }
+        })
+    }
+    private func menuElement(_ descriptor: [String: Any]) -> UIMenuElement {
+        if descriptor["kind"] as? String == "select" { return selectionMenu(descriptor) }
+        let id = string(descriptor["id"]), toggle = descriptor["kind"] as? String == "toggle", selected = isOn(descriptor)
+        var attributes: UIMenuElement.Attributes = descriptor["enabled"] as? Bool == false ? [.disabled] : []
+        if id.hasSuffix("delete") || id == "remove" { attributes.insert(.destructive) }
+        let symbols = ["dimensions": "arrow.up.left.and.arrow.down.right", "selection-box-toggle": "cube.transparent", "native-measure-action-visibility": "eye", "native-measure-action-cancel": "xmark", "native-measure-action-delete": "trash", "grid": "grid", "palette": "paintpalette", "apple": "leaf", "undo": "arrow.uturn.backward", "cut": "square.split.2x1"]
+        return UIAction(title: string(descriptor["title"]), image: symbols[id].flatMap { UIImage(systemName: $0) }, identifier: .init(id), attributes: attributes, state: toggle && selected ? .on : .off) { [weak self] _ in self?.onAction?(id, toggle ? !selected : nil) }
+    }
     private func optionSymbol(id: String, value: String) -> UIImage? {
         let symbols: [String: String]
         switch id {
@@ -207,29 +158,5 @@ final class ContextToolbar: UIView {
         default: return nil
         }
         return symbols[value].flatMap { UIImage(systemName: $0) }
-    }
-
-    private func slider(_ descriptor: [String: Any]) -> UIBarButtonItem {
-        let id = string(descriptor["id"]), name = string(descriptor["title"])
-        let control = UISlider(frame: CGRect(x: 0, y: 0, width: 160, height: 44))
-        let minimum = number(descriptor["min"], 0), maximum = max(minimum + 0.0001, number(descriptor["max"], 100))
-        let step = number(descriptor["step"], 1)
-        control.minimumValue = Float(minimum); control.maximumValue = Float(maximum)
-        control.value = Float(number(descriptor["value"], minimum))
-        control.isEnabled = descriptor["enabled"] as? Bool ?? true
-        control.accessibilityLabel = name; control.accessibilityIdentifier = "form.context." + id
-        control.addAction(UIAction { [weak self] _ in self?.editing = true }, for: .touchDown)
-        control.addAction(UIAction { [weak self] action in
-            guard let self, let slider = action.sender as? UISlider else { return }
-            var value = Double(slider.value)
-            if step > 0 { value = minimum + ((value - minimum) / step).rounded() * step }
-            value = min(maximum, max(minimum, value)); slider.value = Float(value)
-            slider.accessibilityValue = value.formatted(.number.precision(.fractionLength(0...2)))
-            self.onAction?(id, value)
-        }, for: .valueChanged)
-        control.addAction(UIAction { [weak self] _ in
-            guard let self else { return }; self.editing = false; self.lastDescriptor = nil; self.rebuild()
-        }, for: [.touchUpInside, .touchUpOutside, .touchCancel])
-        return UIBarButtonItem(customView: control)
     }
 }

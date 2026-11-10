@@ -25,6 +25,13 @@ const bridge=fs.readFileSync('mobile/native-chrome.js','utf8');
  assert.equal(await h.load('tests/fixtures/colored-box.obj','MobileFixture.obj','native-fixture'),true);
  let state=h.window.formNative.snapshot();assert.equal(state.modelCount,1);assert.equal(state.title,'MobileFixture.obj');assert.equal(state.selectedSourceID,'native-fixture');assert.ok(state.sidebar.rows.some(row=>row.name==='MobileFixture'));
  for(const key of ['settings','view','measurement','section','model','appearance','print','display','background','measure','cut','position','explode'])assert.ok(state.panels[key].sections.length,`missing native panel ${key}`);
+ for(const mode of ['path','distance','angle','path']) {
+  assert.equal(h.window.formNative.set('native-measure-mode',mode),true);
+  assert.equal(h.read('measurementTools.getState().mode'),mode);
+  const descriptor=h.window.formNative.snapshot().panels.measurement.sections[0].items.find(item=>item.id==='native-measure-mode');
+  assert.equal(descriptor.value,mode,'Native menus must update when measurement mode changes while already active');
+  assert.equal(h.document.querySelectorAll('#measurement-toolbar [data-measure-action][aria-pressed="true"]:not([data-measure-action="snap"])').length,1);
+ }
  assert.equal(h.window.formNative.set('native-display-mode','wireframe'),true);assert.equal(h.read('viewportDisplay.mode'),'wireframe');
  assert.equal(h.window.formNative.set('native-projection','perspective'),true);assert.equal(h.read('viewportCameras.projection'),'perspective');
  assert.equal(h.window.formNative.set('cut-axis','x'),true);assert.equal(h.document.getElementById('cut-axis').value,'x');

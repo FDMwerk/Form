@@ -91,11 +91,10 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
             NSLayoutConstraint.activate([web.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor),web.trailingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.trailingAnchor),web.topAnchor.constraint(equalTo:view.safeAreaLayoutGuide.topAnchor),web.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor)])
         }
         contextToolbar.translatesAutoresizingMaskIntoConstraints=false;view.addSubview(contextToolbar)
-        let preferredWidth=contextToolbar.widthAnchor.constraint(equalTo:view.safeAreaLayoutGuide.widthAnchor,constant:-24);preferredWidth.priority = .defaultHigh
-        NSLayoutConstraint.activate([contextToolbar.centerXAnchor.constraint(equalTo:view.safeAreaLayoutGuide.centerXAnchor),contextToolbar.leadingAnchor.constraint(greaterThanOrEqualTo:view.safeAreaLayoutGuide.leadingAnchor,constant:12),contextToolbar.trailingAnchor.constraint(lessThanOrEqualTo:view.safeAreaLayoutGuide.trailingAnchor,constant:-12),preferredWidth,contextToolbar.widthAnchor.constraint(lessThanOrEqualToConstant:700),contextToolbar.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor,constant:-8)])
+        NSLayoutConstraint.activate([contextToolbar.leadingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.leadingAnchor),contextToolbar.trailingAnchor.constraint(equalTo:view.safeAreaLayoutGuide.trailingAnchor),contextToolbar.bottomAnchor.constraint(equalTo:view.safeAreaLayoutGuide.bottomAnchor,constant:-8)])
         contextToolbar.onAction={ [weak self] id,value in
             guard let self else {return}
-            if id.hasPrefix("context-more:") {let tool=String(id.dropFirst("context-more:".count));self.showPanel(tool=="view" ? "display" : tool=="model" ? "position" : tool);return}
+            if id.hasPrefix("context-more:") {let tool=String(id.dropFirst("context-more:".count));self.showPanel(tool=="view" ? "display" : tool=="model" ? "position" : tool,anchor:self.contextToolbar.detailAnchor);return}
             if let value {self.web.callAsyncJavaScript("return window.formNative?.set(id,value)",arguments:["id":id,"value":value],in:nil,in:.page) {_ in self.refreshNativeState()}}
             else {self.execute(id)}
         }
@@ -156,7 +155,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
         let button=UIBarButtonItem(title:nil,image:UIImage(systemName:image),primaryAction:UIAction(title:label(id,fallback)) {[weak self] _ in self?.performMobileCommand(id)})
         button.accessibilityLabel=label(id,fallback);button.accessibilityIdentifier="form."+id
         button.isEnabled=["open","side"].contains(id) ? ready : enabled(id)
-        if (latestState["controls"] as? [String:[String:Any]])?[id]?["active"] as? Bool == true {button.tintColor = .systemGreen;button.accessibilityTraits.insert(.selected)}
+        if (latestState["controls"] as? [String:[String:Any]])?[id]?["active"] as? Bool == true {button.isSelected=true;button.accessibilityTraits.insert(.selected)}
         return button
     }
     private func menuAction(_ id:String,_ image:String,_ fallback:String)->UIAction {
@@ -217,7 +216,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
     private func execute(_ command:String) {
         web.callAsyncJavaScript("return window.formNative?.command(command)",arguments:["command":command],in:nil,in:.page) {_ in self.refreshNativeState()}
     }
-    func showPanel(_ requestedID:String) {
+    func showPanel(_ requestedID:String,anchor:UIBarButtonItem?=nil) {
         let aliases=["display":"view","background":"view","measure":"measurement","cut":"section","position":"model","explode":"model"]
         let id=aliases[requestedID] ?? requestedID
         guard ready,presentationHost.presentedViewController==nil else {return}
@@ -228,9 +227,9 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
             if let value {self.web.callAsyncJavaScript("return window.formNative?.set(id,value)",arguments:["id":key,"value":value],in:nil,in:.page) {_ in self.refreshNativeState()}}
             else {self.execute(key)}
         }
-        activePanel=panel;activePanelID=id;presentSheet(panel,compact:id != "settings")
+        activePanel=panel;activePanelID=id;presentSheet(panel,compact:id != "settings",anchor:anchor)
     }
-    private func presentSheet(_ controller:UIViewController,compact:Bool=true) {
+    private func presentSheet(_ controller:UIViewController,compact:Bool=true,anchor:UIBarButtonItem?=nil) {
         let navigation=UINavigationController(rootViewController:controller)
         if isPad,compact {
             navigation.modalPresentationStyle = .popover
@@ -239,7 +238,7 @@ final class MobileViewerController: UIViewController, WKScriptMessageHandler, WK
                 popover.delegate=self
                 let id=activePanelID
                 let anchorID=id=="view" ? "form.view-tools" : id=="measurement" ? "form.measurement-tools" : id=="section" ? "form.cut" : "form.model-tools"
-                popover.barButtonItem=(toolbarItems ?? []).first {$0.accessibilityIdentifier==anchorID}
+                popover.barButtonItem=anchor ?? (toolbarItems ?? []).first {$0.accessibilityIdentifier==anchorID}
                 if controller is FileInformationController || id=="print" {popover.barButtonItem=navigationItem.rightBarButtonItems?.first {$0.accessibilityIdentifier=="form.info"}}
                 if popover.barButtonItem==nil {popover.sourceView=view;popover.sourceRect=CGRect(x:view.bounds.midX,y:view.safeAreaLayoutGuide.layoutFrame.maxY,width:1,height:1)}
                 popover.passthroughViews=[view]

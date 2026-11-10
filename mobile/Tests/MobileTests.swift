@@ -246,6 +246,18 @@ import CryptoKit
         XCTAssertEqual(host.viewer.navigationItem.title, "3DBenchy.stl")
         XCTAssertEqual(host.viewer.latestState["modelCount"] as? Int, 1, "Changing measuring options must preserve the open model")
         try await capture(host, name: "iPad-Pinned-Actions-Context-Cube", assertGeometry: true)
+        let anchor = try XCTUnwrap(context.detailAnchor)
+        context.onAction?("context-more:measure",nil)
+        let inspectorVisible = await waitUntil(seconds:3) { host.viewer.presentedViewController is UINavigationController }
+        XCTAssertTrue(inspectorVisible)
+        let inspector = try XCTUnwrap(host.viewer.presentedViewController as? UINavigationController)
+        XCTAssertTrue(inspector.popoverPresentationController?.barButtonItem === anchor,"The detailed editor must originate from the actual second-toolbar item")
+        context.onAction?("native-measure-mode","distance")
+        let refreshed = await waitUntil(seconds:3) { item("native-measure-mode")?["value"] as? String == "distance" }
+        let rendererMode = try await host.viewer.web.evaluateJavaScript("window.formNative.snapshot().panels.measurement.sections[0].items.find(i=>i.id==='native-measure-mode').value")
+        XCTAssertTrue(refreshed,"Renderer mode: \(rendererMode); native mode: \(String(describing:item("native-measure-mode")?["value"]))")
+        XCTAssertTrue(context.detailAnchor === anchor,"Renderer updates must preserve the open popover's anchor")
+        host.viewer.dismiss(animated:false)
         host.viewer.performMobileCommand("measurement-tools")
         XCTAssertTrue(context.isHidden, "Tapping measurement options again must close the secondary toolbar")
     }
