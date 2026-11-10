@@ -1,32 +1,34 @@
-# Mobile UI and Liquid Glass
+# Native iPhone and iPad design — Form 0.2.0 (2)
 
-Reviewed 8 November 2026 against Apple's current [Materials](https://developer.apple.com/design/human-interface-guidelines/materials), [Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars), [Adopting Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass) and [UIKit design adoption](https://developer.apple.com/videos/play/wwdc2025/284/) guidance.
+10 November 2026. This is a simulator testing build, not an App Store or TestFlight release.
 
-## Decisions
+## Native navigation and controls
 
-- Render models in a quiet content layer; reserve the system material for navigation and actions. Do not add artificial glass shaders to geometry, grid, labels or information text.
-- Use real UIKit `UINavigationBar`, `UIToolbar`, `UIBarButtonItem` and `UIMenu` above the WKWebView. On iOS/iPadOS 26+ the system supplies Liquid Glass; earlier supported systems use their own standard appearance. No custom bar background, blur shader or tint overlay overrides the system material.
-- Replace the imported desktop header/tool rows with native bars; all renderer commands remain routed to the same underlying actions. Keep frequently used Fit, Measure and Section controls direct on iPhone, with contextual secondary commands in a More menu. On wider iPads also expose Screenshot, Dimensions, Move and Explode directly. Keep three logical groups in the bottom toolbar.
-- Use SF Symbols, source-language accessibility labels and selected/disabled states that follow the actual scene. Native document/share sheets provide familiar system interactions. Units are a checked native menu rather than an extra strip over the model.
-- Keep model tree/information readable as content panels, using overlays in compact layouts. Touch controls have a 44pt target. Native safe-area constraints, adaptive widths and UIScene lifecycle support phone rotation and iPad windows; each scene owns its model session.
-- Retain detailed measurement, section, display/background and scene controls. These remain web content controls for now. Native primary bars and menus follow system accessibility/material behavior; custom panels still need full physical-device and VoiceOver review. Reduced motion and increased contrast rules cover custom mobile controls.
+The mobile application uses UIKit throughout its application UI. `MobileWorkspaceController` is a standard double-column `UISplitViewController` with navigation controllers for the model library and viewer. iPad adapts its sidebar automatically as windows change; iPhone uses the system's compact navigation. There are no hand-positioned replacement navigation bars or sidebar frames.
 
-## Boundaries
+Navigation bars, toolbar item groups, menus, grouped inspector forms, alerts, selection lists, sliders, switches, color pickers, document pickers and sharing sheets use Apple components and SF Symbols. iOS/iPadOS 26 provides Liquid Glass automatically; the supported older OS versions use their system appearance. Colors and text use semantic UIKit styles and Dynamic Type. The toolbar separates viewing, inspection and model operations instead of collecting every function in one More menu.
 
-This is a tested development adaptation, not Apple certification or a complete accessibility audit. Real-device VoiceOver, larger text, Reduce Transparency/Increase Contrast, light/dark appearance, small and resizable iPad windows, Pencil, external keyboard and long measurement sessions remain release gates. Native toolbar menus expose the current actions; full native inspector/sheet conversion can be refined without changing geometry behavior. There is no direct Bambu print claim.
+The local WKWebView is solely a 3D renderer and annotation surface. Desktop HTML headers, sidebars, settings, toolbars, tooltips, inspectors and orientation controls are hidden. Native typed panel descriptors retain real geometry, material, projection, measurement, section, positioning and docking handlers. Standard orientation is selected in a native menu; model rotation remains available through touch gestures. Long-press measurement annotations uses a native action sheet for deletion.
 
-## Mobile workspace pass
+## Native editors
 
-The bottom bar now separates View (six focused commands), Measurement options (dimensions, selection box, clearing and units) and Model tools (move, rotate, explode, undo, scene settings, position/docking). Settings, feedback, legal and the example remain in the model sidebar. The former general-purpose More menu and duplicate top-left view/background buttons are removed. Empty-scene model actions are disabled.
+- View: display style, orthographic/perspective projection, standard orientation, grid/reference, background and screenshots.
+- Measure: distance, path and angle modes; point snapping; dimensions and selection bounds; finish/cancel/delete and units.
+- Section: plane, position and direction.
+- Model: translation, rotation, explosion, undo, XYZ position and docking.
+- Appearance: scene/file scope, colors and textures.
+- Settings: language, navigation speeds and display defaults.
+- Information: grouped geometry/file values, with a separate local geometric printing estimate. No direct-print promise or generated G-code.
+- Legal/support: native text and menus, locally bundled library licenses, user-initiated external support links.
 
-File information uses a native grouped table in a system sheet with medium/large detents and readable wrapping labels/values. Position and docking remain separate editing controls. Web subpanels for display, background and scene settings have explicit close controls; all detailed panels are bounded and scrollable, with portrait/landscape rules and 44pt fields. These improvements retain the existing model operations and detailed measurement controls.
+## Correctness and validation
 
-Mobile grid spacing uses 1/2/5 mm steps selected from camera span and CSS viewport height, with hysteresis and stronger major lines. Desktop spacing and radial fading are retained. Tests cover camera zoom, grid visibility/background, all original toolbar commands, opening/closing detailed panels, unit changes and native information-sheet content. Simulator checks remain distinct from real-device touch/accessibility acceptance.
+The previous native metadata could remain stale while a mesh rendered because a debounce was restarted by every animation-frame accessibility mutation. Native state now uses bounded throttling, semantic deduplication and explicit import notifications. It includes the committed renderer title, model count and source identity. Hosted tests verify native UI and source-file registration under continuous rendering, not merely the presence of a mesh.
 
-## Native iPad sidebar
+Four hosted integration tests and three native form tests pass on both iPhone 17 Pro and iPad Pro 13-inch (M5), iOS/iPadOS 26.1: 14 successful runs. They cover native example loading, error recovery, selection/visibility/unload, production editor routes, units and measurement controls, native info, form values and native safe-area/canvas geometry. Node tests cover typed bridge validation, update starvation and actual renderer operations. The full existing regression suite also passed. Native screenshots and geometry diagnostics were visually checked and stored privately under `Dokumentation/Mobile-Entwicklung/Neudesign-2026-11-10`.
 
-The iPad model sidebar now uses `UICollectionView` with Apple's `.sidebar` list appearance, native large navigation title, SF Symbols, selection indicators and Dynamic Type text. The former HTML desktop sidebar is hidden on iPad only; its model state remains the renderer bridge. Opening files/example, hierarchy disclosure, selecting All Models or multiple parts, measurement focus, visibility, root-file removal, settings, feedback and legal actions remain connected to the original operations.
+Simulator evidence is separate from real-device acceptance. Mail/Files-provider transfers, sharing to installed apps, low-memory behavior on large CAD assemblies, VoiceOver, Pencil, OS 17/27 behavior and actual print handoff still require physical-device verification. TestFlight and Store submission are not part of this build.
 
-Wide iPad windows show a separate 292pt native sidebar; it can be hidden using the sidebar button. Compact iPad windows open the same list as a dismissible native sheet, preserving viewport space. Visibility and removal use native swipe actions and context menus; full-swipe deletion is disabled. The native sidebar is not installed on iPhone. Real-device resizing/VoiceOver acceptance remains outstanding.
+## Apple references
 
-References: [Apple Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars), [UIKit sidebar appearance](https://developer.apple.com/documentation/uikit/uicollectionlayoutlistconfiguration-swift.struct/appearance-swift.enum/sidebar).
+[Adopting Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass), [Toolbars](https://developer.apple.com/design/human-interface-guidelines/toolbars), [Sidebars](https://developer.apple.com/design/human-interface-guidelines/sidebars), [UISplitViewController](https://developer.apple.com/documentation/uikit/uisplitviewcontroller).

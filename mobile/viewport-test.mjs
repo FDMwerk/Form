@@ -29,34 +29,20 @@ for(const width of [393,768,1024]) {
  // linkedom's window proxy shares expando globals between documents.
  delete window.formMobileInput;
  const canvas=document.createElement('canvas'); document.querySelector('#canvas').append(canvas);
- // Existing shared viewer handlers, without requiring WebGL in this DOM test.
- document.querySelector('#side').onclick=()=>document.body.classList.toggle('collapsed');
- document.querySelector('#info').onclick=()=>document.body.classList.toggle('inspecting');
- document.querySelector('#settings-close [data-icon]')?.append(document.createElementNS('http://www.w3.org/2000/svg','svg'));
  // A style injector is allowed to establish the CSS marker before adapter boot.
  document.documentElement.dataset.formMobile='true';
  const bootContext=vm.createContext({window,document,MutationObserver:window.MutationObserver,navigator:{language:'en-US'},matchMedia:()=>({matches:width<=999}),setTimeout});
  vm.runInContext(source,bootContext);
  document.dispatchEvent(new window.Event('DOMContentLoaded'));
  assert.ok(window.formMobileInput,`input tracker boots at ${width}px with existing CSS marker`);
- assert.equal(document.querySelectorAll('.mobile-panel-close').length,2);
- assert.equal(document.querySelectorAll('#mobile-panel-backdrop').length,1);
  assert.match(document.querySelector('meta[name=viewport]').content,/viewport-fit=cover/);
- assert.equal(document.body.classList.contains('collapsed'),width<=999,'phone/tablet overlay initial state');
+ const originalTracker=window.formMobileInput;
  const emit=(type,event)=>{const e=new window.Event(type,{bubbles:true});Object.assign(e,event);canvas.dispatchEvent(e);};
  emit('pointerdown',point(7));emit('pointermove',point(7,45));emit('pointerup',point(7,45));
  await Promise.resolve();assert.equal(window.formMobileInput.isNavigationGesture(point(7)),true,'canvas listeners keep drag through microtasks');
  await tick();assert.equal(window.formMobileInput.isNavigationGesture(point(7)),false);
- document.querySelector('#side').click();
- if(width<=999)assert.equal(document.body.classList.contains('collapsed'),false,'sidebar opens');
- document.querySelector('#info').click();
- assert.equal(document.body.classList.contains('inspecting'),true,'info opens');
- if(width<=999)assert.equal(document.body.classList.contains('collapsed'),true,'opening info closes overlay sidebar');
- document.querySelector('#inspector .mobile-panel-close').click();
- assert.equal(document.body.classList.contains('inspecting'),false,'info close works');
- vm.runInContext(source,bootContext);assert.equal(document.querySelectorAll('#mobile-panel-backdrop').length,1,'reinjection remains idempotent');
+ vm.runInContext(source,bootContext);assert.equal(window.formMobileInput,originalTracker,'reinjection retains the same tracker, avoiding duplicate handlers');
+ const mouseEvent={pointerType:'mouse',pointerId:9,clientX:10,clientY:10};emit('pointerdown',mouseEvent);emit('pointermove',{...mouseEvent,clientX:100});assert.equal(window.formMobileInput.isNavigationGesture(mouseEvent),false,'mouse modifiers remain owned by original viewport controls');
+ emit('pointerdown',point(10));emit('pointermove',point(10,60));window.dispatchEvent(new window.Event('blur'));assert.equal(window.formMobileInput.isNavigationGesture(point(10)),false,'focus loss clears pending touch navigation');
 }
-const css=fs.readFileSync(new URL('./viewport.css',import.meta.url),'utf8');
-assert.match(css,/#tools\s*\{[^}]*max-width:calc\(100%[^}]*overflow-x:auto/,'toolbar viewport constrained and scrollable');
-assert.match(css,/#measurement-toolbar\s*\{[^}]*flex-wrap:nowrap[^}]*overflow-x:auto/,'measurement row scrolls within viewport');
-console.log('Mobile interaction/bootstrap checks passed: tap, drag, pinch, WebKit microtask boundary, actual shared DOM at 393/768/1024 widths, panels, idempotence and constrained toolbar CSS. Layout dimensions still require simulator visual verification.');
+console.log('Mobile touch adapter passed: tap/tremor/drag/pinch, WebKit microtask ordering, actual canvas bootstrap at393/768/1024, reinjection, mouse independence and focus-loss reset. Native layout is verified by hosted UIKit tests.');

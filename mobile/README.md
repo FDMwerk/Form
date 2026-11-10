@@ -1,43 +1,59 @@
-# Form for iPhone and iPad — development prototype
+# Form for iPhone and iPad
 
-A separate UIKit/WKWebView application for iOS/iPadOS 17+, sharing the local Form renderer. This is not the released macOS application and is not yet on TestFlight or the App Store.
+**Development build 0.2.0 (2) — 10 November 2026.** A native UIKit app for iOS/iPadOS 17+, with the existing local CAD renderer in WKWebView. This mobile build is separate from the submitted macOS app. It is not on TestFlight or the App Store.
 
-## Build
+## Native mobile interface
 
-From the repository root (Node 22.12+, Xcode with an installed iOS simulator runtime, XcodeGen):
+The user interface uses Apple's system components: `UISplitViewController`, `UINavigationController`, a sidebar collection-view list, navigation/toolbars, menus, grouped inspector tables, document/share sheets, color pickers and native empty/loading states. On iPad, models and the viewport appear in adaptive columns. On iPhone, the same content uses the system's compact navigation. Controls use SF Symbols, Dynamic Type and the current system material, including Liquid Glass on supported OS versions.
+
+WebKit renders the 3D scene and model annotations. The desktop header, sidebar, view cube and HTML editor panels are hidden in the mobile product; settings and editing controls are native. One renderer snapshot drives the native title, enabled tools, model list and sharing identity. State delivery is throttled rather than waiting for animation updates to stop.
+
+Implemented operations include:
+
+- Native multi-file import and document-type registration for STL, STEP/STP, IGES, BREP, OBJ, PLY, 3MF and GLB/GLTF; coordinated security-scoped reads and a 100 MiB per-file limit.
+- Touch orbit, pan and pinch; model/component selection, hierarchy expansion, visibility, multiple selection and unloading through native model-list actions.
+- Native forms for display/projection and standard views, background/grid, measurement options, section planes, explosion, position/docking, colors/textures, preferences and geometric print estimates.
+- A native file-information sheet, local screenshots and sharing of the original imported file. Sharing does not export scene transformations/measurements or confirm printing.
+- Local preference storage and nonpersistent WebKit storage. No automatic model upload, analytics, Bambu credentials or print submission.
+
+## Build and test
+
+Requirements: Node 22.12+, Xcode with an installed iOS simulator runtime, and XcodeGen. Run from the repository root:
 
 ```sh
 npm ci
 npm run build
 xcodegen generate --spec mobile/project.yml
-xcodebuild -project mobile/FormMobile.xcodeproj -scheme FormMobile -sdk iphonesimulator -configuration Debug CODE_SIGNING_ALLOWED=NO build
-node mobile/viewport-test.mjs
-node mobile/native-chrome-test.mjs
+xcodebuild -project mobile/FormMobile.xcodeproj -scheme FormMobile \
+  -sdk iphonesimulator -configuration Debug \
+  -derivedDataPath "$HOME/Library/Caches/Form/MobileRedesign" \
+  CODE_SIGNING_ALLOWED=NO build
+node mobile/renderer-bridge-test.mjs
 node mobile/sidebar-test.mjs
+node mobile/grid-test.mjs
 ```
 
-Open `mobile/FormMobile.xcodeproj`, select `FormMobile`, then an iPhone/iPad simulator. For real-device installation select an authorized development team and provision the separate `de.fdmwerk.form.mobile` identifier. No new distribution certificate or Store submission is performed by these steps.
+For hosted simulator tests, list available destinations with `xcrun simctl list devices available`, then use the UUID of an installed device:
 
-Run hosted WebKit integration tests with `xcodebuild ... -destination 'platform=iOS Simulator,id=DEVICE_UUID' test`. The tests queue valid/invalid/valid imports before readiness, verify both valid models appear, check phone overflow and the mobile adapter; they also reject remote-page URLs and unknown extensions.
+```sh
+xcodebuild -project mobile/FormMobile.xcodeproj -scheme FormMobile \
+  -destination 'platform=iOS Simulator,id=DEVICE_UUID' \
+  -derivedDataPath "$HOME/Library/Caches/Form/MobileRedesign" \
+  CODE_SIGNING_ALLOWED=NO test
+```
 
-## Bundled example
+The suite contains four hosted native/renderer integration tests and three native-form tests. The completed redesign run passed all seven on iPhone 17 Pro and iPad Pro 13-inch (M5), both using iOS/iPadOS 26.1 Simulator: **14 successful runs**. Tests cover the production native example command, continuous animation/state updates, synchronized UIKit title/tree/file identity, import-error recovery, sidebar operations, actual native panel routes, ruler activation, native information, and the real canvas/native safe-area geometry. Form tests exercise typed toggles, current-value menus, slider quantization and state updates during a drag. This is simulator evidence, not physical-device acceptance.
 
-The original `3DBenchy.stl` from MakerWorld 40146 is included unchanged under `Resources/Examples/`, with provenance and attribution (CreativeTools, shared by Bambu Lab, CC BY-ND 4.0). It is **not MIT-licensed**. Tap **3DBenchy** on the empty screen or below Open in the sidebar; no download is required. The in-app Privacy & Licenses page includes the credit. Sharing this example also supplies its attribution file. A hash-checked native test opens it through that same example button. Debug builds support `--example` for simulator demo startup.
+Open `mobile/FormMobile.xcodeproj`, select `FormMobile`, and choose a simulator. In Xcode 27, the simulator UI is **Device Hub**. For real-device installation, use an authorized development team and provision the separate `de.fdmwerk.form.mobile` identifier; these build commands do not create certificates or submit an app. Debug builds support `--example` to load the example at launch.
 
-## Implemented first slice
+## Bundled example and licensing
 
-- Native multi-file picker for Files/iCloud providers and document-open registration for supported model attachments (STL, STEP/STP, IGES, BREP, OBJ, PLY, 3MF, GLB/GLTF).
-- Coordinated security-scoped reads, sequential imports, per-file 100 MiB ceiling, isolated session copies; source documents stay untouched. Web renderer has additional geometry validation.
-- Existing local CAD/mesh renderer, model tree, visibility, measurements, sections, materials and information panels. One-finger orbit, two-finger pan/pinch; taps measure. Gesture end is gated so navigation does not create extra measurements.
-- Native system navigation/toolbars and SF Symbols (Liquid Glass on iOS 26+), fewer primary actions on iPhone, additional direct actions on wide iPads; all secondary tools and units remain reachable through native menus. Modern UIScene lifecycle supports separate document windows.
-- Phone overlays for tree/info; wider tablet layout; scrollable 44pt icon controls. System language and existing viewer translations; mobile panel labels in DE/EN/ZH/JA/HI/RU.
-- Native share sheet for the **original** imported file and screenshot. Sharing does not export transformations, measurements or the scene and does not confirm slicing or printing. Only apps accepting the actual type appear in Apple's sheet.
-- Nonpersistent web storage; local preference persistence; privacy manifest; no automatic model upload, analytics or Bambu credentials.
+The original `3DBenchy.stl` from MakerWorld 40146 is included under `Resources/Examples/`, with provenance and attribution: CreativeTools, shared by Bambu Lab, **CC BY-ND 4.0**. The model mesh is unchanged and is **not covered by Form's MIT code license**. Open it from the native empty state or model sidebar without a download. The in-app Privacy & Licenses page includes its credit; sharing this example also includes the attribution file. A test verifies the original SHA-256 and opens it through the production native command.
 
-## Still required before release
+## Release gates
 
-Physical iPhone/iPad validation of Mail, Files/iCloud providers, memory/large CAD imports, accessibility/VoiceOver, touch measurements/cube and landscape. Some native prototype errors remain English. Multi-file external GLTF/OBJ dependencies need explicit packaging support. Harden resource/memory recovery and session-copy cleanup. Add verified machine/nozzle/profile catalogue and prototype setup UI; selecting PLA/PETG must not pretend to produce G-code. Follow the [Bambu investigation](../docs/MOBILE_BAMBU_HANDOFF.md) before promising a supported direct-print route. Add device signing/TestFlight, mobile icons/screenshots, full localization and a separate Store review only after these checks.
+Real iPhone/iPad testing is still required for Mail attachments, Files/iCloud providers, native share destinations, physical touch/Apple Pencil, memory pressure/large CAD files, rotation and resizable windows, VoiceOver, larger text and accessibility display settings. An iOS 27 runtime needs separate validation. Native prototype strings are not yet fully localized in every viewer language. External dependencies of multi-file OBJ/GLTF imports require packaging work.
 
-The macOS app already submitted to Apple stays at its immutable release build. Building this prototype does not replace `/Applications/Form.app`.
+No supported direct local-file-to-Bambu-Handy print route has been verified, and this build does not slice or start prints. A validated machine/nozzle/profile catalogue, physical print acceptance, signing, TestFlight distribution and mobile Store review remain separate work. See [the Bambu handoff investigation](../docs/MOBILE_BAMBU_HANDOFF.md) and [current development status](../docs/MOBILE_DEVELOPMENT_STATUS.md).
 
-On iPad, a native system sidebar replaces the HTML model tree. It shows beside the viewport in wide windows and as a sheet in compact windows, with native swipe/context actions and hierarchy disclosure.
+Keep GitHub source-only: application binaries, preview media, signing material and private release packages stay outside the public repository. This document does not claim the latest local commits were pushed. Building the mobile prototype does not replace `/Applications/Form.app` or change the immutable macOS Store release.

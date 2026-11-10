@@ -9,18 +9,20 @@
 /* Begin PBXBuildFile section */
 		1D9853B273D7498C40DE2226 /* MobileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A61F7BF0BBA43A885D6F7D0 /* MobileTests.swift */; };
 		31B228CF5AA045770BFC53FC /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491BE740BA982CBA7777720D /* App.swift */; };
-		4C8D4997FC171995FF4A8C9F /* MobileChrome.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0676F6A5982F863701872B /* MobileChrome.swift */; };
 		58AAE3891904ED142A20FE87 /* native-chrome.js in Resources */ = {isa = PBXBuildFile; fileRef = E6C206125563339A313519B0 /* native-chrome.js */; };
+		8158555DAA40E413A53B5466 /* NativePanelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B129A2CF3E8E9C3AB32D50A /* NativePanelTests.swift */; };
 		8A5B1F2673EDB827BD1442EA /* Web in Resources */ = {isa = PBXBuildFile; fileRef = F6A11EDDD71FCFCDA5BE337B /* Web */; };
 		8D5B8D4FDC186F7323C65C70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */; };
 		90C47B946C5DE6310259FC6A /* FileInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C425B8A095420EEB66ABAAD /* FileInformation.swift */; };
 		A2D3174118D551C99E85C135 /* viewport.css in Resources */ = {isa = PBXBuildFile; fileRef = 55CB20ECC354AB3680A4D12C /* viewport.css */; };
+		B82D4F531542BA856462E501 /* NativePanels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7D407F7D7FFD9A911C9CB0C /* NativePanels.swift */; };
 		BE1F89A12F38B9EBC246E78A /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 42D8CD83408FC8E237289211 /* PrivacyInfo.xcprivacy */; };
 		C5E33D8DFC9305C0F2D6FFF9 /* ModelSidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */; };
 		D225F5E0DB33D2DA51136AD5 /* MobileLegal.html in Resources */ = {isa = PBXBuildFile; fileRef = EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */; };
 		D6B145780D7C9C58290E778A /* sidebar.js in Resources */ = {isa = PBXBuildFile; fileRef = D9C55EA2F28A6C85D1D4881B /* sidebar.js */; };
 		EDA0B796EA16CCE2A68BD5AF /* Examples in Resources */ = {isa = PBXBuildFile; fileRef = 2CF78B49DE5E49469120F0F9 /* Examples */; };
 		F9B62C5A796FCAF67BB254BE /* viewport.js in Resources */ = {isa = PBXBuildFile; fileRef = 6735AABCD6F5A88EF3BAE8C6 /* viewport.js */; };
+		FD4016EA141124489F12B11C /* MobileWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60448280A04866C09151EEC6 /* MobileWorkspace.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,13 +42,15 @@
 		42D8CD83408FC8E237289211 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		491BE740BA982CBA7777720D /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		55CB20ECC354AB3680A4D12C /* viewport.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = viewport.css; sourceTree = "<group>"; };
+		60448280A04866C09151EEC6 /* MobileWorkspace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWorkspace.swift; sourceTree = "<group>"; };
 		6735AABCD6F5A88EF3BAE8C6 /* viewport.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = viewport.js; sourceTree = "<group>"; };
-		BE0676F6A5982F863701872B /* MobileChrome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileChrome.swift; sourceTree = "<group>"; };
+		8B129A2CF3E8E9C3AB32D50A /* NativePanelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePanelTests.swift; sourceTree = "<group>"; };
 		BE2FD6082FC763EFA2698AF9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5274BA2CFAFCF7065EE30B1 /* FormMobileTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FormMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSidebar.swift; sourceTree = "<group>"; };
 		D9C55EA2F28A6C85D1D4881B /* sidebar.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = sidebar.js; sourceTree = "<group>"; };
 		E6C206125563339A313519B0 /* native-chrome.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = "native-chrome.js"; sourceTree = "<group>"; };
+		E7D407F7D7FFD9A911C9CB0C /* NativePanels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NativePanels.swift; sourceTree = "<group>"; };
 		E8CB325CFBCA3052D4CDF1AF /* FormMobile.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FormMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EECEA0C2DC96EC56DDEE131D /* MobileLegal.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = MobileLegal.html; sourceTree = "<group>"; };
 		F6A11EDDD71FCFCDA5BE337B /* Web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Web; path = ../Resources/Web; sourceTree = SOURCE_ROOT; };
@@ -66,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				1A61F7BF0BBA43A885D6F7D0 /* MobileTests.swift */,
+				8B129A2CF3E8E9C3AB32D50A /* NativePanelTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -75,8 +80,9 @@
 			children = (
 				491BE740BA982CBA7777720D /* App.swift */,
 				2C425B8A095420EEB66ABAAD /* FileInformation.swift */,
-				BE0676F6A5982F863701872B /* MobileChrome.swift */,
+				60448280A04866C09151EEC6 /* MobileWorkspace.swift */,
 				D4A0F37BBB217BE17B177A3B /* ModelSidebar.swift */,
+				E7D407F7D7FFD9A911C9CB0C /* NativePanels.swift */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -216,8 +222,9 @@
 			files = (
 				31B228CF5AA045770BFC53FC /* App.swift in Sources */,
 				90C47B946C5DE6310259FC6A /* FileInformation.swift in Sources */,
-				4C8D4997FC171995FF4A8C9F /* MobileChrome.swift in Sources */,
+				FD4016EA141124489F12B11C /* MobileWorkspace.swift in Sources */,
 				C5E33D8DFC9305C0F2D6FFF9 /* ModelSidebar.swift in Sources */,
+				B82D4F531542BA856462E501 /* NativePanels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D9853B273D7498C40DE2226 /* MobileTests.swift in Sources */,
+				8158555DAA40E413A53B5466 /* NativePanelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
